@@ -2,7 +2,6 @@
 
 {% block title %} Products {% endblock %}
 
-
 {% block body %}
     </header> <!-- section-header.// -->
     <header class="section-header">
@@ -32,7 +31,9 @@
                         <h2 class="logo-text">Simple Store</h2>
                     </div> <!-- brand-wrap.// -->
                 </div>
+                <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
 
+                </div> <!-- col.// -->
                 <div style="float:right">
                     <form action="{{ path('product_search', {name: 'name'}) }}" method="GET">
                         <label>
@@ -45,28 +46,25 @@
             </div> <!-- row.// -->
         </div> <!-- container.// -->
     </section> <!-- header-main .// -->
-
-
     <table class="table">
-
         <th scope="col">
+            <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
             <ul class="list-group">
-                <h4 align="center">Category</h4>
-                <li class="list-group-item"><a class="nav-link black "
+                <h5 class="title black">Category</h5>
+
+                <li class="list-unstyled"><a class="nav-link black "
                                                href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
                 </li>
-                <li class="list-group-item"><a class="nav-link black"
+                <li class="list-unstyled"><a class="nav-link black"
                                                href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
                 </li>
-                <li class="list-group-item"><a class="nav-link black"
+                <li class="list-unstyled"><a class="nav-link black"
                                                href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
                 </li>
             </ul>
-
+            </aside>
         </th>
 
-        <section class="section-content bg padding-y-sm">
-            <div class="container">
         <th scope="col">
             <div class="container">
                 <nav>
@@ -89,8 +87,7 @@
                                     </div>
                                 </div>
                             </div>
-                    </div><!-- container // -->
-        </section>
+
                         {% endfor %}
 
                     </div>
@@ -125,28 +122,28 @@
                         <h5 class="title">Customer Services</h5>
                         <ul class="list-unstyled">
 
-                            <li><a href="#">Help center</a></li>
-                            <li><a href="#">Money refund</a></li>
-                            <li><a href="#">Terms and Policy</a></li>
-                            <li><a href="#">Open dispute</a></li>
+{#                            <li><a href="#">Help center</a></li>#}
+{#                            <li><a href="#">Money refund</a></li>#}
+{#                            <li><a href="#">Terms and Policy</a></li>#}
+{#                            <li><a href="#">Open dispute</a></li>#}
                         </ul>
                     </aside>
                     <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-12 white">
                         <h5 class="title">My Account</h5>
                         <ul class="list-unstyled">
-                            <li><a href="#"> User Login </a></li>
-                            <li><a href="#"> User register </a></li>
-                            <li><a href="#"> Account Setting </a></li>
-                            <li><a href="#"> My Orders </a></li>
-                            <li><a href="#"> My Wishlist </a></li>
+{#                            <li><a href="#"> User Login </a></li>#}
+{#                            <li><a href="#"> User register </a></li>#}
+{#                            <li><a href="#"> Account Setting </a></li>#}
+{#                            <li><a href="#"> My Orders </a></li>#}
+{#                            <li><a href="#"> My Wishlist </a></li>#}
                         </ul>
                     </aside>
                     <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
                         <h5 class="title">About</h5>
                         <ul class="list-unstyled">
-                            <li><a href="#"> Our history </a></li>
-                            <li><a href="#"> How to buy </a></li>
-                            <li><a href="#"> Delivery and payment </a></li>
+{#                            <li><a href="#"> Our history </a></li>#}
+{#                            <li><a href="#"> How to buy </a></li>#}
+{#                            <li><a href="#"> Delivery and payment </a></li>#}
                         </ul>
 
                     </aside>

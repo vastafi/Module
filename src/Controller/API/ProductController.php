@@ -34,7 +34,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{productCode}", name="api.product.details")
+     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"})
      */
     public function getProductByCode(string $productCode)
     {

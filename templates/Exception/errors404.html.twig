@@ -8,8 +8,9 @@
 
 {% block body %}
     <div align='center'>
-    <h1 style="color:red;" >Product code not found</h1>
-        <h2>Enter another code</h2>
-    </div>
+    <h2 style="color:red;" >Product code not found</h2>
+        <a href="{{ path('product_index') }}"
+           class="btn btn-dark">Returt to home</a>
+         </div>
 {% endblock %}
 
