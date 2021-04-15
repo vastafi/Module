@@ -18,6 +18,7 @@ class ProductController extends AbstractController
 {
     /**
      * @Route("/", name="product_index")
+     * @param Request $request
      * @param ProductRepository $productRepository
      * @return Response
      */
@@ -38,7 +39,9 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/create", name="product_new", methods={"GET","POST"})
-
+     * @param Request $request
+     * @return Response
+     * @throws \Exception
      */
     public function createProduct(Request $request): Response
     {
@@ -52,37 +55,12 @@ class ProductController extends AbstractController
             if ($repo->count(['code'=> $product->getCode()]) > 0){
                 #code 400 bad request
                 return $this->render('product/new.html.twig', [
-                    'errors' => ['DublicatedCodeException'],
+                    'errors' => ['A product with this code exista already!'],
                     'product' => $product,
                     'form' => $form->createView(),
                 ]);
 
             }
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($product);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('product_index');
-        }
-
-        return $this->render('product/new.html.twig', [
-            'product' => $product,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/new", name="productnew", methods={"GET","POST"})
-     * @param Request $request
-     * @return Response
-     */
-    public function new(Request $request): Response
-    {
-        $product = new Product();
-        $form = $this->createForm(ProductType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
