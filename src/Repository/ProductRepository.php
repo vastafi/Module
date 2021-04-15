@@ -19,6 +19,38 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
+    /**
+     * @param $category
+     * @param $name
+     * @param $limit
+     * @param $page
+     * @return Product[] Returns an array of Product objects
+     */
+
+    public function filter($category, $name, $limit, $page)
+    {
+        $query = $this->createQueryBuilder('p');
+        if(!($name) and $category){
+            $query = $query->andWhere('p.category = :category')
+                ->setParameter('category', $category);
+        }
+        else if((!$category) and $name){
+            $query = $query->andWhere('p.name LIKE :name')
+                ->setParameter('name', $name."%");
+        }
+        else if($category and $name){
+            $query =  $query ->
+            andWhere('p.category = :category AND p.name LIKE :name')
+                ->setParameters(array('category' => $category, 'name' => $name));
+        }
+        $query = $query->orderBy('p.id', 'ASC')
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+        return $query;
+   }
+
     // /**
     //  * @return Product[] Returns an array of Product objects
     //  */
