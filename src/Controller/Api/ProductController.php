@@ -35,7 +35,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"})
+     * @Route("/{productCode}", name="product.details",requirements={"productCode":"[A][B]\d+"})
      * @param string $productCode
      * @return JsonResponse|Response
      */
@@ -48,11 +48,9 @@ class ProductController extends AbstractController
         }
         return $this->json($product);
     }
+//
     /**
-     * @Route ("/create", name="create",methods={"POST"})
-     */
-    /**
-     * @Route ("/create", name="create",methods={"POST"})
+     * @Route ("/", name="create",methods={"POST"})
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -74,25 +72,45 @@ class ProductController extends AbstractController
         $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
 
         if ($repo->count(['code'=> $product->getCode()]) > 0){
-            throw new BadRequestException('A product with this code exists already!');
+            return new Response('A product with this code exists already!',400);
         }
         elseif (strlen($content['code']) == 0){
-            throw new BadRequestException('Code cant be blank!');
+            return new Response('Code cant be blank!',400);
         }
         elseif (strlen($content['name']) == 0){
-            throw new BadRequestException('Name cant be blank!');
+            return new Response('Name cant be blank!',400);
         }
         elseif (strlen($content['price']) == 0){
-            throw new BadRequestException('Price cant be blank!');
+            return new Response('Price cant be blank!',400);
         }
         elseif (strlen($content['category']) == 0){
-            throw new BadRequestException('Category cant be blank!');
+            return new Response('Category cant be blank!',400);
         }
 
         $em->persist($product);
 
         $em->flush();
 
-        return new Response('Product created!');
+        return new Response('Product created!',201);
     }
+    /**
+     * @Route("/delete/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
+     * @param string $productCode
+     * @return JsonResponse|Response
+     */
+    public function deleteProductByCode(string $productCode):Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+        $product = $repo->findOneBy(['code' => $productCode]);
+        if(!$product){
+            return new Response('Product not found', 404);
+        }
+
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+        return new Response( 'Product with code '.$productCode.' was deleted!');
+    }
+
 }
