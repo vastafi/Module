@@ -12,10 +12,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class DefaultController extends AbstractController
 {
     /**
-     * @Route("/default", name="default")
+     * @Route("/proba", name="default")
      */
     public function show():Response
     {
-        return new Response("Hello world");
+        return $this->render('product/login.html.twig');
     }
 }
