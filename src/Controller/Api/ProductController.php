@@ -94,9 +94,9 @@ class ProductController extends AbstractController
         return new Response('Product created!',201);
     }
     /**
-     * @Route("/delete/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
+     * @Route("/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
      * @param string $productCode
-     * @return JsonResponse|Response
+     * @return Response
      */
     public function deleteProductByCode(string $productCode):Response
     {
