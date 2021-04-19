@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use DateTime;
+use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,7 +28,7 @@ class ProductController extends AbstractController
     {
         $category=$request->query->get('category',null);
         $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',8);
+        $limit=$request->query->get('limit',100);
         $page=$request->query->get('page',1);
         $products = $productRepository->filter($category,$name,$limit,$page);
 
@@ -38,6 +40,26 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @Route("/admin", name="admin")
+     * @param Request $request
+     * @param ProductRepository $productRepository
+     * @return Response
+     */
+    public function indexAdmin(Request $request, ProductRepository $productRepository): Response
+    {
+        $category=$request->query->get('category',null);
+        $name=$request->query->get('name',null);
+        $limit=$request->query->get('limit',99);
+        $page=$request->query->get('page',1);
+        $products = $productRepository->filter($category,$name,$limit,$page);
+
+        $totalPages = count($products);
+        return $this->render('admin/products.html.twig', [
+            'products' => $products,
+            'totalPages'=>$totalPages
+        ]);
+    }
+    /**
      * @Route("/create", name="product_new", methods={"GET","POST"})
      * @param Request $request
      * @return Response
@@ -46,7 +68,7 @@ class ProductController extends AbstractController
     public function createProduct(Request $request): Response
     {
         $product = new Product();
-        $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $product->setCreatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 

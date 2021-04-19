@@ -16,6 +16,7 @@ class DefaultController extends AbstractController
      */
     public function show():Response
     {
-        return $this->render('product/login.html.twig');
+//        return $this->render('admin/products.html.twig');
+        return $this->render('admin/products.html.twig');
     }
 }
