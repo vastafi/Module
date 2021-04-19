@@ -40,26 +40,6 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/admin", name="admin")
-     * @param Request $request
-     * @param ProductRepository $productRepository
-     * @return Response
-     */
-    public function indexAdmin(Request $request, ProductRepository $productRepository): Response
-    {
-        $category=$request->query->get('category',null);
-        $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',99);
-        $page=$request->query->get('page',1);
-        $products = $productRepository->filter($category,$name,$limit,$page);
-
-        $totalPages = count($products);
-        return $this->render('admin/products.html.twig', [
-            'products' => $products,
-            'totalPages'=>$totalPages
-        ]);
-    }
-    /**
      * @Route("/create", name="product_new", methods={"GET","POST"})
      * @param Request $request
      * @return Response
