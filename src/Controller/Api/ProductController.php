@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use App\Entity\Product;
+use App\Response\ApiErrorResponse;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,17 +22,30 @@ class ProductController extends AbstractController
      * @param Request $request
      * @return JsonResponse|Response
      */
-    public function searchProducts(Request $request)
+    public function index(Request $request)
     {
-        if($request->query->get('limit') > 100){
-            return new Response('Search limit cannot exceed 100 items.', 525);
+        $category = $request->query->get('category', null);
+        $name = $request->query->get('name', null);
+        $limit = $request->query->get('limit', 8);
+        $page = $request->query->get('page', 1);
+        if($limit > 100){
+            return new ApiErrorResponse('0012', 'Search limit cannot exceed 100 items.');
+        }
+        if($limit <= 0){
+            return new ApiErrorResponse('0013', 'Search limit cannot be negative or zero.');
+        }
+        if($page <= 0){
+            return new ApiErrorResponse('0014', 'Page cannot be negative or zero.');
         }
         $repo = $this->getDoctrine()->getRepository(Product::class);
-        return $this->json($repo->filter($request->query->get('category'),
-            $request->query->get('name'),
-            $request->query->get('limit'),
-            $request->query->get('page')));
-
+        $totalPages = ceil($repo->countProducts($name, $category) / $limit);
+        if($page > $totalPages){
+            return new ApiErrorResponse('0015', 'This page number does not exist.');
+        }
+        return $this->json($repo->filter($category,
+            $name,
+            $limit,
+            $page));
     }
 
     /**
@@ -48,9 +62,7 @@ class ProductController extends AbstractController
         }
         return $this->json($product);
     }
-    /**
-     * @Route ("/create", name="create",methods={"POST"})
-     */
+
     /**
      * @Route ("/create", name="create",methods={"POST"})
      * @param Request $request

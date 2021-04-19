@@ -40,7 +40,7 @@ class ProductRepository extends ServiceEntityRepository
         }
         else if($category and $name){
             $query =  $query ->
-            andWhere('p.category = :category AND p.name LIKE :name')
+            andWhere('p.category = :category OR p.name LIKE :name')
                 ->setParameters(array('category' => $category, 'name' => $name));
         }
         $query = $query->orderBy('p.id', 'ASC')
@@ -50,6 +50,26 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
         return $query;
    }
+
+    public function countProducts($name, $category):int {
+        $query = $this->createQueryBuilder('p');
+        if(!($name) and $category){
+            $query = $query->andWhere('p.category = :category')
+                ->setParameter('category', $category);
+        }
+        else if((!$category) and $name){
+            $query = $query->andWhere('p.name LIKE :name')
+                ->setParameter('name', $name."%");
+        }
+        else if($category and $name){
+            $query =  $query ->
+            andWhere('p.category = :category OR p.name LIKE :name')
+                ->setParameters(array('category' => $category, 'name' => $name));
+        }
+        $query->add('select', $query->expr()->count('p'));
+        $q = $query->getQuery();
+        return $q->getSingleScalarResult();
+    }
 
     // /**
     //  * @return Product[] Returns an array of Product objects

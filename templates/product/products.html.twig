@@ -35,9 +35,12 @@
 
                 </div> <!-- col.// -->
                 <div style="float:right">
-                    <form action="{{ path('product_search', {name: 'name'}) }}" method="GET">
+                    <form action="{{ path('product_index', {name:'name', category:'category'}) }}" method="GET">
                         <label>
                             <input type="search" placeholder="Search.." name="name">
+                            {% if app.request.query.get('category') %}
+                            <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
+                            {% endif %}
                         </label>
                         <button type="submit">Submit</button>
                     </form>
@@ -53,13 +56,13 @@
                 <h5 class="title black">Category</h5>
 
                 <li class="list-unstyled"><a class="nav-link black "
-                                               href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
+                                               href="{{ path('product_index', {category:'CategorieA'}) }}">CategorieA</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
+                                               href="{{ path('product_index', {category:'CategorieB'}) }}">CategorieB</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
+                                               href="{{ path('product_index', {category:'CategorieC'}) }}">CategorieC</a>
                 </li>
             </ul>
             </aside>
@@ -70,7 +73,12 @@
                 <nav>
                     <h1 class="mt-4 mb-5" align="center">Products</h1>
                     <div class="row">
-
+                        {% if errors is defined%}
+                        {% for error in errors %}
+                        {{ error }}
+                        {% endfor %}
+                        {% endif %}
+                        {% if products is defined%}
                         {% for product in products %}
                             <div class="col-md-3">
                                 <div class="card mb-3">
@@ -89,26 +97,52 @@
                             </div>
 
                         {% endfor %}
+                        {% endif %}
 
                     </div>
-                    <nav>
-                        <ul class="pagination" style="float:right">
-                            <li>
-                                <a href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
+                    {% if totalPages is defined %}
+                    {% if totalPages > 1 %}
+                        {% if limit is defined %}
+                        <ul class="pagination pagination-sm">
+                            {# `«` arrow  #}
+                            <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                                <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1, limit:limit}) }}">«</a>
                             </li>
-                            <li><a href="{{ path('product_search',{page:1}) }}">1</a></li>
-                            <li><a href="{{ path('product_search',{page:2}) }}">2</a></li>
-                            <li><a href="{{ path('product_search',{page:3}) }}">3</a></li>
 
-                            <li>
-                                <a href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
+                            {# Render each page number #}
+                            {% for i in 1..totalPages %}
+                                <li {{ thisPage == i ? 'class="active"' }}>
+                                    <a href="{{ path('product_index', {page: i, limit:limit}) }}">{{ i }}</a>
+                                </li>
+                            {% endfor %}
+
+                            {# `»` arrow #}
+                            <li {{ thisPage == totalPages ? 'class="disabled"' }}>
+                                <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage, limit:limit}) }}">»</a>
                             </li>
                         </ul>
-                    </nav>
+                            {% else %}
+                                <ul class="pagination pagination-sm">
+                                    {# `«` arrow  #}
+                                    <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                                        <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1}) }}">«</a>
+                                    </li>
+
+                                    {# Render each page number #}
+                                    {% for i in 1..totalPages %}
+                                        <li {{ thisPage == i ? 'class="active"' }}>
+                                            <a href="{{ path('product_index', {page: i}) }}">{{ i }}</a>
+                                        </li>
+                                    {% endfor %}
+
+                                    {# `»` arrow #}
+                                    <li {{ thisPage == totalPages ? 'class="disabled"' }}>
+                                        <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage}) }}">»</a>
+                                    </li>
+                                </ul>
+                            {% endif %}
+                    {% endif %}
+                    {% endif %}
             </div>
         </th>
     </table>

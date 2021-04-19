@@ -16,24 +16,45 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  */
 class ProductController extends AbstractController
 {
+
     /**
      * @Route("/", name="product_index")
      * @param Request $request
      * @param ProductRepository $productRepository
-     * @return Response
      */
-    public function index(Request $request, ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository)
     {
-        $category=$request->query->get('category',null);
-        $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',8);
-        $page=$request->query->get('page',1);
-        $products = $productRepository->filter($category,$name,$limit,$page);
-
-        $totalPages = count($products);
+        $category = $request->query->get('category', null);
+        $name = $request->query->get('name', null);
+        $limit = $request->query->get('limit', 8);
+        $page = $request->query->get('page', 1);
+        if($limit > 100 || $limit < 2){
+            return $this->render('product/products.html.twig', [
+                'errors' => ['Invalid limit'],
+            ]);
+        }
+        if($page <= 0){
+            return $this->render('product/products.html.twig', [
+                'errors' => ['Page number cannot be negative or 0']
+            ]);
+        }
+        $products = $productRepository->filter($category, $name, $limit, $page);
+        $totalPages = ceil($productRepository->countProducts($name, $category) / $limit);
+        if($productRepository->countProducts($name, $category) == 0){
+            return $this->render('product/products.html.twig', [
+                'errors' => ['No products found'],
+            ]);
+        }
+        if ($page > $totalPages) {
+            return $this->render('product/products.html.twig', [
+                'errors' => ['This page number does not exist']
+            ]);
+        }
         return $this->render('product/products.html.twig', [
             'products' => $products,
-            'totalPages'=>$totalPages
+            'totalPages' => $totalPages,
+            'thisPage' => $page,
+            'limit'=>$limit
         ]);
     }
 
@@ -143,37 +164,6 @@ class ProductController extends AbstractController
             }
             return $this->render('product/details.html.twig', ['product' => $product]);
         }
-    }
-
-    /**
-     * @Route("/search", name="product_search", methods={"GET"})
-     * @param Request $request
-     * @return Response
-     */
-    public function searchProducts(Request $request): Response
-    {
-        $limit = $request->query->get('limit');
-        $page = $request->query->get('page');
-        if($limit == null){
-            $limit = 8;
-        }
-        if($page == null){
-            $page = 1;
-        }
-        $repo = $this->getDoctrine()->getRepository(Product::class);
-        $products = $repo->filter($request->query->get('category'),
-            $request->query->get('name'),
-            $limit,
-            $page);
-        if($limit > 100){
-            return new Response('Search limit cannot exceed 100 items.', 525);
-        }
-        $totalPages = round(count($products)/$limit) + 1;
-        return $this->render('product/products.html.twig', [
-            'products'=>$products,
-            'totalPages'=>$totalPages
-        ]);
-
     }
 
 }
