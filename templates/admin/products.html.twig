@@ -3,8 +3,8 @@
 {% block title %} Products {% endblock %}
 
 {% block body %}
-    </header> <!-- section-header.// -->
-    <header class="section-header">
+
+    <header class="section-header py-5">
         <nav class="navbar-expand-sm navbar-dark bg-secondary fixed-top">
             <div class="container">
                 <div class="row">
@@ -47,72 +47,72 @@
         </div> <!-- container.// -->
     </section> <!-- header-main .// -->
     <table class="table">
-    <th scope="col">
-        <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
-            <ul class="list-group">
-                <h5 class="title black">Category</h5>
+        <th scope="col">
+            <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
+                <ul class="list-group">
+                    <h5 class="title black">Category</h5>
 
-                <li class="list-unstyled"><a class="nav-link black "
-                                             href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
-                </li>
-                <li class="list-unstyled"><a class="nav-link black"
-                                             href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
-                </li>
-                <li class="list-unstyled"><a class="nav-link black"
-                                             href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
-                </li>
-            </ul>
-        </aside>
-    </th>
-
-    <th scope="col">
-    <table style="width:90% ">
+                    <li class="list-unstyled"><a class="nav-link black "
+                                                 href="{{ path('product_search', {category:'Imprimante'}) }}">Imprimante</a>
+                    </li>
+                    <li class="list-unstyled"><a class="nav-link black"
+                                                 href="{{ path('product_search', {category:'Laptopuri'}) }}">Laptopuri</a>
+                    </li>
+                    <li class="list-unstyled"><a class="nav-link black"
+                                                 href="{{ path('product_search', {category:'Telefoane'}) }}">Telefoane</a>
+                    </li>
+                </ul>
+            </aside>
+        </th>
 
         <th scope="col">
-            <h1 >Products</h1>
-            <div class="container"  align="center">
-                <a href="{{ path('pr_new')}}">Create product </a>
-                <div class="row">
-                    <div class="col-xl-10 col-md-9 col-sm-12">
-    <tr>
-        <th>Id</th>
-        <th>Code</th>
-        <th>Name</th>
-        <th>Category</th>
-        <th>Price</th>
-        <th>Description</th>
-        <th>ProductImage</th>
-        <th>CreatedAt</th>
-        <th>UpdatedAt</th>
-        <th>Actions</th>
-    </tr>
-    {% for product in products %}
-        <tr>
-            <td>{{ product.id }}</td>
-            <td>{{ product.code }}</td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.category }}</td>
-            <td>{{ product.price }}</td>
-            <td>{{ product.description }}</td>
-            <td>{{ product.productImage }}</td>
-            <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-            <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
-            <td>
-                <a href="{{ path('show', {'id': product.id}) }}">Show</a>
-                <a href="{{ path('edit', {'id': product.id}) }}">Edit</a>
-                <a href="{{ path('delete', {'id': product.id}) }}">Delete</a>
+            <table style="width:90% ">
 
-            </td>
-        </tr>
+                <th scope="col">
+                    <h1>Products</h1>
+                    <div class="container" align="center">
+                        <a href="{{ path('pr_new') }}">Create</a>
+                        <div class="row">
+                            <div class="col-xl-10 col-md-9 col-sm-12">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Code</th>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Description</th>
+                                    <th>ProductImage</th>
+                                    <th>CreatedAt</th>
+                                    <th>UpdatedAt</th>
+                                    <th>Actions</th>
+                                </tr>
+                                {% for product in products %}
+                                    <tr>
+                                        <td>{{ product.id }}</td>
+                                        <td>{{ product.code }}</td>
+                                        <td>{{ product.name }}</td>
+                                        <td>{{ product.category }}</td>
+                                        <td>{{ product.price }}</td>
+                                        <td>{{ product.description }}</td>
+                                        <td>{{ product.productImage }}</td>
+                                        <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                                        <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                                        <td>
+                                            <a href="{{ path('show', {'id': product.id}) }}">Show</a>
+                                            <a href="{{ path('edit', {'id': product.id}) }}">Edit</a>
+                                            <a href="{{ path('delete', {'id': product.id}) }}">Delete</a>
 
-    {% endfor %}
+                                        </td>
+                                    </tr>
 
+                                {% endfor %}
+
+                            </div>
+                        </div>
                     </div>
-                </div>
-
-    </div>
-    </th>
-    </table>
+                </th>
+            </table>
+        </th>
     </table>
     <!-- ========================= FOOTER ========================= -->
     <footer class="section-footer bg-secondary">

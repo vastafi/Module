@@ -31,7 +31,7 @@ class AdminController extends AbstractController
     {
         $category=$request->query->get('category',null);
         $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',99);
+        $limit=$request->query->get('limit',100);
         $page=$request->query->get('page',1);
         $products = $productRepository->filter($category,$name,$limit,$page);
 

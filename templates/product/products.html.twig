@@ -3,8 +3,8 @@
 {% block title %} Products {% endblock %}
 
 {% block body %}
-    </header> <!-- section-header.// -->
-    <header class="section-header">
+
+    <header class="section-header py-5">
         <nav class="navbar-expand-sm navbar-dark bg-secondary fixed-top">
             <div class="container">
                 <div class="row">
@@ -53,14 +53,15 @@
                 <h5 class="title black">Category</h5>
 
                 <li class="list-unstyled"><a class="nav-link black "
-                                               href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
+                                               href="{{ path('product_search', {category:'Imprimante'}) }}">Imprimante</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
+                                               href="{{ path('product_search', {category:'Laptopuri'}) }}">Laptopuri</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
+                                               href="{{ path('product_search', {category:'Telefoane'}) }}">Telefoane</a>
                 </li>
+
             </ul>
             </aside>
         </th>
