@@ -56,13 +56,13 @@
                 <h5 class="title black">Category</h5>
 
                 <li class="list-unstyled"><a class="nav-link black "
-                                               href="{{ path('product_index', {category:'CategorieA'}) }}">CategorieA</a>
+                                               href="{{ path('product_index', {category:'Telefoane'}) }}">Telefoane</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_index', {category:'CategorieB'}) }}">CategorieB</a>
+                                               href="{{ path('product_index', {category:'Laptopuri'}) }}">Laptopuri</a>
                 </li>
                 <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_index', {category:'CategorieC'}) }}">CategorieC</a>
+                                               href="{{ path('product_index', {category:'Imprimante'}) }}">Imprimante</a>
                 </li>
             </ul>
             </aside>
@@ -103,25 +103,67 @@
                     {% if totalPages is defined %}
                     {% if totalPages > 1 %}
                         {% if limit is defined %}
+                            {% if app.request.query.get('category') %}
                         <ul class="pagination pagination-sm">
                             {# `«` arrow  #}
                             <li {{ thisPage == 1 ? 'class="disabled"' }}>
-                                <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1, limit:limit}) }}">«</a>
+                                <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1, limit:limit, category:app.request.query.get('category')}) }}">«</a>
                             </li>
 
                             {# Render each page number #}
                             {% for i in 1..totalPages %}
                                 <li {{ thisPage == i ? 'class="active"' }}>
-                                    <a href="{{ path('product_index', {page: i, limit:limit}) }}">{{ i }}</a>
+                                    <a href="{{ path('product_index', {page: i, limit:limit, category:app.request.query.get('category')}) }}">{{ i }}</a>
                                 </li>
                             {% endfor %}
 
                             {# `»` arrow #}
                             <li {{ thisPage == totalPages ? 'class="disabled"' }}>
-                                <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage, limit:limit}) }}">»</a>
+                                <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage, limit:limit, category:app.request.query.get('category')}) }}">»</a>
                             </li>
                         </ul>
-                            {% else %}
+                            {% endif %}
+                            {% if app.request.query.get('name') %}
+                                <ul class="pagination pagination-sm">
+{#                                     `«` arrow#}
+                                    <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                                        <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1, limit:limit, name:app.request.query.get('name')}) }}">«</a>
+                                    </li>
+
+{#                                     Render each page number#}
+                                    {% for i in 1..totalPages %}
+                                        <li {{ thisPage == i ? 'class="active"' }}>
+                                            <a href="{{ path('product_index', {page: i, limit:limit, name:app.request.query.get('name')}) }}">{{ i }}</a>
+                                        </li>
+                                    {% endfor %}
+
+{#                                     `»` arrow#}
+                                    <li {{ thisPage == totalPages ? 'class="disabled"' }}>
+                                        <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage, limit:limit, name:app.request.query.get('name')}) }}">»</a>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                                {% if app.request.query.get('name') and app.request.query.get('category') %}
+                                    <ul class="pagination pagination-sm">
+{#                                         `«` arrow#}
+                                        <li {{ thisPage == 1 ? 'class="disabled"' }}>
+                                            <a href="{{ path('product_index', {page: thisPage-1 < 1 ? 1 : thisPage-1, limit:limit, name:app.request.query.get('name'), category:app.request.query.get('category')}) }}">«</a>
+                                        </li>
+
+{#                                         Render each page number#}
+                                        {% for i in 1..totalPages %}
+                                            <li {{ thisPage == i ? 'class="active"' }}>
+                                                <a href="{{ path('product_index', {page: i, limit:limit, name:app.request.query.get('name'), category:app.request.query.get('category')}) }}">{{ i }}</a>
+                                            </li>
+                                        {% endfor %}
+
+{#                                         `»` arrow#}
+                                        <li {{ thisPage == totalPages ? 'class="disabled"' }}>
+                                            <a href="{{ path('product_index', {page: thisPage+1 <= totalPages ? thisPage+1 : thisPage, limit:limit, name:app.request.query.get('name'), category:app.request.query.get('category')}) }}">»</a>
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            {% elseif limit is not defined %}
                                 <ul class="pagination pagination-sm">
                                     {# `«` arrow  #}
                                     <li {{ thisPage == 1 ? 'class="disabled"' }}>

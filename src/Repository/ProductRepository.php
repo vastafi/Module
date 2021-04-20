@@ -31,17 +31,17 @@ class ProductRepository extends ServiceEntityRepository
     {
         $query = $this->createQueryBuilder('p');
         if(!($name) and $category){
-            $query = $query->andWhere('p.category = :category')
-                ->setParameter('category', $category);
+            $query = $query->andWhere('LOWER(p.category) = :category')
+                ->setParameter('category', strtolower($category));
         }
         else if((!$category) and $name){
-            $query = $query->andWhere('p.name LIKE :name')
-                ->setParameter('name', $name."%");
+            $query = $query->andWhere('LOWER(p.name) LIKE :name')
+                ->setParameter('name', strtolower($name)."%");
         }
         else if($category and $name){
             $query =  $query ->
-            andWhere('p.category = :category OR p.name LIKE :name')
-                ->setParameters(array('category' => $category, 'name' => $name));
+            andWhere('LOWER(p.category) = :category AND LOWER(p.name) LIKE :name')
+                ->setParameters(array('category' => strtolower($category), 'name' => strtolower($name).'%'));
         }
         $query = $query->orderBy('p.id', 'ASC')
             ->setFirstResult($limit * ($page - 1))
@@ -54,17 +54,17 @@ class ProductRepository extends ServiceEntityRepository
     public function countProducts($name, $category):int {
         $query = $this->createQueryBuilder('p');
         if(!($name) and $category){
-            $query = $query->andWhere('p.category = :category')
-                ->setParameter('category', $category);
+            $query = $query->andWhere('LOWER(p.category) = :category')
+                ->setParameter('category', strtolower($category));
         }
         else if((!$category) and $name){
-            $query = $query->andWhere('p.name LIKE :name')
-                ->setParameter('name', $name."%");
+            $query = $query->andWhere('LOWER(p.name) LIKE :name')
+                ->setParameter('name', strtolower($name)."%");
         }
         else if($category and $name){
             $query =  $query ->
-            andWhere('p.category = :category OR p.name LIKE :name')
-                ->setParameters(array('category' => $category, 'name' => $name));
+            andWhere('LOWER(p.category) = :category AND LOWER(p.name) LIKE :name')
+                ->setParameters(array('category' => strtolower($category), 'name' => strtolower($name).'%'));
         }
         $query->add('select', $query->expr()->count('p'));
         $q = $query->getQuery();

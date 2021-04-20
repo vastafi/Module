@@ -40,7 +40,7 @@ class ProductController extends AbstractController
         }
         $products = $productRepository->filter($category, $name, $limit, $page);
         $totalPages = ceil($productRepository->countProducts($name, $category) / $limit);
-        if($productRepository->countProducts($name, $category) == 0){
+        if($productRepository->countProducts($name, $category) === 0){
             return $this->render('product/products.html.twig', [
                 'errors' => ['No products found'],
             ]);
