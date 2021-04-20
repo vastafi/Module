@@ -3,6 +3,7 @@
 namespace App\Controller\API;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +36,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"})
+     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"}, methods={"GET"})
      * @param string $productCode
      * @return JsonResponse|Response
      */
@@ -48,9 +49,7 @@ class ProductController extends AbstractController
         }
         return $this->json($product);
     }
-    /**
-     * @Route ("/create", name="create",methods={"POST"})
-     */
+
     /**
      * @Route ("/create", name="create",methods={"POST"})
      * @param Request $request
@@ -94,5 +93,25 @@ class ProductController extends AbstractController
         $em->flush();
 
         return new Response('Product created!');
+    }
+
+    /**
+     * @Route ("/{productCode}", name="update", requirements={"productCode":"[A][B]\d+"}, methods={"PUT"})
+     * @param string $productCode
+     * @return Response
+     * @throws \Exception
+     */
+    public function updateProduct(string $productCode, Request $request){
+        $data = json_decode($request->getContent(), true);
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+        $product = $repo->findOneBy(['code' => $productCode]);
+        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $form = $this->createForm(ProductType::class, $product);
+        $form->submit($data);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($product);
+        $em->flush();
+        $response = new JsonResponse($data, 200);
+        return $response;
     }
 }
