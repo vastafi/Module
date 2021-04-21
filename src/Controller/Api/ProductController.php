@@ -35,7 +35,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{productCode}", name="product.details",requirements={"productCode":"[A][B]\d+"})
+     * @Route("/{productCode}", name="product.details",requirements={"productCode":"[A][B]\d+"},methods={"GET"})
      * @param string $productCode
      * @return JsonResponse|Response
      */
@@ -91,7 +91,7 @@ class ProductController extends AbstractController
 
         $em->flush();
 
-        return new Response('Product created!',201);
+        return new Response(null ,201);
     }
     /**
      * @Route("/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
@@ -104,13 +104,13 @@ class ProductController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
         if(!$product){
-            return new Response('Product not found', 404);
+            return new Response(null, 404);
         }
 
         $entityManager->remove($product);
         $entityManager->flush();
 
-        return new Response( 'Product with code '.$productCode.' was deleted!');
+        return new Response();
     }
 
 }
