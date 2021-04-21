@@ -45,7 +45,7 @@ class ProductController extends AbstractController
         $repo=$this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code'=>$productCode]);
         if(!$product){
-            return new Response('Product not found', 404);
+            return new JsonResponse('Product not found', 404);
         }
         return $this->json($product);
     }
@@ -105,13 +105,15 @@ class ProductController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
+        if(!$product){
+            return new JsonResponse("This product does not exist", 404);
+        }
         $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->submit($data);
         $em = $this->getDoctrine()->getManager();
         $em->persist($product);
         $em->flush();
-        $response = new JsonResponse($data, 200);
-        return $response;
+        return new JsonResponse($data, 200);
     }
 }
