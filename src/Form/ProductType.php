@@ -11,6 +11,7 @@ class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        # @fixme this form can be modified with field types (for example TextType)
         $builder
             ->add('code')
             ->add('name')

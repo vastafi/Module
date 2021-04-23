@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
     /**
-     * @Route("/api/v1/products")
+     * @Route("/api/v1/products") - @note can be removed
      */
 
 class ProductController extends AbstractController

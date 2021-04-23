@@ -8,8 +8,9 @@ use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter; # remove unused imports
 
 /**
  * @Route("/products")
@@ -24,26 +25,45 @@ class ProductController extends AbstractController
      */
     public function index(Request $request, ProductRepository $productRepository): Response
     {
-        $category=$request->query->get('category',null);
-        $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',8);
-        $page=$request->query->get('page',1);
-        $products = $productRepository->filter($category,$name,$limit,$page);
+        $category = $request->query->get('category');
+        $name = $request->query->get('name');
+        $limit = $request->query->get('limit', 8);
+        $page = $request->query->get('page', 1);
 
-        $totalPages = count($products);
+        # fixme validation for page, category and name required
+        # fixme move validations and fields to a separated object like SearchProductsCriteria
+        if ($limit > 100) {
+            # @note there is no status code 525
+            # @anotherNote I suggest you to use addFlash method and show flashes on frontend.
+            return new Response('Search limit cannot exceed 100 items.', 400);
+        }
+
+
         return $this->render('product/products.html.twig', [
-            'products' => $products,
-            'totalPages'=>$totalPages
+            'products' => $productRepository->filter($category, $name, $limit, $page),
+
+            # @note you should pass categories from database in order to display them on frontend
+            'categories' => $productRepository->getCategories(),
+
+            # @note also we need to pass current value for limit and category, so we can use them in url generation
+            'currentValues' => [
+                'category' => $category,
+                'limit' => $limit,
+                'name' => $name,
+            ],
+            // @note amount of pages can be calculated through repo request
+            'totalPages' => $productRepository->countPages($category, $name, $limit)
         ]);
     }
 
     /**
      * @Route("/create", name="product_new", methods={"GET","POST"})
      * @param Request $request
+     * @param ProductRepository $productRepository
      * @return Response
      * @throws \Exception
      */
-    public function createProduct(Request $request): Response
+    public function createProduct(Request $request, ProductRepository $productRepository): Response
     {
         $product = new Product();
         $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
@@ -51,16 +71,15 @@ class ProductController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $repo = $this->getDoctrine()->getRepository(Product::class);
-            if ($repo->count(['code'=> $product->getCode()]) > 0){
+            if ($productRepository->count(['code' => $product->getCode()]) > 0) {
                 #code 400 bad request
                 return $this->render('product/new.html.twig', [
                     'errors' => ['A product with this code exista already!'],
                     'product' => $product,
                     'form' => $form->createView(),
-                ]);
-
+                ], new Response(null, 400));
             }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
@@ -71,18 +90,6 @@ class ProductController extends AbstractController
         return $this->render('product/new.html.twig', [
             'product' => $product,
             'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="product_show", methods={"GET"}, requirements={"id":"\d+"})
-     * @param Product $product
-     * @return Response
-     */
-    public function show(Product $product): Response
-    {
-        return $this->render('product/show.html.twig', [
-            'product' => $product,
         ]);
     }
 
@@ -117,7 +124,7 @@ class ProductController extends AbstractController
      */
     public function delete(Request $request, Product $product): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($product);
             $entityManager->flush();
@@ -133,47 +140,15 @@ class ProductController extends AbstractController
      * @return Response
      */
 
-    public function getProductByCode(string $productCode,ProductRepository $productRepository): Response
+    public function getProductByCode(string $productCode, ProductRepository $productRepository): Response
     {
-        $productRepository = $this->getDoctrine()->getRepository(Product::class);
         $product = $productRepository->findOneBy(['code' => $productCode]);
         {
             if (!$product) {
-                return $this->render('Exception/errors404.html.twig',['product' => $product]);
+                throw new NotFoundHttpException('Product not found.');
             }
             return $this->render('product/details.html.twig', ['product' => $product]);
         }
-    }
-
-    /**
-     * @Route("/search", name="product_search", methods={"GET"})
-     * @param Request $request
-     * @return Response
-     */
-    public function searchProducts(Request $request): Response
-    {
-        $limit = $request->query->get('limit');
-        $page = $request->query->get('page');
-        if($limit == null){
-            $limit = 8;
-        }
-        if($page == null){
-            $page = 1;
-        }
-        $repo = $this->getDoctrine()->getRepository(Product::class);
-        $products = $repo->filter($request->query->get('category'),
-            $request->query->get('name'),
-            $limit,
-            $page);
-        if($limit > 100){
-            return new Response('Search limit cannot exceed 100 items.', 525);
-        }
-        $totalPages = round(count($products)/$limit) + 1;
-        return $this->render('product/products.html.twig', [
-            'products'=>$products,
-            'totalPages'=>$totalPages
-        ]);
-
     }
 
 }

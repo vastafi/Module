@@ -36,7 +36,7 @@
 
                 </div> <!-- col.// -->
                 <div style="float:right">
-                    <form action="{{ path('product_search', {name: 'name'}) }}" method="GET">
+                    <form action="{{ path('product_index', {name: 'name'}) }}" method="GET">
                         <label>
                             <input type="search" placeholder="Search.." name="name">
                         </label>
@@ -53,13 +53,13 @@
         <ul class="list-group">
             <h4 align="center">Category</h4>
             <li class="list-group-item"><a class="nav-link black"
-                                           href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
+                                           href="{{ path('product_index', {category:'CategorieA'}) }}">CategorieA</a>
             </li>
             <li class="list-group-item"><a class="nav-link black"
-                                           href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
+                                           href="{{ path('product_index', {category:'CategorieB'}) }}">CategorieB</a>
             </li>
             <li class="list-group-item"><a class="nav-link black"
-                                           href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
+                                           href="{{ path('product_index', {category:'CategorieC'}) }}">CategorieC</a>
             </li>
         </ul>
     </th>

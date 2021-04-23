@@ -20,63 +20,69 @@ class ProductRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $category
-     * @param $name
-     * @param $limit
-     * @param $page
+     * @param string|null $category
+     * @param string|null $name
+     * @param int $limit
+     * @param int $page
      * @return Product[] Returns an array of Product objects
      */
-
-    public function filter($category, $name, $limit, $page)
+    public function filter(?string $category, ?string $name, int $limit, int $page): array
     {
-        $query = $this->createQueryBuilder('p');
-        if(!($name) and $category){
-            $query = $query->andWhere('p.category = :category')
-                ->setParameter('category', $category);
-        }
-        else if((!$category) and $name){
-            $query = $query->andWhere('p.name LIKE :name')
-                ->setParameter('name', $name."%");
-        }
-        else if($category and $name){
-            $query =  $query ->
-            andWhere('p.category = :category AND p.name LIKE :name')
-                ->setParameters(array('category' => $category, 'name' => $name));
-        }
-        $query = $query->orderBy('p.id', 'ASC')
+        return $this
+            ->getFiltrationQuery($category, $name)
             ->setFirstResult($limit * ($page - 1))
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param string|null $category
+     * @param string|null $name
+     * @param int $limit
+     * @return int
+     */
+    public function countPages(?string $category, ?string $name, int $limit): int
+    {
+        $amountOfProducts = $this
+            ->getFiltrationQuery($category, $name)
+            ->select("COUNT(p)")
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return ceil($amountOfProducts / $limit);
+    }
+
+    /**
+     * @param string|null $category
+     * @param string|null $name
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    protected function getFiltrationQuery(?string $category, ?string $name): \Doctrine\ORM\QueryBuilder
+    {
+        $query = $this->createQueryBuilder('p');
+
+        if ($category) {
+            $query->andWhere('p.category = :category')
+                ->setParameter('category', $category);
+        }
+        if ($name) {
+            $query->andWhere('p.name LIKE :name')
+                ->setParameter('name', $name . "%");
+        }
+
+        $query->orderBy('p.id', 'ASC');
         return $query;
-   }
-
-    // /**
-    //  * @return Product[] Returns an array of Product objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Product
+    public function getCategories()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        $categories = $this
+            ->createQueryBuilder('product')
+            ->select("DISTINCT product.category")
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
+
+        return array_column($categories, 'category');
     }
-    */
 }

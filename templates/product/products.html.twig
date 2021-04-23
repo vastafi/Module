@@ -35,7 +35,7 @@
 
                 </div> <!-- col.// -->
                 <div style="float:right">
-                    <form action="{{ path('product_search', {name: 'name'}) }}" method="GET">
+                    <form action="{{ path('product_index', {name: 'name'}) }}" method="GET">
                         <label>
                             <input type="search" placeholder="Search.." name="name">
                         </label>
@@ -49,19 +49,15 @@
     <table class="table">
         <th scope="col">
             <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
-            <ul class="list-group">
                 <h5 class="title black">Category</h5>
-
-                <li class="list-unstyled"><a class="nav-link black "
-                                               href="{{ path('product_search', {category:'CategorieA'}) }}">CategorieA</a>
-                </li>
-                <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieB'}) }}">CategorieB</a>
-                </li>
-                <li class="list-unstyled"><a class="nav-link black"
-                                               href="{{ path('product_search', {category:'CategorieC'}) }}">CategorieC</a>
-                </li>
-            </ul>
+                <ul class="list-group"> {# this is a way of generating categories #}
+                    {% for category in categories %}
+                        <li class="list-unstyled">
+                            <a class="nav-link black "
+                               href="{{ path('product_index', {category: category}) }}">{{ category }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </aside>
         </th>
 
@@ -98,9 +94,15 @@
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                            <li><a href="{{ path('product_search',{page:1}) }}">1</a></li>
-                            <li><a href="{{ path('product_search',{page:2}) }}">2</a></li>
-                            <li><a href="{{ path('product_search',{page:3}) }}">3</a></li>
+                            {% for page in 1..totalPages %}
+                                <li>
+                                    <a href="{{ path('product_index', {
+                                        page:page,
+                                        category: currentValues.category,
+                                        limit: currentValues.limit
+                                    }) }}">{{ page }}</a>
+                                </li>
+                            {% endfor %}
 
                             <li>
                                 <a href="#" aria-label="Next">
@@ -122,28 +124,28 @@
                         <h5 class="title">Customer Services</h5>
                         <ul class="list-unstyled">
 
-{#                            <li><a href="#">Help center</a></li>#}
-{#                            <li><a href="#">Money refund</a></li>#}
-{#                            <li><a href="#">Terms and Policy</a></li>#}
-{#                            <li><a href="#">Open dispute</a></li>#}
+                            {# <li><a href="#">Help center</a></li> #}
+                            {# <li><a href="#">Money refund</a></li> #}
+                            {# <li><a href="#">Terms and Policy</a></li> #}
+                            {# <li><a href="#">Open dispute</a></li> #}
                         </ul>
                     </aside>
                     <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-12 white">
                         <h5 class="title">My Account</h5>
                         <ul class="list-unstyled">
-{#                            <li><a href="#"> User Login </a></li>#}
-{#                            <li><a href="#"> User register </a></li>#}
-{#                            <li><a href="#"> Account Setting </a></li>#}
-{#                            <li><a href="#"> My Orders </a></li>#}
-{#                            <li><a href="#"> My Wishlist </a></li>#}
+                            {# <li><a href="#"> User Login </a></li> #}
+                            {# <li><a href="#"> User register </a></li> #}
+                            {# <li><a href="#"> Account Setting </a></li> #}
+                            {# <li><a href="#"> My Orders </a></li> #}
+                            {# <li><a href="#"> My Wishlist </a></li> #}
                         </ul>
                     </aside>
                     <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
                         <h5 class="title">About</h5>
                         <ul class="list-unstyled">
-{#                            <li><a href="#"> Our history </a></li>#}
-{#                            <li><a href="#"> How to buy </a></li>#}
-{#                            <li><a href="#"> Delivery and payment </a></li>#}
+                            {# <li><a href="#"> Our history </a></li> #}
+                            {# <li><a href="#"> How to buy </a></li> #}
+                            {# <li><a href="#"> Delivery and payment </a></li> #}
                         </ul>
 
                     </aside>
