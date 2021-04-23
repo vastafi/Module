@@ -7,6 +7,7 @@ use App\Form\ProductType;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +46,7 @@ class ProductController extends AbstractController
         $repo=$this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code'=>$productCode]);
         if(!$product){
-            return new JsonResponse('Product not found', 404);
+            return new Response(null, 404);
         }
         return $this->json($product);
     }
@@ -106,7 +107,7 @@ class ProductController extends AbstractController
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
         if(!$product){
-            return new JsonResponse("This product does not exist", 404);
+            return new Response(null, 404);
         }
         $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
@@ -114,6 +115,6 @@ class ProductController extends AbstractController
         $em = $this->getDoctrine()->getManager();
         $em->persist($product);
         $em->flush();
-        return new JsonResponse($data, 200);
+        return new Response(null, 200);
     }
 }
