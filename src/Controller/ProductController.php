@@ -5,12 +5,14 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter; # remove unused imports
 
 /**
  * @Route("/products")
@@ -30,14 +32,15 @@ class ProductController extends AbstractController
         $limit = $request->query->get('limit', 8);
         $page = $request->query->get('page', 1);
 
+
         # fixme validation for page, category and name required
         # fixme move validations and fields to a separated object like SearchProductsCriteria
         if ($limit > 100) {
             # @note there is no status code 525
             # @anotherNote I suggest you to use addFlash method and show flashes on frontend.
+//            $this->addFlash('danger', 'message');
             return new Response('Search limit cannot exceed 100 items.', 400);
         }
-
 
         return $this->render('product/products.html.twig', [
             'products' => $productRepository->filter($category, $name, $limit, $page),
@@ -61,12 +64,12 @@ class ProductController extends AbstractController
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function createProduct(Request $request, ProductRepository $productRepository): Response
     {
         $product = new Product();
-        $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $product->setCreatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 

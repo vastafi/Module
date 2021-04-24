@@ -3,16 +3,15 @@
 namespace App\Controller\API;
 
 use App\Entity\Product;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
-    /**
-     * @Route("/api/v1/products") - @note can be removed
-     */
-
+/**
+ * @Route("/api/v1/products")
+ */
 class ProductController extends AbstractController
 {
     /**
@@ -22,7 +21,7 @@ class ProductController extends AbstractController
      */
     public function searchProducts(Request $request)
     {
-        if($request->query->get('limit') > 100){
+        if ($request->query->get('limit') > 100) {
             return new Response('Search limit cannot exceed 100 items.', 525);
         }
         $repo = $this->getDoctrine()->getRepository(Product::class);
@@ -38,17 +37,19 @@ class ProductController extends AbstractController
      */
     public function getProductByCode(string $productCode)
     {
-        $repo=$this->getDoctrine()->getRepository(Product::class);
-        $product = $repo->findOneBy(['code'=>$productCode]);
-        if(!$product){
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+        $product = $repo->findOneBy(['code' => $productCode]);
+        if (!$product) {
             return new Response('Product not found', 404);
         }
         return $this->json($product);
     }
+
     /**
      * @Route ("/create", name="create",methods={"POST"})
      */
-    public function createProduct(Request $request){
+    public function createProduct(Request $request)
+    {
         $product = new Product();
     }
 }

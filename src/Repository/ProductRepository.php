@@ -73,13 +73,13 @@ class ProductRepository extends ServiceEntityRepository
 
         $query->orderBy('p.id', 'ASC');
         return $query;
-    }
+   }
 
-    public function getCategories()
+    public function getCategories(): array
     {
         $categories = $this
             ->createQueryBuilder('product')
-            ->select("DISTINCT product.category")
+            ->select("product.category")
             ->getQuery()
             ->getResult();
 
