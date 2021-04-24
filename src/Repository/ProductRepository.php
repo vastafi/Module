@@ -30,16 +30,14 @@ class ProductRepository extends ServiceEntityRepository
     public function filter($category, $name, $limit, $page)
     {
         $query = $this->createQueryBuilder('p');
-        if(!($name) and $category){
+        if (!($name) and $category) {
             $query = $query->andWhere('p.category = :category')
                 ->setParameter('category', $category);
-        }
-        else if((!$category) and $name){
+        } else if ((!$category) and $name) {
             $query = $query->andWhere('p.name LIKE :name')
-                ->setParameter('name', $name."%");
-        }
-        else if($category and $name){
-            $query =  $query ->
+                ->setParameter('name', $name . "%");
+        } else if ($category and $name) {
+            $query = $query->
             andWhere('p.category = :category AND p.name LIKE :name')
                 ->setParameters(array('category' => $category, 'name' => $name));
         }
@@ -49,7 +47,7 @@ class ProductRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
         return $query;
-   }
+    }
 
     // /**
     //  * @return Product[] Returns an array of Product objects
