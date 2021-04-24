@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -51,19 +52,19 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * @param string|null $category
      * @param string|null $name
-     * @return \Doctrine\ORM\QueryBuilder
+     * @return QueryBuilder
      */
-    protected function getFiltrationQuery(?string $category, ?string $name): \Doctrine\ORM\QueryBuilder
+    protected function getFiltrationQuery(?string $category, ?string $name): QueryBuilder
     {
         $query = $this->createQueryBuilder('p');
 
         if ($category) {
-            $query->andWhere('p.category = :category')
-                ->setParameter('category', $category);
+            $query->andWhere('LOWER(p.category ) = :category')
+                ->setParameter('category', strtolower($category));
         }
         if ($name) {
-            $query->andWhere('p.name LIKE :name')
-                ->setParameter('name', $name . "%");
+            $query->andWhere('LOWER(p.name) LIKE :name')
+                ->setParameter('name',  strtolower($name . "%"));
         }
 
         $query->orderBy('p.id', 'ASC');

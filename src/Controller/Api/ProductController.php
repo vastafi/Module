@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\API;
+namespace App\Controller\Api;
 
 use App\Entity\Product;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;

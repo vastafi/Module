@@ -31,26 +31,21 @@ class ProductController extends AbstractController
         $page = $request->query->get('page', 1);
 
 
-        # fixme validation for page, category and name required
-        # fixme move validations and fields to a separated object like SearchProductsCriteria
         if ($limit > 100) {
-            # @note there is no status code 525
-            # @anotherNote I suggest you to use addFlash method and show flashes on frontend.
-//            $this->addFlash('danger', 'message');
             return new Response('Search limit cannot exceed 100 items.', 400);
         }
 
         return $this->render('product/products.html.twig', [
             'products' => $productRepository->filter($category, $name, $limit, $page),
 
-            # @note also we need to pass current value for limit and category, so we can use them in url generation
+
             'currentValues' => [
                 'category' => $category,
                 'limit' => $limit,
                 'page' => $page,
                 'name' => $name,
             ],
-            // @note amount of pages can be calculated through repo request
+
             'totalPages' => $productRepository->countPages($category, $name, $limit)
         ]);
     }
@@ -70,7 +65,7 @@ class ProductController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $repo = $this->getDoctrine()->getRepository(Product::class);
-            if ($repo->count(['code'=> $product->getCode()]) > 0){
+            if ($repo->count(['code' => $product->getCode()]) > 0) {
                 #code 400 bad request
                 return $this->render('product/new.html.twig', [
                     'errors' => ['A product with this code exista already!'],
@@ -91,8 +86,6 @@ class ProductController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-
 
     /**
      * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"}, requirements={"id":"\d+"})
@@ -125,7 +118,7 @@ class ProductController extends AbstractController
      */
     public function delete(Request $request, Product $product): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($product);
             $entityManager->flush();

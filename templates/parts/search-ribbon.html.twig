@@ -10,18 +10,17 @@
                     <h2 class="logo-text">Simple Store</h2>
                 </div> <!-- brand-wrap.// -->
             </div>
-            <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2">
-
-            </div> <!-- col.// -->
             <div style="float:right">
-                <form action="{{ path('product_index', {name: 'name'}) }}" method="GET">
+                <form action="{{ path('product_index', {name:'name', category:'category'}) }}" method="GET">
                     <label>
                         <input type="search" placeholder="Search.." name="name">
+                        {% if app.request.query.get('category') %}
+                            <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
+                        {% endif %}
                     </label>
                     <button type="submit">Submit</button>
                 </form>
             </div>
-
         </div> <!-- row.// -->
     </div> <!-- container.// -->
 </section> <!-- header-main .// -->
