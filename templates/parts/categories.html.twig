@@ -1,0 +1,9 @@
+<h5 class="title black">Category</h5>
+<ul class="list-group"> {# this is a way of generating categories #}
+    {% for category in productRepo.getCategories() %}
+        <li class="list-unstyled">
+            <a class="nav-link black "
+               href="{{ path('product_index', {category: category}) }}">{{ category }}</a>
+        </li>
+    {% endfor %}
+</ul>
