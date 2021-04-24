@@ -18,7 +18,7 @@ class ProductType extends AbstractType
             ->add('code')
             ->add('name')
             ->add('category', ChoiceType::class, [
-                'choices' => ['Telefoane' => 'Telefoane' , 'Laptopuri' =>  'Laptopuri','Imprimante' => 'Imprimante']
+                'choices' => ['Telefoane' => 'Telefoane', 'Laptopuri' => 'Laptopuri', 'Imprimante' => 'Imprimante']
             ])
             ->add('price')
             ->add('description')

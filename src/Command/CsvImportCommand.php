@@ -5,9 +5,10 @@ namespace App\Command;
 
 
 use App\Entity\Product;
+use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Csv\Reader;
-use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -21,9 +22,10 @@ class CsvImportCommand extends Command
      */
     private $em;
 
-    public function __construct(EntityManagerInterface $em){
+    public function __construct(EntityManagerInterface $em)
+    {
         parent::__construct();
-        
+
         $this->em = $em;
     }
 
@@ -33,8 +35,7 @@ class CsvImportCommand extends Command
             ->setName('csv:import')
             ->setDescription('Import data from CSV')
             ->setHelp('This command allows you to import products data from a CSV-file')
-            ->addArgument('path',InputArgument::REQUIRED, 'The path to the csv file.')
-        ;
+            ->addArgument('path', InputArgument::REQUIRED, 'The path to the csv file.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -51,7 +52,7 @@ class CsvImportCommand extends Command
         $results = $reader->fetchAssoc();//iterator
 
         $io->progressStart(iterator_count($results));
-        foreach ($results as $row){
+        foreach ($results as $row) {
 
             $product = (new Product())
                 ->setCode($row['code'])
@@ -60,7 +61,7 @@ class CsvImportCommand extends Command
                 ->setPrice($row['price'])
                 ->setDescription($row['description'])
                 ->setProductImage($row['product_image'])
-                ->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+                ->setCreatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
 
             $this->em->persist($product);
 

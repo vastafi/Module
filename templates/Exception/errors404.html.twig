@@ -1,16 +1,15 @@
-
 <head>
     {# templates/Exception/error404.html.twig #}
-<meta charset="UTF-8">
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
-<title>{% block title %}Error!{% endblock %}</title>
+    <meta charset="UTF-8">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>{% block title %}Error!{% endblock %}</title>
 </head>
 
 {% block body %}
     <div align='center'>
-    <h2 style="color:red;" >Product code not found</h2>
+        <h2 style="color:red;">Product code not found</h2>
         <a href="{{ path('product_index') }}"
            class="btn btn-dark">Returt to home</a>
-         </div>
+    </div>
 {% endblock %}
 
