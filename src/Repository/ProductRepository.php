@@ -79,7 +79,7 @@ class ProductRepository extends ServiceEntityRepository
     {
         $categories = $this
             ->createQueryBuilder('product')
-            ->select("product.category")
+            ->select("DISTINCT product.category")
             ->getQuery()
             ->getResult();
 
