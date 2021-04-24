@@ -3,9 +3,11 @@
 namespace App\Controller\Api;
 
 use App\Entity\Product;
+use App\Form\ProductType;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +37,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"})
+     * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"}, methods={"GET"})
      * @param string $productCode
      * @return JsonResponse|Response
      */
@@ -44,13 +46,11 @@ class ProductController extends AbstractController
         $repo=$this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code'=>$productCode]);
         if(!$product){
-            return new Response('Product not found', 404);
+            return new Response(null, 404);
         }
         return $this->json($product);
     }
-    /**
-     * @Route ("/create", name="create",methods={"POST"})
-     */
+
     /**
      * @Route ("/create", name="create",methods={"POST"})
      * @param Request $request
@@ -94,5 +94,27 @@ class ProductController extends AbstractController
         $em->flush();
 
         return new Response('Product created!');
+    }
+
+    /**
+     * @Route ("/{productCode}", name="update", requirements={"productCode":"[A][B]\d+"}, methods={"PUT"})
+     * @param string $productCode
+     * @return Response
+     * @throws \Exception
+     */
+    public function updateProduct(string $productCode, Request $request){
+        $data = json_decode($request->getContent(), true);
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+        $product = $repo->findOneBy(['code' => $productCode]);
+        if(!$product){
+            return new Response(null, 404);
+        }
+        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $form = $this->createForm(ProductType::class, $product);
+        $form->submit($data);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($product);
+        $em->flush();
+        return new Response(null, 200);
     }
 }
