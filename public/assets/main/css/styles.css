@@ -4,6 +4,17 @@
 }
 
 .bt-red {
-    background: orangered;
+    background: black;
     color: white;
 }
+
+/*.btn-danger {*/
+/*    color: #fff !important;*/
+/*    background-color: #FF4500 !important;*/
+/*    border-color: #FF4500 !important;*/
+/*}*/
+/*button .btn-danger {*/
+/*    color: #fff;*/
+/*    background-color: #ff4500;*/
+/*    border-color: #ff4500;*/
+/*}*/

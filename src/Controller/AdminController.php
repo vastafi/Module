@@ -42,7 +42,7 @@ class AdminController extends AbstractController
         ]);
     }
     /**
-     * @Route("/{id}", name="show", methods={"GET"}, requirements={"id":"\d+"})
+     * @Route("/products/{id}", name="show", methods={"GET"}, requirements={"id":"\d+"})
      * @param Product $product
      * @return Response
      */
@@ -54,7 +54,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"}, requirements={"id":"\d+"})
+     * @Route("/products/{id}/edit", name="edit", methods={"GET","POST"}, requirements={"id":"\d+"})
      * @param Request $request
      * @param Product $product
      * @return Response
@@ -77,7 +77,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="delete", methods={"POST"})
+     * @Route("/products/{id}", name="delete", methods={"POST"})
      * @param Request $request
      * @param Product $product
      * @return Response
@@ -93,7 +93,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('adminpr');
     }
     /**
-     * @Route("/create", name="pr_new", methods={"GET","POST"})
+     * @Route("/products/create", name="pr_new", methods={"GET","POST"})
      * @param Request $request
      * @return Response
      * @throws Exception
