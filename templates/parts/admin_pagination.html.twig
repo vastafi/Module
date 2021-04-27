@@ -1,0 +1,39 @@
+<nav>
+
+    <ul class="pagination" style="float:right">
+        {% if (currentValues.page != 1) %}
+            <li class="page-item">
+                <a href="{{ path('adminpr', {
+                    page:currentValues.page - 1 ,
+                    category: currentValues.category,
+                    limit: currentValues.limit
+                }) }}" class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        {% endif %}
+
+        {% for page in 1..totalPages %}
+            <li class="page-item {{ (page == currentValues.page) ? 'active' : '' }}">
+                <a class="page-link" href="{{ path('adminpr', {
+                    page:page,
+                    category: currentValues.category,
+                    limit: currentValues.limit
+                }) }}">{{ page }}</a>
+            </li>
+        {% endfor %}
+
+        {% if (currentValues.page != totalPages) %}
+            <li class="page-item">
+                <a href="{{ path('adminpr', {
+                    page:currentValues.page + 1,
+                    category: currentValues.category,
+                    limit: currentValues.limit
+                }) }}" class="page-link" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+</nav>

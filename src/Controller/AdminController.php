@@ -31,13 +31,19 @@ class AdminController extends AbstractController
     {
         $category=$request->query->get('category',null);
         $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',100);
+        $limit=$request->query->get('limit',8);
         $page=$request->query->get('page',1);
         $products = $productRepository->filter($category,$name,$limit,$page);
 
-        $totalPages = count($products);
+        $totalPages = $productRepository->countPages($category, $name, $limit);
         return $this->render('admin/products.html.twig', [
             'products' => $products,
+            'currentValues' => [
+                'category' => $category,
+                'limit' => $limit,
+                'page' => $page,
+                'name' => $name,
+            ],
             'totalPages'=>$totalPages
         ]);
     }
@@ -61,6 +67,7 @@ class AdminController extends AbstractController
      */
     public function edit(Request $request, Product $product): Response
     {
+        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
