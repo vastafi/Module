@@ -103,7 +103,7 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="delete", methods={"POST"})
+     * @Route("/{id}/delete", name="delete", methods={"GET","POST"})
      * @param Request $request
      * @param Product $product
      * @return Response

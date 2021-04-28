@@ -45,7 +45,8 @@
                                         <td>
                                             <a href="{{ path('show', {'id': product.id}) }}">Show</a>
                                             <a href="{{ path('edit', {'id': product.id}) }}">Edit</a>
-                                            <a href="{{ path('delete', {'id': product.id}) }}">Delete</a>
+                                            {{ include('admin/_delete_form.html.twig') }}
+{#                                            <a href="{{ path('delete', {'id': product.id}) }}">Delete</a>#}
 
                                         </td>
                                     </tr>
