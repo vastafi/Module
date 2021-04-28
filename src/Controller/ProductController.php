@@ -40,7 +40,7 @@ class ProductController extends AbstractController
             $this->addFlash('warning', "Invalid page number");
             return $this->redirectToRoute('product_index');
         }
-        if($limit <= 0){
+        if($limit <= 1){
             $this->addFlash('warning', "Limit can not be negative or zero");
             return $this->redirectToRoute('product_index');
         }

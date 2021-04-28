@@ -67,7 +67,7 @@ class ProductRepository extends ServiceEntityRepository
                 ->setParameter('name',  strtolower($name . "%"));
         }
 
-        $query->orderBy('p.id', 'ASC');
+        $query->orderBy('p.code', 'ASC');
         return $query;
     }
 
