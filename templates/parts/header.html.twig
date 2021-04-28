@@ -44,17 +44,7 @@
                         Sign In</a>
                 {% endif %}
 
-                <form class="form-inline my-2 my-lg-0"
-                      action="{{ path('product_index', {name:'name', category:'category'}) }}" method="GET">
-                    <label>
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search products"
-                               aria-label="Search" name="name">
-                        {% if app.request.query.get('category') %}
-                            <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
-                        {% endif %}
-                    </label>
-                    <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
-                </form>
+                {% include 'parts/search-ribbon.html.twig' %}
             </div>
         </nav>
     </div>
