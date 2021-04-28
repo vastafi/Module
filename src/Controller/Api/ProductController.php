@@ -118,7 +118,7 @@ class ProductController extends AbstractController
         return new Response(null, 200);
     }
     /**
-     * @Route("/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
+     * @Route("/{productCode}", name="delete_product_api",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
      * @param string $productCode
      * @return Response
      */

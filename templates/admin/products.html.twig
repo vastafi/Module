@@ -15,7 +15,7 @@
                 <th scope="col">
                     <h1>Products</h1>
                     <div class="container" align="center">
-                        <a href="{{ path('pr_new') }}">Create</a>
+                        <a class="btn btn-sm btn-primary" href="{{ path('pr_new') }}">Create</a>
                         <div class="row">
                             <div class="col-xl-10 col-md-9 col-sm-12">
                                 <tr>
@@ -42,9 +42,9 @@
                                         <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>
-                                            <a href="{{ path('show', {'id': product.id}) }}">Show</a>
-                                            <a href="{{ path('edit', {'id': product.id}) }}">Edit</a>
-                                            <a href="{{ path('delete', {'id': product.id}) }}">Delete</a>
+                                            <a style="width: 50px" class="btn btn-sm btn-warning" href="{{ path('show', {'id': product.id}) }}">Show</a>
+                                            <a style="width: 50px" class="btn btn-sm btn-success" href="{{ path('edit', {'id': product.id}) }}">Edit</a>
+                                            {{ include('admin/_delete_form.html.twig') }}
 
                                         </td>
                                     </tr>

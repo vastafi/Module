@@ -3,32 +3,38 @@
 {% block title %}User{% endblock %}
 
 {% block body %}
-    <h1>User</h1>
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="container col-xl-6 col-sm-12">
+                <h1>User</h1>
 
-    <table class="table">
-        <tbody>
-        <tr>
-            <th>Id</th>
-            <td>{{ user.id }}</td>
-        </tr>
-        <tr>
-            <th>Email</th>
-            <td>{{ user.email }}</td>
-        </tr>
-        <tr>
-            <th>Roles</th>
-            <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
-        </tr>
-{#        <tr>#}
-{#            <th>Password</th>#}
-{#            <td>{{ user.password }}</td>#}
-{#        </tr>#}
-        </tbody>
-    </table>
+                <table class="table">
+                    <tbody>
+                    <tr>
+                        <th>Id</th>
+                        <td>{{ user.id }}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Roles</th>
+                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                    </tr>
 
-    <a href="{{ path('user_index') }}">back to list</a>
+                    </tbody>
+                </table>
 
-    <a href="{{ path('user_edit', {'id': user.id}) }}">edit</a>
+
+
+
+    <a style="width: 50px" class="btn btn-sm btn-success" href="{{ path('user_edit', {'id': user.id}) }}">Edit</a>
 
     {{ include('user/_delete_form.html.twig') }}
+
+                <a href="{{ path('user_index') }}">Back to list</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}
