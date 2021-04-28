@@ -117,4 +117,23 @@ class ProductController extends AbstractController
         $em->flush();
         return new Response(null, 200);
     }
+    /**
+     * @Route("/{productCode}", name="delete",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
+     * @param string $productCode
+     * @return Response
+     */
+    public function deleteProductByCode(string $productCode):Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $repo = $this->getDoctrine()->getRepository(Product::class);
+        $product = $repo->findOneBy(['code' => $productCode]);
+        if(!$product){
+            return new Response(null, 404);
+        }
+
+        $entityManager->remove($product);
+        $entityManager->flush();
+
+        return new Response();
+    }
 }
