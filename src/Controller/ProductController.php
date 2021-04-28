@@ -5,7 +5,9 @@ namespace App\Controller;
 use App\Entity\Product;
 use App\Form\ProductType;
 use App\Repository\ProductRepository;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -14,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/products")
+ * @method Exception(string $string)
  */
 class ProductController extends AbstractController
 {
@@ -22,6 +25,7 @@ class ProductController extends AbstractController
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return Response
+     * @throws Exception
      */
     public function index(Request $request, ProductRepository $productRepository): Response
     {
@@ -31,12 +35,30 @@ class ProductController extends AbstractController
         $page = $request->query->get('page', 1);
 
 
+        $pageNum = $productRepository->countPages($category, $name, $limit);
+        if($page <= 0){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('product_index');
+        }
+        if($limit <= 0){
+            $this->addFlash('warning', "Limit can not be negative or zero");
+            return $this->redirectToRoute('product_index');
+        }
+        $products = $productRepository->filter($category, $name, $limit, $page);
+        if(!($products) && in_array($page, range(1, $pageNum))){
+            throw new BadRequestHttpException("400");
+        }
+        if($page > $pageNum){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('product_index');
+        }
         if ($limit > 100) {
-            return new Response('Search limit cannot exceed 100 items.', 400);
+            $this->addFlash('warning', "Limit exceeded");
+            return $this->redirectToRoute('product_index');
         }
 
         return $this->render('product/products.html.twig', [
-            'products' => $productRepository->filter($category, $name, $limit, $page),
+            'products' => $products,
 
 
             'currentValues' => [
@@ -46,7 +68,7 @@ class ProductController extends AbstractController
                 'name' => $name,
             ],
 
-            'totalPages' => $productRepository->countPages($category, $name, $limit)
+            'totalPages' => $pageNum
         ]);
     }
 
@@ -95,6 +117,7 @@ class ProductController extends AbstractController
      */
     public function edit(Request $request, Product $product): Response
     {
+        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 

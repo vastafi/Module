@@ -3,6 +3,7 @@
 {% block title %} Products {% endblock %}
 
 {% block body %}
+    {% include '/parts/flash.html.twig' %}
     <table class="table">
         <th scope="col">
             <aside class="col-sm-12 col-md-6 col-xl-3 col-lg-3 white">
@@ -58,7 +59,7 @@
             </table>
         </th>
     </table>
-
+    {% include '/parts/pagination.html.twig' %}<br>
 {% endblock %}
 
 

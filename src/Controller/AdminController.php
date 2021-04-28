@@ -12,6 +12,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -31,14 +32,38 @@ class AdminController extends AbstractController
     {
         $category=$request->query->get('category',null);
         $name=$request->query->get('name',null);
-        $limit=$request->query->get('limit',100);
+        $limit=$request->query->get('limit',8);
         $page=$request->query->get('page',1);
-        $products = $productRepository->filter($category,$name,$limit,$page);
-
-        $totalPages = count($products);
+        $pageNum = $productRepository->countPages($category, $name, $limit);
+        if($page <= 0){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('adminpr');
+        }
+        if($limit <= 0){
+            $this->addFlash('warning', "Limit can not be negative or zero");
+            return $this->redirectToRoute('adminpr');
+        }
+        $products = $productRepository->filter($category, $name, $limit, $page);
+        if(!($products) && in_array($page, range(1, $pageNum))){
+            throw new BadRequestHttpException("400");
+        }
+        if($page > $pageNum){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('adminpr');
+        }
+        if ($limit > 100) {
+            $this->addFlash('warning', "Limit exceeded");
+            return $this->redirectToRoute('adminpr');
+        }
         return $this->render('admin/products.html.twig', [
             'products' => $products,
-            'totalPages'=>$totalPages
+            'currentValues' => [
+                'category' => $category,
+                'limit' => $limit,
+                'page' => $page,
+                'name' => $name,
+            ],
+            'totalPages'=>$pageNum
         ]);
     }
     /**
@@ -61,6 +86,7 @@ class AdminController extends AbstractController
      */
     public function edit(Request $request, Product $product): Response
     {
+        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
