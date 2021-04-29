@@ -66,7 +66,7 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route ("/create", name="create",methods={"POST"})
+     * @Route ("/", name="create_prod_api",methods={"POST"})
      * @param Request $request
      * @return Response
      * @throws \Exception
@@ -88,19 +88,19 @@ class ProductController extends AbstractController
         $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
 
         if ($repo->count(['code'=> $product->getCode()]) > 0){
-            throw new BadRequestException('A product with this code exists already!');
+            return new Response('A product with this code exists already!',400);
         }
         elseif (strlen($content['code']) == 0){
-            throw new BadRequestException('Code cant be blank!');
+            return new Response('Code cant be blank!',400);
         }
         elseif (strlen($content['name']) == 0){
-            throw new BadRequestException('Name cant be blank!');
+            return new Response('Name cant be blank!',400);
         }
         elseif (strlen($content['price']) == 0){
-            throw new BadRequestException('Price cant be blank!');
+            return new Response('Price cant be blank!',400);
         }
         elseif (strlen($content['category']) == 0){
-            throw new BadRequestException('Category cant be blank!');
+            return new Response('Category cant be blank!',400);
         }
 
         $em->persist($product);
