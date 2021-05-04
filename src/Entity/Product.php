@@ -58,6 +58,11 @@ class Product
      */
     private $updatedAt = null;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $availableAmount;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +160,18 @@ class Product
     public function setUpdatedAt(?DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getAvailableAmount(): ?int
+    {
+        return $this->availableAmount;
+    }
+
+    public function setAvailableAmount(int $availableAmount): self
+    {
+        $this->availableAmount = $availableAmount;
 
         return $this;
     }
