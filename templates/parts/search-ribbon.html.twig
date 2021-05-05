@@ -15,7 +15,7 @@
                 </form>
             {% else %}
                 <form class="form-inline my-2 my-lg-0"
-                      action="{{ path('product_index', {name:'name', category:'category'}) }}" method="GET">
+                      action="{{ path('product_index') }}" method="GET">
                     <label>
                         <input class="form-control mr-sm-2" type="search" placeholder="Search products"
                                aria-label="Search" name="name" value="{{ app.request.query.get('name') }}">
@@ -26,8 +26,8 @@
                     <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
                 </form>
             {% endif %}
-            <form class="form-inline "
-                  action="{{ path('product_index', {limit:'limit',category:'category',name:'name'}) }}" method="GET">
+            <form class="form-inline"
+                  action="{{ path('product_index') }}" method="GET">
                 <label>
                     <input class="form-control my-2 my-sm-0" style="width: 65px" placeholder="Limit"
                            aria-label="limit" name="limit" value="{{ app.request.query.get('limit') }}">
