@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -71,4 +72,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         ;
     }
     */
+    public function filter(?string $email, int $limit, int $page): array
+    {
+        return $this
+            ->getFiltrationQuery($email)
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countPages( ?string $email, int $limit): int
+    {
+        $amountOfUser = $this
+            ->getFiltrationQuery($email)
+            ->select("COUNT(u)")
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        return ceil($amountOfUser / $limit);
+    }
+
+    public function countUser($email):int {
+        $query = $this->createQueryBuilder('u');
+        if($email){
+            $query = $query->andWhere('LOWER(u.email) = :email')
+                ->setParameter('email', strtolower($email));
+        }
+
+        $query->add('select', $query->expr()->count('u'));
+        $q = $query->getQuery();
+        return $q->getSingleScalarResult();
+    }
+
+    /**
+     * @param string|null $email
+        * @return QueryBuilder
+     */
+    protected function getFiltrationQuery( ?string $email): QueryBuilder
+    {
+        $query = $this->createQueryBuilder('u');
+
+
+        if ($email) {
+            $query->andWhere('LOWER(u.email) LIKE :email')
+                ->setParameter('email',  strtolower($email . "%"));
+        }
+
+        $query->orderBy('u.id', 'ASC');
+        return $query;
+    }
 }
