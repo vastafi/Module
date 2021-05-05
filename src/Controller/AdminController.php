@@ -79,13 +79,14 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/{id}/edit", name="edit", methods={"GET","POST"}, requirements={"id":"\d+"})
+     * @Route("/{productCode}/edit", name="edit", methods={"GET","POST"}, requirements={"productCode":"[A][B]\d+"})
      * @param Request $request
-     * @param Product $product
+     * @param ProductRepository $productRepository
      * @return Response
      */
-    public function edit(Request $request, Product $product): Response
+    public function edit(Request $request, ProductRepository $productRepository, string $productCode): Response
     {
+        $product = $productRepository->findOneBy(['code' => $productCode]);
         $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
