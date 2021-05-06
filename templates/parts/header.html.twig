@@ -43,8 +43,9 @@
                         </svg>
                         Sign In</a>
                 {% endif %}
-
-                {% include 'parts/search-ribbon.html.twig' %}
+                {% if "user" not in app.request.requestUri  %}
+                     {% include 'parts/search-ribbon.html.twig' %}
+                {% endif %}
             </div>
         </nav>
     </div>

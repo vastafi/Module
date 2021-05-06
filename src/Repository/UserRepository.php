@@ -44,34 +44,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
     public function filter(?string $email, int $limit, int $page): array
     {
         return $this
@@ -96,8 +68,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function countUser($email):int {
         $query = $this->createQueryBuilder('u');
         if($email){
-            $query = $query->andWhere('LOWER(u.email) = :email')
-                ->setParameter('email', strtolower($email));
+            $query = $query->andWhere('LOWER(u.email) LIKE :email')
+                ->setParameter('email', strtolower($email.'%'));
         }
 
         $query->add('select', $query->expr()->count('u'));

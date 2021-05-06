@@ -26,11 +26,9 @@ class UserController extends AbstractController
      */
     public function index(Request $request, UserRepository $userRepository): Response
     {
-
         $email = $request->query->get('email');
         $limit = $request->query->get('limit', 8);
         $page = $request->query->get('page', 1);
-
 
         $pageNum = $userRepository->countPages( $email,$limit);
         if($page <= 0){
@@ -42,10 +40,8 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_index');
         }
         $users = $userRepository->filter( $email, $limit, $page);
-        if($userRepository->countUser($email) === 0){
-            return $this->render('user/index.html.twig', [
-                'errors' => ['No user found'],
-            ]);
+        if(!($users) && in_array($page, range(1, $pageNum))){
+            throw new BadRequestHttpException("400");
         }
         if($page > $pageNum){
             $this->addFlash('warning', "Invalid page number");
