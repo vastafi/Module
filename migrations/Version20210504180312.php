@@ -21,13 +21,11 @@ final class Version20210504180312 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE cart (id INT AUTO_INCREMENT NOT NULL, items JSON NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE product DROP available_amount');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE cart');
         $this->addSql('ALTER TABLE product ADD available_amount INT NOT NULL');
     }
 }
