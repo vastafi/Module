@@ -1,5 +1,4 @@
 <nav>
-
     <ul class="pagination" style="float:right">
         {% if (currentValues.page != 1) %}
             <li class="page-item">
@@ -22,7 +21,6 @@
                 {% endif %}
             </li>
         {% endif %}
-
         {% for page in 1..totalPages %}
             <li class="page-item {{ (page == currentValues.page) ? 'active' : '' }}">
                 {% if "/admin/" in app.request.requestUri  %}
@@ -63,5 +61,4 @@
             </li>
         {% endif %}
     </ul>
-
 </nav>
