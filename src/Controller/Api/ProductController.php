@@ -36,7 +36,7 @@ class ProductController extends AbstractController
             return new ApiErrorResponse('1624', 'Search limit cannot be negative or zero.');
         }
         if($page <= 0){
-            return new ApiErrorResponse('1624', 'Page cannot be negative or zero.');
+            return new ApiErrorResponse('1625', 'Page cannot be negative or zero.');
         }
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $totalPages = $repo->countPages($category, $name, $limit);
