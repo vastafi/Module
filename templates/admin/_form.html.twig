@@ -1,8 +1,8 @@
 {{ form_start(form) }}
     {% if "edit" in app.request.requestUri %}
-{#        {% do form.code.setRendered() %}#}
-        {{ form_widget(form.code, { 'attr': {'class': 'hidden-row'} }) }}
+        <div style="display: none">
         {{ form_widget(form.code, {'value' : app.request.get('productCode')}) }}
+        </div>
     {% endif %}
     {{ form_widget(form) }}
 <div class="mt-3">

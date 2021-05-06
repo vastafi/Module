@@ -67,12 +67,14 @@ class AdminController extends AbstractController
         ]);
     }
     /**
-     * @Route("/{id}", name="show", methods={"GET"}, requirements={"id":"\d+"})
-     * @param Product $product
+     * @Route("/{productCode}", name="show", methods={"GET"}, requirements={"productCode":"[A][B]\d+"})
+     * @param ProductRepository $productRepository
+     * @param string $productCode
      * @return Response
      */
-    public function show(Product $product): Response
+    public function show(ProductRepository $productRepository, string $productCode): Response
     {
+        $product = $productRepository->findOneBy(['code' => $productCode]);
         return $this->render('admin/show.html.twig', [
             'product' => $product,
         ]);
