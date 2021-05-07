@@ -43,16 +43,16 @@
                                     <h3 class="title mb-3">{{ product.name }}</h3>
                                     <h2>{{ product.price }} €</h2>
                                     <span>one unity</span>
-
                                     <dl>
                                         <dt>Description:</dt>
                                         <dd><p>{{ product.description }} </p></dd>
                                         <br><b>Category: </b>{{ product.category }}
                                     </dl>
-                                    <hr>
-                                    <a href="#" class="btn  btn-warning"> <i class="fa fa-envelope"></i> Add to
+                                    <a href="{{ path('cart_add', { 'productCode' : product.code }) }}"
+                                       class="btn  btn-warning"> <i class="fa fa-envelope"></i> Add to
                                         Cart
                                     </a>
+                                    <hr>
                                     <!-- short-info-wrap .// -->
                                 </article> <!-- card-body.// -->
                             </aside> <!-- col.// -->
