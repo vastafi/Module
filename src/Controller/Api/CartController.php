@@ -27,13 +27,13 @@ class CartController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $carts= $session->get('carts', []);
+        $carts = $session->get('carts', []);
 
         $cartsWithData = [];
 
         foreach ($carts as $productCode => $amount) {
-            $product = $productRepository->findOneBy(["code"=>$productCode]);
-            if($product->getAvailableAmount() < $amount){
+            $product = $productRepository->findOneBy(["code" => $productCode]);
+            if ($product->getAvailableAmount() < $amount) {
                 $this->addFlash('warning', 'We don\'t have so many products');
                 $amount = $product->getAvailableAmount();
             }
@@ -76,7 +76,7 @@ class CartController extends AbstractController
 
         $session->set('carts', $carts);
 
-        return $this->redirectToRoute("detroduct", ["productCode"=>$productCode]);
+        return $this->redirectToRoute("detroduct", ["productCode" => $productCode]);
     }
 
     /**
@@ -92,10 +92,9 @@ class CartController extends AbstractController
         $carts = $session->get('carts', []);
 
         if (!empty($carts[$productCode])) {
-            if($request->request->get('add') === "true"){
+            if ($request->request->get('add') === "true") {
                 $carts[$productCode]++;
-            }
-            elseif($request->request->get('add') === "false"){
+            } elseif ($request->request->get('add') === "false") {
                 $carts[$productCode]--;
             }
         }
@@ -123,91 +122,5 @@ class CartController extends AbstractController
 
         return $this->redirectToRoute('cart_index');
     }
-
-//    public function setItemQuantityForm(Order $order): Response
-//    {
-//        $form = $this->createForm(SetItemQuantityType::class, $item);
-//
-//
-//
-//        return $this->render('cart/_setItemQuantity_form.html.twig', [
-//            'form' => $form->createView()
-//        ]);
-//    }
-
 }
-//    /**
-//     * @var Security
-//     */private $security;
-//
-//    public function __construct(Security $security)
-//    {
-//        $this->security = $security;
-//    }
-//
-//    /**
-//     * @Route("/", methods={"GET"})
-//     * @param Request $request
-//     * @return Response
-//     */
-//    public function privatePageCart(Request $request) : Response{
-////     $user = $this->security->getUser();
-//        var_dump($user = $this->security->getUser());
-//    }
-//
-//    /**
-//     * @Route("/", methods={"PATCH"})
-//     */
-//    public function updateCart(){
-//        $user = $this->security->getUser();
-//    }
-//
-//    /**
-//     * @Route("/", methods={"POST"})
-//     */
-//    public function addToCart(){
-//    }
-
-//    /**
-//     * @Route("/", name="cart_index")
-//     * @param CartSession $cartSession
-//     * @param ProductRepository $productRepository
-//     * @return Response
-//     */
-//    public function index(CartSession $cartSession, ProductRepository $productRepository): Response
-//    {
-//        return $this->render('cart/index.html.twig', [
-//            "items" => $cartSession->getFullCart(),
-//            "total" => $cartSession->getTotal()
-//        ]);
-//    }
-//
-//    /**
-//     * @Route("/add/{productCode}", name="cart_add")
-//     * @param $productCode
-//     * @param CartSession $cartSession
-//     * @return RedirectResponse
-//     */
-//    public function add($productCode,CartSession $cartSession): RedirectResponse
-//    {
-//        $cartSession->add($productCode);
-//
-//        return $this->redirectToRoute("product_index");
-//    }
-//
-//    /**
-//     * @Route("/del/{productCode}", name="cart_remove")
-//     * @param $productCode
-//     * @param CartSession $cartSession
-//     * @return RedirectResponse
-//     */
-//    public function remove($productCode, CartSession $cartSession): RedirectResponse
-//    {
-//        $cartSession->remove($productCode);
-//
-//        return $this->redirectToRoute('cart_index');
-//    }
-//
-//}
-
 

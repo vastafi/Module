@@ -3,74 +3,105 @@
 {% block title %}Cart{% endblock %}
 
 {% block body %}
-       <div class="container mt-4">
+    <div class="container mt-4">
     <h1>Your Cart</h1>
     {% include '/parts/flash.html.twig' %}
     {% if items | length > 0 %}
-        <table class="table">
-            <thead>
-            <tr>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Amount</th>
-                <th>Total</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for item in items %}
-                <tr>
-                    <td>{{ item.product.code }}</td>
-                    <td>{{ item.product.name }}</td>
-                    <td>{{ item.product.price }}</td>
-                    <td style="display: inline-flex; gap:10px;">
-                        {% if item.amount == 1 %}
-                        <form class="form-inline"
-                              action="{{ path('cart_remove', {'productCode':item.product.code}) }}" method="POST">
-                            <input type="hidden" id="add" name="add" value="false">
-                            <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
-                        </form>
-                        {% else %}
-                        <form class="form-inline"
-                              action="{{ path('cart_update', {'productCode':item.product.code}) }}" method="POST">
-                            <input type="hidden" id="add" name="add" value="false">
-                            <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
-                        </form>
-                        {% endif %}
-                        {{ item.amount }}
-                        <form class="form-inline"
-                              action="{{ path('cart_update', {'productCode':item.product.code}) }}" method="POST">
-                            <input type="hidden" id="add" name="add" value="true">
-                            <button class="btn btn-danger my-2 my-sm-0" type="submit">+</button>
-                        </form>
-                    </td>
-                    <td>{{ item.product.price * item.amount }}</td>
-                    <td>
-                        <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}" class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>Delete
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-            <tfoot>
-            <tr>
-                <th colspan="4" class="text-right">
-                    Total :
-                </th>
-                <th>{{ total }}</th>
-                <th></th>
-            </tr>
-            </tfoot>
-        </table>
-    {% else %}
-            <div class="alert alert-info">
-                Your cart is empty. But it's easy to fix! Go shopping for <a href="{{ path('product_index') }}">Product</a>.
+    <div class="row mt-4">
+         <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-dark text-white d-flex">
+                    <h5>Items</h5>
+                    <div class="ml-auto">
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for item in items %}
+                        <li class="list-group-item d-flex">
+                            <div class="flex-fill mr-2">
+                                <img src="https://via.placeholder.com/200x150" width="100" alt="Product image">
+                                <h5 class="mt-0 mb-0">{{ item.product.code }}</h5>
+                            </div>
+                            <div class="flex-fill mr-2">
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between">
+                                        <h5 class="mt-0 mb-0">{{ item.product.name }}</h5>
+
+                                            <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}"
+                                               class="btn btn-sm btn-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                     fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                    <path fill-rule="evenodd"
+                                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                </svg>
+                                Delete
+                            </a>
+
+                                    </li>
+                                </ul>
+                                <small>{{ item.product.description[:50] }}...</small>
+                                <div class="form-inline mt-2">
+                                    <div class="form-group mb-0 mr-2">
+                                        <div style="display: inline-flex; gap:10px;">
+                                            {% if item.amount == 1 %}
+                                                <form class="form-inline"
+                                                      action="{{ path('cart_remove', {'productCode':item.product.code}) }}"
+                                                      method="POST">
+                                                    <input type="hidden" id="add" name="add" value="false">
+                                                    <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
+                                                </form>
+                                            {% else %}
+                                                <form class="form-inline"
+                                                      action="{{ path('cart_update', {'productCode':item.product.code}) }}"
+                                                      method="POST">
+                                                    <input type="hidden" id="add" name="add" value="false">
+                                                    <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
+                                                </form>
+                                            {% endif %}
+                                            {{ item.amount }}
+                                            <form class="form-inline"
+                                                  action="{{ path('cart_update', {'productCode':item.product.code}) }}"
+                                                  method="POST">
+                                            <input type="hidden" id="add" name="add" value="true">
+                                            <button class="btn btn-danger my-2 my-sm-0" type="submit">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex-fill mr-2 text-right">
+                                <b>Price:</b><small> per unit</small>
+                                <br><b>{{ item.product.price }}$</b>
+                            </div>
+                                                 </div>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
+         </div>
+        <div class="col-md-4">
+            <div class="card mt-4 mt-md-0">
+                <div class="card-header bg-dark text-white">
+                    <h5>Summary</h5></div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div><b>Total</b></div>
+                        <span><b>{{ total }} $</b></span>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <a href="#" class="btn btn-warning w-100">Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            Your cart is empty. But it's easy to fix! Go shopping for <a href="{{ path('product_index') }}">Product</a>.
+        </div>
     {% endif %}
 
-    <div>
         <section class="section-name bg-white padding-y">
             <div class="container">
                 <header class="section-heading">
@@ -89,6 +120,7 @@
             </p>
         </div>
     </section>
+
     <section class="section-name bg padding-y">
         <div class="container">
             <h4>How do you contact us if your order does not arrive?</h4>
@@ -97,5 +129,5 @@
                 a couple of weeks late because of a typhoon – in my opinion, this is completely understandable.</p>
         </div>
     </section>
-</div>
+
 {% endblock %}
