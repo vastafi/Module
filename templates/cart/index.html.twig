@@ -5,29 +5,50 @@
 {% block body %}
        <div class="container mt-4">
     <h1>Your Cart</h1>
-
+    {% include '/parts/flash.html.twig' %}
     {% if items | length > 0 %}
         <table class="table">
             <thead>
             <tr>
-                <th>Id</th>
-                <th>Title</th>
+                <th>Code</th>
+                <th>Name</th>
                 <th>Price</th>
-                <th>Quantity</th>
+                <th>Amount</th>
                 <th>Total</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
             {% for item in items %}
                 <tr>
                     <td>{{ item.product.code }}</td>
-                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.product.name }}</td>
                     <td>{{ item.product.price }}</td>
-                    <td>{{ item.amount }}</td>
+                    <td style="display: inline-flex; gap:10px;">
+                        {% if item.amount == 1 %}
+                        <form class="form-inline"
+                              action="{{ path('cart_remove', {'productCode':item.product.code}) }}" method="POST">
+                            <input type="hidden" id="add" name="add" value="false">
+                            <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
+                        </form>
+                        {% else %}
+                        <form class="form-inline"
+                              action="{{ path('cart_update', {'productCode':item.product.code}) }}" method="POST">
+                            <input type="hidden" id="add" name="add" value="false">
+                            <button class="btn btn-danger my-2 my-sm-0" type="submit">-</button>
+                        </form>
+                        {% endif %}
+                        {{ item.amount }}
+                        <form class="form-inline"
+                              action="{{ path('cart_update', {'productCode':item.product.code}) }}" method="POST">
+                            <input type="hidden" id="add" name="add" value="true">
+                            <button class="btn btn-danger my-2 my-sm-0" type="submit">+</button>
+                        </form>
+                    </td>
                     <td>{{ item.product.price * item.amount }}</td>
                     <td>
                         <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}" class="btn btn-sm btn-danger">
-                            <i class="fas fa-trash"></i>
+                            <i class="fas fa-trash"></i>Delete
                         </a>
                     </td>
                 </tr>
