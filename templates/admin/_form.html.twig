@@ -1,8 +1,7 @@
 {{ form_start(form) }}
     {% if "edit" in app.request.requestUri %}
-        <div style="display: none">
-        {{ form_widget(form.code, {'value' : app.request.get('productCode')}) }}
-        </div>
+        <label>Code</label>
+        {{ form_widget(form.code, {'value' : app.request.get('productCode'), 'attr':{'readonly':'readonly'}}) }}
     {% endif %}
     {{ form_widget(form) }}
 <div class="mt-3">
