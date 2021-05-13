@@ -7,7 +7,6 @@ use App\Form\ProductType;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,23 +30,23 @@ class ProductController extends AbstractController
         $limit = $request->query->get('limit', 8);
         $page = $request->query->get('page', 1);
         if($limit > 100){
-            return new ApiErrorResponse('400', 'Search limit cannot exceed 100 items.');
+            return new ApiErrorResponse('1226', 'Search limit cannot exceed 100 items.');
         }
         if($limit <= 0){
-            return new ApiErrorResponse('400', 'Search limit cannot be negative or zero.');
+            return new ApiErrorResponse('1624', 'Search limit cannot be negative or zero.');
         }
         if($page <= 0){
-            return new ApiErrorResponse('400', 'Page cannot be negative or zero.');
+            return new ApiErrorResponse('1625', 'Page cannot be negative or zero.');
         }
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $totalPages = $repo->countPages($category, $name, $limit);
         if($page > $totalPages){
-            return new ApiErrorResponse('400', 'This page number does not exist.');
+            return new ApiErrorResponse('1630', 'This page number does not exist.');
         }
-        return $this->json($repo->filter($category,
+        return $this->json(["items"=>$repo->filter($category,
             $name,
             $limit,
-            $page));
+            $page), "pagination"=>["limit"=>$limit, "page"=>$page]]);
     }
 
     /**

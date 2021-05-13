@@ -1,13 +1,12 @@
 <section class="header-main">
     <div class="container">
         <div class="row d-flex justify-content-center align-items-center">
-
-            {% if "/admin/" in app.request.requestUri  %}
+            {% if "/admin/" in app.request.requestUri %}
                 <form class="form-inline my-2 my-lg-0"
                       action="{{ path('adminpr', {name:'name', category:'category'}) }}" method="GET">
                     <label>
                         <input class="form-control mr-sm-2" type="search" placeholder="Search products"
-                               aria-label="Search" name="name">
+                               aria-label="Search" name="name" value="{{ app.request.query.get('name') }}">
                         {% if app.request.query.get('category') %}
                             <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
                         {% endif %}
@@ -16,10 +15,10 @@
                 </form>
             {% else %}
                 <form class="form-inline my-2 my-lg-0"
-                      action="{{ path('product_index', {name:'name', category:'category'}) }}" method="GET">
+                      action="{{ path('product_index') }}" method="GET">
                     <label>
                         <input class="form-control mr-sm-2" type="search" placeholder="Search products"
-                               aria-label="Search" name="name">
+                               aria-label="Search" name="name" value="{{ app.request.query.get('name') }}">
                         {% if app.request.query.get('category') %}
                             <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
                         {% endif %}
@@ -27,6 +26,20 @@
                     <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
                 </form>
             {% endif %}
-        </div> <!-- row.// -->
-    </div> <!-- container.// -->
-</section> <!-- header-main .// -->
+            <form class="form-inline"
+                  action="{{ path('product_index') }}" method="GET">
+                <label>
+                    <input class="form-control my-2 my-sm-0" style="width: 65px" placeholder="Limit"
+                           aria-label="limit" name="limit" value="{{ app.request.query.get('limit') }}">
+                    {% if app.request.query.get('category') %}
+                        <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
+                    {% endif %}
+                    {% if app.request.query.get('name') %}
+                        <input type="hidden" name="name" value="{{ app.request.query.get('name') }}">
+                    {% endif %}
+                </label>
+                <button class="btn btn-danger my-2 my-sm-0" type="submit">Limit</button>
+            </form>
+        </div>
+    </div>
+</section>
