@@ -18,14 +18,12 @@ class ProductType extends AbstractType
             ->add('code')
             ->add('name')
             ->add('category', ChoiceType::class, [
-                'choices' => ['Telefoane' => 'Telefoane', 'Laptopuri' => 'Laptopuri', 'Imprimante' => 'Imprimante']
+                'choices' => ['Telephones' => 'Telephones', 'Notebooks' => 'Notebooks', 'Printers' => 'Printers']
             ])
             ->add('price')
             ->add('description')
             ->add('productImage')
-            //->add('createdAt')
-            //->add('updatedAt')
-        ;
+                  ;
     }
 
     public function configureOptions(OptionsResolver $resolver)
