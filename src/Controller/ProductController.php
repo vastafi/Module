@@ -168,6 +168,17 @@ class ProductController extends AbstractController
         }
     }
     /**
+
+     * @Route("/contacts", name="contacts")
+     * @return Response
+     */
+    public function contacts(): Response
+    {
+
+        return $this->render('contacts.html.twig');
+
+    }
+ /**
      * @Route("/about", name="about")
      * @return Response
      */
@@ -175,6 +186,7 @@ class ProductController extends AbstractController
     {
 
         return $this->render('about.html.twig');
+
 
     }
 }
