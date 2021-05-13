@@ -42,7 +42,13 @@
                         </svg>
                         Sign In</a>
                 {% endif %}
+
+                {% if "user" not in app.request.requestUri  %}
+                     {% include 'parts/search-ribbon.html.twig' %}
+                {% endif %}
+
                 {% include 'parts/search-ribbon.html.twig' %}
+
             </div>
         </nav>
     </div>
