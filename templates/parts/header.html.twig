@@ -22,7 +22,7 @@
                         <a class="nav-link" href="{{ path('contacts') }}">Contact <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
+                        <a class="nav-link" href="{{ path('about') }}">About</a>
                     </li>
                 </ul>
                 {% if app.user %}
@@ -42,7 +42,9 @@
                         </svg>
                         Sign In</a>
                 {% endif %}
-                {% include 'parts/search-ribbon.html.twig' %}
+                {% if "user" not in app.request.requestUri  %}
+                     {% include 'parts/search-ribbon.html.twig' %}
+                {% endif %}
             </div>
         </nav>
     </div>
