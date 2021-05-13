@@ -55,4 +55,30 @@ class Cart
 
         return $this;
     }
+
+    public function addItem(string $code, int $amount)
+    {
+        $item = ["code"=>$code, "amount"=>$amount];
+        $items = $this->getItems();
+        $position = array_search($code, array_map(function($item){
+            return $item['code'];
+        }, $items));
+        if($position)
+        {
+            $items[$position]['amount'] += $amount;
+        }
+        else{
+            array_push($items, $item);
+        }
+        $this->setItems($items);
+    }
+
+    public function removeItem(string $code)
+    {
+        $items = $this->getItems();
+        unset($items[array_search($code, array_map(function($item) {
+                return $item['code'];
+            }, $items))]);
+        $this->setItems($items);
+    }
 }

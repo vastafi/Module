@@ -4,7 +4,9 @@
 namespace App\Controller\Api;
 
 use App\Entity\Cart;
+use App\Entity\Product;
 use App\Repository\CartRepository;
+use App\Response\ApiErrorResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,19 +39,21 @@ class CartController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $product = $productRepository->findOneBy(['code'=>$productCode]);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $amount = $request->query->get('amount', 1);
+        if($product->getAvailableAmount() < $amount){
+            return new ApiErrorResponse("1204", "We don't have so many products");
+        }
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $item = ["code"=>$productCode, "amount"=>$amount];
-            $items = $cart->getItems();
-            array_push($items, $item);
-            $cart->setItems($items);
+            $cart->addItem($productCode, $amount);
             $cart->setUser($user);
         }
-        elseif (!$cart)
+        else
         {
             $cart = new Cart();
             $cart->setItems([["code"=>$productCode, "amount"=>$amount]]);
@@ -75,11 +79,10 @@ class CartController extends AbstractController
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $items = $cart->getItems();
-            unset($items[array_search($productCode, array_map(function($item) {
-                return $item['code'];
-            }, $items))]);
-            $cart->setItems($items);
+            $cart->removeItem($productCode);
+        }
+        else {
+            return new Response(null, 404);
         }
         $em->persist($cart);
         $em->flush();
