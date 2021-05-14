@@ -29,6 +29,11 @@ class User implements UserInterface
      */
     private $roles = [];
 
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER'];
+    }
+
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
