@@ -37,10 +37,20 @@
                 <div class="navbar-nav">
                     {% if "/admin/" in app.request.requestUri %}
                         <a class="nav-link" href="{{ path('product_index') }}">HOME</a>
-                        <a class="nav-link" href="{{ path('user_index') }}">Users</a>
-                        <a class="nav-link" href="{{ path('adminpr') }}">Products</a>
+                        {% if "/admin/user/" == app.request.requestUri %}
+                            <a class="nav-link active" href="{{ path('user_index') }}">Users</a>
+                        {% else %}
+                            <a class="nav-link" href="{{ path('user_index') }}">Users</a>
+                        {% endif %}
+
+                        {% if "/admin/products" == app.request.requestUri %}
+                            <a class="nav-link active" href="{{ path('adminpr') }}">Products</a>
+                        {% else %}
+                            <a class="nav-link" href="{{ path('adminpr') }}">Products</a>
+                        {% endif %}
 
                     {% endif %}
+
                     {% if is_granted('ROLE_ADMIN') and not ("/admin/" in app.request.requestUri) %}
                         <a class="nav-link" href="{{ path('adminpr') }}">ADMIN PAGE</a>
                     {% endif %}
