@@ -50,7 +50,7 @@
                                         <br><b>Category: </b>{{ product.category }}
                                     </dl>
                                     <hr>
-                                    <a href="#" class="btn  btn-warning"> <i class="fa fa-envelope"></i> Add to
+                                    <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
                                         Cart
                                     </a>
                                     <!-- short-info-wrap .// -->
@@ -63,6 +63,17 @@
             </div> <!-- row.// -->
         </div><!-- container // -->
     </section>
+    <script>
+        $(document).on('click', '#add_cart', function(e){
+            e.preventDefault();
+            fetch("{{ path("cart_add", {'productCode':product.code})}}", {method: 'POST'})
+                .then(function(res){ console.log(res.status);
+                })
+                .catch(function (){
+                    console.log("You died.")
+                });
+        })
+    </script>
 {% endblock %}
 
 {% block right_sidebar %}
