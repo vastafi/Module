@@ -67,7 +67,7 @@ class ProductController extends AbstractController
     /**
      * @Route ("/", name="create_prod_api",methods={"POST"})
      * @param Request $request
-     * @return Response
+     * @return JsonResponse|Response
      * @throws \Exception
      */
     public function createProduct(Request $request): Response
@@ -77,36 +77,56 @@ class ProductController extends AbstractController
         $content = $request->toArray();
 
         $repo = $this->getDoctrine()->getRepository(Product::class);
-
         $product = new Product();
+
+
+        if ($repo->count(['code'=> $product->getCode()]) > 0){
+            return new ApiErrorResponse(400,'A product with this code exists already!');
+        }
+        elseif(isset($content['code'])==false){
+            return new ApiErrorResponse(400,'Code cant be null!');
+        }
+        elseif (strlen($content['code']) == 0 ){
+            return new ApiErrorResponse(400,'Code cant be blank!');
+        }
+        elseif(isset($content['name'])==false){
+            return new ApiErrorResponse(400,'Name cant be null!');
+        }
+        elseif (strlen($content['name']) == 0){
+            return new ApiErrorResponse(400,'Name cant be blank!');
+        }
+        elseif(isset($content['price'])==false){
+            return new ApiErrorResponse(400,'Price cant be null!');
+        }
+        elseif (strlen($content['price']) == 0){
+            return new ApiErrorResponse(400,'Price cant be blank!');
+        }
+        elseif(isset($content['category'])==false){
+            return new ApiErrorResponse(400,'Category cant be null!');
+        }
+        elseif (strlen($content['category']) == 0){
+            return new ApiErrorResponse(400,'Category cant be blank!');
+        }
+        elseif(isset($content['availableAmount'])==false){
+            return new ApiErrorResponse(400,'Available amount cant be null!');
+        }
+        elseif (strlen($content['availableAmount']) == 0){
+            return new ApiErrorResponse(400,'Available amount cant be blank!');
+        }
+
         $product->setCode($content['code']);
         $product->setName($content['name']);
         $product->setCategory($content['category']);
         $product->setPrice($content['price']);
         $product->setDescription($content['description']);
         $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
-
-        if ($repo->count(['code'=> $product->getCode()]) > 0){
-            return new Response('A product with this code exists already!',400);
-        }
-        elseif (strlen($content['code']) == 0){
-            return new Response('Code cant be blank!',400);
-        }
-        elseif (strlen($content['name']) == 0){
-            return new Response('Name cant be blank!',400);
-        }
-        elseif (strlen($content['price']) == 0){
-            return new Response('Price cant be blank!',400);
-        }
-        elseif (strlen($content['category']) == 0){
-            return new Response('Category cant be blank!',400);
-        }
+        $product->setAvailableAmount($content['availableAmount']);
 
         $em->persist($product);
 
         $em->flush();
 
-        return new Response('Product created!');
+        return new Response(null,201);
     }
 
     /**
