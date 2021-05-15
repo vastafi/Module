@@ -23,7 +23,7 @@ class CartController extends AbstractController
      * @param Request $request
      * @return JsonResponse|Response
      */
-    public function index(Request $request, CartRepository $cartRepository)
+    public function index(CartRepository $cartRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->json($cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems());
@@ -41,6 +41,10 @@ class CartController extends AbstractController
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
         $productRepository = $this->getDoctrine()->getRepository(Product::class);
         $product = $productRepository->findOneBy(['code'=>$productCode]);
+        if(!$product)
+        {
+            return new Response(null, 404);
+        }
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $amount = $request->query->get('amount', 1);
         if($product->getAvailableAmount() < $amount){
@@ -86,6 +90,43 @@ class CartController extends AbstractController
         }
         $em->persist($cart);
         $em->flush();
+        return new Response(null, 200);
+    }
+
+    /**
+     * @Route("/update/{productCode}", name="cart_update", methods={"PATCH"})
+     * @param Request $request
+     * @param string $productCode
+     * @return Response
+     */
+    public function update(Request $request, string $productCode)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $product = $productRepository->findOneBy(['code'=>$productCode]);
+        if(!$product)
+        {
+            return new Response(null, 404);
+        }
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $amount = $request->query->get('amount');
+        if($product->getAvailableAmount() < $amount){
+            return new ApiErrorResponse("1204", "We don't have so many products");
+        }
+        $user = $this->getUser();
+        $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
+        if($cart)
+        {
+            $cart->setAmount($productCode, $amount);
+            $cart->setUser($user);
+        }
+        else{
+            return new Response(null, 404);
+        }
+        $em->persist($cart);
+        $em->flush();
+        var_dump($cart);
         return new Response(null, 200);
     }
 }

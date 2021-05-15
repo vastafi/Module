@@ -81,4 +81,17 @@ class Cart
             }, $items))]);
         $this->setItems($items);
     }
+
+    public function setAmount(string $code, int $amount)
+    {
+        $items = $this->getItems();
+        $position = array_search($code, array_map(function($item){
+            return $item['code'];
+        }, $items));
+        if($position)
+        {
+            $items[$position]['amount'] = $amount;
+        }
+        $this->setItems($items);
+    }
 }

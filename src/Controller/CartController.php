@@ -20,11 +20,10 @@ class CartController extends AbstractController
 {
     /**
      * @Route("/", name="cart", methods={"GET"})
-     * @param Request $request
      * @param CartRepository $cartRepository
      * @return JsonResponse|Response
      */
-    public function index(Request $request, CartRepository $cartRepository, ProductRepository $productRepository)
+    public function index(CartRepository $cartRepository, ProductRepository $productRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $items = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems();
@@ -44,7 +43,7 @@ class CartController extends AbstractController
             $total += $couple['product']->getPrice() * $couple['amount'];
         }
 
-        return $this->render('cart/fragment.html.twig', [
+        return $this->render('cart/cart.html.twig', [
             "items" => $cartWithData,
             "total" => $total
         ]);
