@@ -20,7 +20,19 @@
                     </tr>
                     <tr>
                         <th>Roles</th>
-                        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+                        <td>
+                            {% for role in user.roles %}
+                            {{ role | replace ({'ROLE_' : ' '}) }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Is verified</th>
+                        {% if user.isVerified == false %}
+                        <td> No </td>
+                        {% else %}
+                        <td> Yes </td>
+                        {% endif %}
                     </tr>
 
                     </tbody>
