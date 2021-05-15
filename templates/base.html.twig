@@ -37,6 +37,21 @@
 <body>
 {% include 'parts/header.html.twig' %}
 
+{# flash for verification successful #}
+{% for message in app.flashes('verified') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
+{# flash for the sending of the verification link #}
+{% for message in app.flashes('sent') %}
+    <div class="alert alert-warning">
+        {{ message }}
+    </div>
+{% endfor %}
+
+
 
 <div class="container-fluid mb-5">
     {% block body %}
