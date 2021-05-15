@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Order;
 use App\Entity\User;
+use App\Form\OrderType;
 use App\Form\UserType;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
@@ -145,4 +147,5 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('user_index');
     }
+
 }

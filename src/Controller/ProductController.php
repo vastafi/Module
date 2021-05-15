@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Cart;
+use App\Entity\Order;
 use App\Entity\Product;
+use App\Form\CheckoutType;
+use App\Form\OrderType;
 use App\Form\ProductType;
+use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/products")
@@ -178,7 +183,7 @@ class ProductController extends AbstractController
         return $this->render('contacts.html.twig');
 
     }
- /**
+     /**
      * @Route("/about", name="about")
      * @return Response
      */
@@ -188,5 +193,34 @@ class ProductController extends AbstractController
         return $this->render('about.html.twig');
 
 
+    }
+
+    /**
+     * @Route("/checkout", name="checkout", methods={"GET","POST"})
+     */
+    public function checkoutAction(Request $request):Response
+    {
+        $order = new Order();
+        $order->setCode(mt_rand(100000, 999999));
+        $order->setStatus('New');
+//        $cartRepo = $this->getDoctrine()->getRepository(Cart::class);
+//
+//        $cart=$cartRepo->find(1);
+//        $order->setItems($cart->getItems());
+        $form = $this->createForm(CheckoutType::class, $order);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($order);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('product_index');
+        }
+
+        return $this->render('order/checkout.html.twig', [
+            'order' => $order,
+            'form' => $form->createView(),
+        ]);
     }
 }

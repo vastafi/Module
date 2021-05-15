@@ -37,6 +37,12 @@
 <body>
 {% include 'parts/header.html.twig' %}
 
+{#{% for message in app.flashes('success') %}#}
+{#    <div class="alert alert-success">#}
+{#        {{ message }}#}
+{#    </div>#}
+{#{% endfor %}#}
+{% include 'parts/flash.html.twig' %}
 
 <div class="container-fluid mb-5">
     {% block body %}
