@@ -34,28 +34,49 @@
                     </li>
 
                 </ul>
-                <div class="navbar-nav">
+
+                <div class="navbar-nav ">
+                    <ul class="navbar-nav mr-auto">
+
                     {% if "/admin/" in app.request.requestUri %}
+                        <li class="nav-item">
                         <a class="nav-link" href="{{ path('product_index') }}">HOME</a>
+                        </li>
                         {% if "/admin/user/" == app.request.requestUri %}
+                        <li class="nav-item">
                             <a class="nav-link active" href="{{ path('user_index') }}">Users</a>
+                        </li>
                         {% else %}
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ path('user_index') }}">Users</a>
+                        </li>
                         {% endif %}
 
                         {% if "/admin/products" == app.request.requestUri %}
+                        <li class="nav-item">
                             <a class="nav-link active" href="{{ path('adminpr') }}">Products</a>
+                        </li>
                         {% else %}
+                        <li class="nav-item">
                             <a class="nav-link" href="{{ path('adminpr') }}">Products</a>
+                        </li>
                         {% endif %}
 
                     {% endif %}
 
                     {% if is_granted('ROLE_ADMIN') and not ("/admin/" in app.request.requestUri) %}
+                        <li class="nav-item">
                         <a class="nav-link" href="{{ path('adminpr') }}">ADMIN PAGE</a>
+                        </li>
                     {% endif %}
 
+                    {% if "user" not in app.request.requestUri  %}
+                        <li class="nav-item">
+                        {% include 'parts/search-ribbon.html.twig' %}
+                        </li>
+                    {% endif %}
                     {% if app.user %}
+                        <li class="nav-item">
                         <a href="{{ path('app_logout') }}" class="btn btn-md btn-secondary" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                                  class="bi bi-door-closed align-self-center" viewBox="0 0 16 16">
@@ -63,7 +84,9 @@
                                 <path d="M9 9a1 1 0 1 0 2 0 1 1 0 0 0-2 0z"/>
                             </svg>
                             Log Out</a>
+                        </li>
                     {% else %}
+                        <li class="nav-item">
                         <a href="{{ path('app_login') }}" class="btn btn-md btn-secondary" type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
                                  class="bi bi-door-open" viewBox="0 0 16 16">
@@ -71,21 +94,12 @@
                                 <path d="M10.828.122A.5.5 0 0 1 11 .5V1h.5A1.5 1.5 0 0 1 13 2.5V15h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V1.5a.5.5 0 0 1 .43-.495l7-1a.5.5 0 0 1 .398.117zM11.5 2H11v13h1V2.5a.5.5 0 0 0-.5-.5zM4 1.934V15h6V1.077l-6 .857z"/>
                             </svg>
                             Sign In</a>
+                        </li>
                     {% endif %}
+                    </ul>
                 </div>
-                {% if "user" not in app.request.requestUri  %}
-                    {% include 'parts/search-ribbon.html.twig' %}
-                {% endif %}
-                <a href="{{ path('cart') }}" class="btn btn-lg btn-secondary" type="button">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                         class="bi bi-cart" viewBox="0 0 16 16">
-                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                    </svg>
-                    Cart
-                </a>
-                {% include 'parts/search-ribbon.html.twig' %}
+
             </div>
         </nav>
     </div>
 </header>
-<script></script>
