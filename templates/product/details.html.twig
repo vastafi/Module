@@ -65,7 +65,9 @@
         </div><!-- container // -->
     </section>
     <script>
+        var click = 0;
         $(document).on('click', '#add_cart', function(e){
+            click += 1;
             e.preventDefault();
             fetch("{{ path("cart_add", {'productCode':product.code})}}", {method: 'POST'})
                 .then(function(res){ console.log(res.status);
@@ -74,7 +76,7 @@
                 }
                 else if(res.status === 200){
                     alert('Product added to cart');
-                    $('#avail').text({{ product.availableAmount }} - 1);
+                    $('#avail').text({{ product.availableAmount }} - click);
                 }
                 })
                 .catch(function (){
