@@ -21,6 +21,7 @@ class CartController extends AbstractController
     /**
      * @Route("/", name="cart", methods={"GET"})
      * @param CartRepository $cartRepository
+     * @param ProductRepository $productRepository
      * @return JsonResponse|Response
      */
     public function index(CartRepository $cartRepository, ProductRepository $productRepository)

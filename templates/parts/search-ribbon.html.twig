@@ -26,6 +26,24 @@
                     <button class="btn btn-danger my-2 my-sm-0" type="submit">Search</button>
                 </form>
             {% endif %}
+
+
+            {% if "/admin/" in app.request.requestUri %}
+            <form class="form-inline"
+                  action="{{ path('adminpr') }}" method="GET">
+                <label>
+                    <input class="form-control mr-sm-2 ml-sm-2" style="width: 65px" placeholder="Limit"
+                           aria-label="limit" name="limit" value="{{ app.request.query.get('limit') }}">
+                    {% if app.request.query.get('category') %}
+                        <input type="hidden" name="category" value="{{ app.request.query.get('category') }}">
+                    {% endif %}
+                    {% if app.request.query.get('name') %}
+                        <input type="hidden" name="name" value="{{ app.request.query.get('name') }}">
+                    {% endif %}
+                </label>
+                <button class="btn btn-danger mr-sm-2" type="submit">Limit</button>
+            </form>
+            {% else %}
             <form class="form-inline"
                   action="{{ path('product_index') }}" method="GET">
                 <label>
@@ -40,5 +58,6 @@
                 </label>
                 <button class="btn btn-danger mr-sm-2" type="submit">Limit</button>
             </form>
+            {% endif %}
         </div>
     </div>
