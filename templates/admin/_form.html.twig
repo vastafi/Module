@@ -1,4 +1,8 @@
 {{ form_start(form) }}
+    {% if "edit" in app.request.requestUri %}
+        <label>Code</label>
+        {{ form_widget(form.code, {'value' : app.request.get('productCode'), 'attr':{'readonly':'readonly'}}) }}
+    {% endif %}
     {{ form_widget(form) }}
 <div class="mt-3">
     <button type="submit" class="btn btn-success">{{ button_label|default('Save') }}</button>

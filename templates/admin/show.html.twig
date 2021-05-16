@@ -52,7 +52,7 @@
                     </table>
 
                     <div class = "row">
-                    <a class="btn btn-sm btn-success" href="{{ path('edit', {'id': product.id}) }}">Edit</a>
+                    <a class="btn btn-sm btn-success" href="{{ path('edit', {'productCode': product.code}) }}">Edit</a>
 
                     {{ include('admin/_delete_form.html.twig') }}
                     </div>

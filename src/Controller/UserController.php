@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -18,19 +20,55 @@ class UserController extends AbstractController
 {
     /**
      * @Route("/", name="user_index", methods={"GET"})
+     * @param Request $request
      * @param UserRepository $userRepository
      * @return Response
      */
-    public function index(UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository): Response
     {
+        $email = $request->query->get('email');
+        $limit = $request->query->get('limit', 8);
+        $page = $request->query->get('page', 1);
+
+        $pageNum = $userRepository->countPages( $email,$limit);
+        if($page <= 0){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('user_index');
+        }
+        if($limit <= 1){
+            $this->addFlash('warning', "Limit can not be negative or zero");
+            return $this->redirectToRoute('user_index');
+        }
+        $users = $userRepository->filter( $email, $limit, $page);
+        if(!($users) && in_array($page, range(1, $pageNum))){
+            throw new BadRequestHttpException("400");
+        }
+        if($page > $pageNum){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('user_index');
+        }
+        if ($limit > 100) {
+            $this->addFlash('warning', "Limit exceeded");
+            return $this->redirectToRoute('user_index');
+        }
+
         return $this->render('user/index.html.twig', [
-            'users' => $userRepository->findAll(),
+            'users' => $users,
+
+            'currentValues' => [
+                'limit' => $limit,
+                'page' => $page,
+                'email' => $email,
+            ],
+
+            'totalPages' => $pageNum
         ]);
     }
 
     /**
      * @Route("/new", name="user_new", methods={"GET","POST"})
      * @param Request $request
+     * @param UserPasswordEncoderInterface $encoder
      * @return Response
      */
     public function new(Request $request, UserPasswordEncoderInterface $encoder): Response
@@ -75,11 +113,10 @@ class UserController extends AbstractController
      */
     public function edit(Request $request, User $user, UserPasswordEncoderInterface $encoder): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserEditType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword($encoder->encodePassword($user, $form->get('password')->getData()));
 
             $this->getDoctrine()->getManager()->flush();
 

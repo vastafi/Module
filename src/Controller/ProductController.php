@@ -167,5 +167,26 @@ class ProductController extends AbstractController
             return $this->render('product/details.html.twig', ['product' => $product]);
         }
     }
+    /**
 
+     * @Route("/contacts", name="contacts")
+     * @return Response
+     */
+    public function contacts(): Response
+    {
+
+        return $this->render('contacts.html.twig');
+
+    }
+ /**
+     * @Route("/about", name="about")
+     * @return Response
+     */
+    public function about(): Response
+    {
+
+        return $this->render('about.html.twig');
+
+
+    }
 }

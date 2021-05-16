@@ -6,6 +6,7 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -43,34 +44,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function filter(?string $email, int $limit, int $page): array
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
+        return $this
+            ->getFiltrationQuery($email)
+            ->setFirstResult($limit * ($page - 1))
+            ->setMaxResults($limit)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?User
+    public function countPages( ?string $email, int $limit): int
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
+        $amountOfUser = $this
+            ->getFiltrationQuery($email)
+            ->select("COUNT(u)")
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getSingleScalarResult();
+
+        return ceil($amountOfUser / $limit);
     }
-    */
+
+    public function countUser($email):int {
+        $query = $this->createQueryBuilder('u');
+        if($email){
+            $query = $query->andWhere('LOWER(u.email) LIKE :email')
+                ->setParameter('email', strtolower($email.'%'));
+        }
+
+        $query->add('select', $query->expr()->count('u'));
+        $q = $query->getQuery();
+        return $q->getSingleScalarResult();
+    }
+
+    /**
+     * @param string|null $email
+        * @return QueryBuilder
+     */
+    protected function getFiltrationQuery( ?string $email): QueryBuilder
+    {
+        $query = $this->createQueryBuilder('u');
 
 
+        if ($email) {
+            $query->andWhere('LOWER(u.email) LIKE :email')
+                ->setParameter('email',  strtolower($email . "%"));
+        }
+
+        $query->orderBy('u.id', 'ASC');
+        return $query;
+    }
 }
