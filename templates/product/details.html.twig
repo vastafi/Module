@@ -48,7 +48,7 @@
                                         <dt>Description:</dt>
                                         <dd><p>{{ product.description }} </p></dd>
                                         <br><b>Category: </b>{{ product.category }}
-                                        <br><b>Available amount: </b>{{ product.availableAmount }}
+                                        <br><b>Available amount: </b><p id="avail">{{ product.availableAmount }}</p>
                                     </dl>
                                     <hr>
                                     <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
@@ -69,6 +69,13 @@
             e.preventDefault();
             fetch("{{ path("cart_add", {'productCode':product.code})}}", {method: 'POST'})
                 .then(function(res){ console.log(res.status);
+                if(res.status === 400){
+                    alert('We dont have so many products');
+                }
+                else if(res.status === 200){
+                    alert('Product added to cart');
+                    $('#avail').text({{ product.availableAmount }} - 1);
+                }
                 })
                 .catch(function (){
                     console.log("You died.")

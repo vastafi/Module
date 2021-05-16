@@ -26,27 +26,34 @@ class CartController extends AbstractController
     public function index(CartRepository $cartRepository, ProductRepository $productRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $items = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems();
-        $cartWithData = [];
-        foreach ($items as $id=>$item){
-            $product = $productRepository->findOneBy(["code"=>$item['code']]);
-            $cartWithData[] = [
-                'product' => $product,
-                'amount' => $item['amount']
-            ];
-            $carts[$item['code']] = $item['amount'];
+        $cart = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()]);
+        if($cart){
+            $items = $cart->getItems();
+            $cartWithData = [];
+            foreach ($items as $id=>$item){
+                $product = $productRepository->findOneBy(["code"=>$item['code']]);
+                $cartWithData[] = [
+                    'product' => $product,
+                    'amount' => $item['amount']
+                ];
+                $carts[$item['code']] = $item['amount'];
 
+            }
+            $total = 0;
+
+            foreach ($cartWithData as $couple) {
+                $total += $couple['product']->getPrice() * $couple['amount'];
+            }
+            return $this->render('cart/cart.html.twig', [
+                "items" => $cartWithData,
+                "total" => $total
+            ]);
         }
-        $total = 0;
-
-        foreach ($cartWithData as $couple) {
-            $total += $couple['product']->getPrice() * $couple['amount'];
+        else{
+            $items = null;
+            return $this->render('cart/cart.html.twig',[
+                "items"=>$items
+            ]);
         }
-
-        return $this->render('cart/cart.html.twig', [
-            "items" => $cartWithData,
-            "total" => $total
-        ]);
-
     }
 }
