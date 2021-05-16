@@ -1,4 +1,4 @@
-{% for label, messages in app.flashes(['warning', 'error']) %}
+{% for label, messages in app.flashes(['warning', 'error', 'success']) %}
     {% for message in messages %}
         <div class="alert alert-{{ label }}">
             {{ message }}

@@ -50,6 +50,7 @@ class CartController extends AbstractController
         if($product->getAvailableAmount() < $amount){
             return new ApiErrorResponse("1204", "We don't have so many products");
         }
+        $product->setAvailableAmount($product->getAvailableAmount() - $amount);
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
@@ -64,6 +65,7 @@ class CartController extends AbstractController
             $cart->setUser($user);
         }
         $em->persist($cart);
+        $em->persist($product);
         $em->flush();
         return new Response(null, 200);
 
@@ -78,17 +80,23 @@ class CartController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $product = $productRepository->findOneBy(['code'=>$productCode]);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
+            $product->setAvailableAmount($product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
+                    return $item['code'];
+                }, $cart->getItems()))]['amount']);
             $cart->removeItem($productCode);
         }
         else {
             return new Response(null, 404);
         }
         $em->persist($cart);
+        $em->persist($product);
         $em->flush();
         return new Response(null, 200);
     }
