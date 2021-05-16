@@ -77,13 +77,8 @@ class ProductController extends AbstractController
         $content = $request->toArray();
 
         $repo = $this->getDoctrine()->getRepository(Product::class);
-        $product = new Product();
 
-
-        if ($repo->count(['code'=> $product->getCode()]) > 0){
-            return new ApiErrorResponse(400,'A product with this code exists already!');
-        }
-        elseif(isset($content['code'])==false){
+        if(isset($content['code']) !== true ){
             return new ApiErrorResponse(400,'Code cant be null!');
         }
         elseif (strlen($content['code']) == 0 ){
@@ -114,6 +109,7 @@ class ProductController extends AbstractController
             return new ApiErrorResponse(400,'Available amount cant be blank!');
         }
 
+        $product = new Product();
         $product->setCode($content['code']);
         $product->setName($content['name']);
         $product->setCategory($content['category']);
@@ -121,6 +117,10 @@ class ProductController extends AbstractController
         $product->setDescription($content['description']);
         $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
         $product->setAvailableAmount($content['availableAmount']);
+
+        if ($repo->count(['code'=> $content['code']]) > 0){
+            return new ApiErrorResponse(400,'A product with this code exists already!');
+        }
 
         $em->persist($product);
 
