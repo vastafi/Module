@@ -35,15 +35,15 @@ class ProductController extends AbstractController
         $page = $request->query->get('page', 1);
 
 
-        $pageNum = $productRepository->countPages($category, $name, $limit);
         if($page <= 0){
             $this->addFlash('warning', "Invalid page number");
             return $this->redirectToRoute('product_index');
         }
         if($limit <= 1){
-            $this->addFlash('warning', "Limit can not be negative or zero");
+            $this->addFlash('warning', "Limit can not be negative, zero or one");
             return $this->redirectToRoute('product_index');
         }
+        $pageNum = $productRepository->countPages($category, $name, $limit);
         $products = $productRepository->filter($category, $name, $limit, $page);
         if(!($products) && in_array($page, range(1, $pageNum))){
             throw new BadRequestHttpException("400");

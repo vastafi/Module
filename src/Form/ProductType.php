@@ -16,6 +16,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Positive;
+use Symfony\Component\Validator\Constraints\PositiveOrZero;
 
 class ProductType extends AbstractType
 {
@@ -34,12 +35,19 @@ class ProductType extends AbstractType
                 'scale' => 2,
                 'constraints' => [new Positive()],
             ])
-            ->add('description',TextareaType::class)
+            ->add('description',TextareaType::class,[
+                'constraints' => [
+                    new Length([
+                        'max' => 50,
+                        'maxMessage' => 'Description can have maximum 50 characters',
+                    ]),
+                ],
+            ])
             ->add('productImage')
             ->add('availableAmount', IntegerType::class, [
                 'required' => false,
                 'empty_data' => 0,
-                'constraints' => [new Positive()],
+                'constraints' => [new PositiveOrZero()],
             ]);
     }
 
