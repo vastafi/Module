@@ -48,11 +48,18 @@
                                         <dt>Description:</dt>
                                         <dd><p>{{ product.description }} </p></dd>
                                         <br><b>Category: </b>{{ product.category }}
+                                        <br><b>Available amount: </b><p id="avail">{{ product.availableAmount }}</p>
                                     </dl>
                                     <hr>
-                                    <a href="#" class="btn  btn-warning"> <i class="fa fa-envelope"></i> Add to
+                                    {% if app.user %}
+                                    <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
                                         Cart
                                     </a>
+                                    {% else %}
+                                    <a href="{{ path('app_login', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
+                                        Cart
+                                    </a>
+                                    {% endif %}
                                     <!-- short-info-wrap .// -->
                                 </article> <!-- card-body.// -->
                             </aside> <!-- col.// -->
@@ -63,6 +70,28 @@
             </div> <!-- row.// -->
         </div><!-- container // -->
     </section>
+    {% if app.user %}
+    <script>
+        var click = 0;
+        $(document).on('click', '#add_cart', function(e){
+            click += 1;
+            e.preventDefault();
+            fetch("{{ path("cart_add", {'productCode':product.code})}}", {method: 'POST'})
+                .then(function(res){ console.log(res.status);
+                if(res.status === 400){
+                    alert('We dont have so many products');
+                }
+                else if(res.status === 200){
+                    alert('Product added to cart');
+                    $('#avail').text({{ product.availableAmount }} - click);
+                }
+                })
+                .catch(function (){
+                    console.log("You died.")
+                });
+        })
+    </script>
+    {% endif %}
 {% endblock %}
 
 {% block right_sidebar %}

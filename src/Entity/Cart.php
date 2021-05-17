@@ -22,6 +22,11 @@ class Cart
      */
     private $items = [];
 
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, inversedBy="cart", cascade={"persist", "remove"})
+     */
+    private $user;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -37,5 +42,57 @@ class Cart
         $this->items = $items;
 
         return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function addItem(string $code, int $amount)
+    {
+        $item = ["code"=>$code, "amount"=>$amount];
+        $items = $this->getItems();
+        $position = array_search($code, array_map(function($item){
+            return $item['code'];
+        }, $items));
+        var_dump($position);
+        if($position !== false)
+        {
+            $items[$position]['amount'] += $amount;
+        }
+        else{
+            array_push($items, $item);
+        }
+        $this->setItems($items);
+    }
+
+    public function removeItem(string $code)
+    {
+        $items = $this->getItems();
+        unset($items[array_search($code, array_map(function($item) {
+                return $item['code'];
+            }, $items))]);
+        $this->setItems($items);
+    }
+
+    public function setAmount(string $code, int $amount)
+    {
+        $items = $this->getItems();
+        $position = array_search($code, array_map(function($item){
+            return $item['code'];
+        }, $items));
+        if($position !== false)
+        {
+            $items[$position]['amount'] = $amount;
+        }
+        $this->setItems($items);
     }
 }

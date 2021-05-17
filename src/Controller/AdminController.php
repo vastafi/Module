@@ -30,8 +30,8 @@ class AdminController extends AbstractController
      */
     public function indexAdmin(Request $request, ProductRepository $productRepository): Response
     {
-        $category=$request->query->get('category',null);
-        $name=$request->query->get('name',null);
+        $category=$request->query->get('category');
+        $name=$request->query->get('name');
         $limit=$request->query->get('limit',8);
         $page=$request->query->get('page',1);
         $pageNum = $productRepository->countPages($category, $name, $limit);
@@ -84,12 +84,14 @@ class AdminController extends AbstractController
      * @Route("/{productCode}/edit", name="edit", methods={"GET","POST"}, requirements={"productCode":"[A][B]\d+"})
      * @param Request $request
      * @param ProductRepository $productRepository
+     * @param string $productCode
      * @return Response
+     * @throws Exception
      */
     public function edit(Request $request, ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
-        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 

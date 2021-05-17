@@ -27,6 +27,7 @@
                                     <th>Price</th>
                                     <th>Description</th>
                                     <th>ProductImage</th>
+                                    <th>Available amount</th>
                                     <th>CreatedAt</th>
                                     <th>UpdatedAt</th>
                                     <th>Actions</th>
@@ -40,6 +41,7 @@
                                         <td>{{ product.price }}</td>
                                         <td>{{ product.description }}</td>
                                         <td>{{ product.productImage }}</td>
+                                        <td>{{ product.availableAmount }}</td>
                                         <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>

@@ -4,6 +4,9 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,8 +70,8 @@ class ProductController extends AbstractController
     /**
      * @Route ("/", name="create_prod_api",methods={"POST"})
      * @param Request $request
-     * @return Response
-     * @throws \Exception
+     * @return JsonResponse|Response
+     * @throws Exception
      */
     public function createProduct(Request $request): Response
     {
@@ -78,51 +81,79 @@ class ProductController extends AbstractController
 
         $repo = $this->getDoctrine()->getRepository(Product::class);
 
+        if(isset($content['code']) !== true ){
+            return new ApiErrorResponse(400,'Code cant be null!');
+        }
+        elseif (strlen($content['code']) == 0 ){
+            return new ApiErrorResponse(400,'Code cant be blank!');
+        }
+        elseif(isset($content['name'])==false){
+            return new ApiErrorResponse(400,'Name cant be null!');
+        }
+        elseif (strlen($content['name']) == 0){
+            return new ApiErrorResponse(400,'Name cant be blank!');
+        }
+        elseif(isset($content['price'])==false){
+            return new ApiErrorResponse(400,'Price cant be null!');
+        }
+        elseif (strlen($content['price']) == 0){
+            return new ApiErrorResponse(400,'Price cant be blank!');
+        }
+        elseif(isset($content['category'])==false){
+            return new ApiErrorResponse(400,'Category cant be null!');
+        }
+        elseif (strlen($content['category']) == 0){
+            return new ApiErrorResponse(400,'Category cant be blank!');
+        }
+        elseif(isset($content['availableAmount'])==false){
+            return new ApiErrorResponse(400,'Available amount cant be null!');
+        }
+        elseif (strlen($content['availableAmount']) == 0){
+            return new ApiErrorResponse(400,'Available amount cant be blank!');
+        }
+        elseif($content['availableAmount']< 0){
+            return new ApiErrorResponse(400,'Available amount cant negative!');
+        }
+        elseif ($content['price'] < 0){
+            return new ApiErrorResponse(400,'Price cant be negative');
+        }
+
         $product = new Product();
         $product->setCode($content['code']);
         $product->setName($content['name']);
         $product->setCategory($content['category']);
         $product->setPrice($content['price']);
         $product->setDescription($content['description']);
-        $product->setCreatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $product->setCreatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
+        $product->setAvailableAmount($content['availableAmount']);
 
-        if ($repo->count(['code'=> $product->getCode()]) > 0){
-            return new Response('A product with this code exists already!',400);
-        }
-        elseif (strlen($content['code']) == 0){
-            return new Response('Code cant be blank!',400);
-        }
-        elseif (strlen($content['name']) == 0){
-            return new Response('Name cant be blank!',400);
-        }
-        elseif (strlen($content['price']) == 0){
-            return new Response('Price cant be blank!',400);
-        }
-        elseif (strlen($content['category']) == 0){
-            return new Response('Category cant be blank!',400);
+        if ($repo->count(['code'=> $content['code']]) > 0){
+            return new ApiErrorResponse(400,'A product with this code exists already!');
         }
 
         $em->persist($product);
 
         $em->flush();
 
-        return new Response('Product created!');
+        return new Response(null,201);
     }
 
     /**
      * @Route ("/{productCode}", name="update", requirements={"productCode":"[A][B]\d+"}, methods={"PUT"})
      * @param string $productCode
+     * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
-    public function updateProduct(string $productCode, Request $request){
+    public function updateProduct(string $productCode, Request $request): Response
+    {
         $data = json_decode($request->getContent(), true);
         $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
         if(!$product){
             return new Response(null, 404);
         }
-        $product->setUpdatedAt(new \DateTime(null, new \DateTimeZone('Europe/Athens')));
+        $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->submit($data);
         $em = $this->getDoctrine()->getManager();

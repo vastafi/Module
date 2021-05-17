@@ -35,7 +35,6 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
@@ -56,6 +55,7 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
             // do anything else you need here, like send an email
+            $this->addFlash('sent', 'An confirmation link has been sent to your email.');
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
@@ -84,10 +84,9 @@ class RegistrationController extends AbstractController
             $this->addFlash('verify_email_error', $exception->getReason());
 
             return $this->redirectToRoute('app_register');
-
         }
 
-        $this->addFlash('success', 'Your email address has been verified.');
+        $this->addFlash('verified', 'Your email address has been verified.');
 
         return $this->redirectToRoute('product_index');
     }
