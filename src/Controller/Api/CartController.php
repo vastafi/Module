@@ -70,7 +70,7 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/del/{productCode}", name="cart_remove")
+     * @Route("/del/{productCode}", name="cart_remove", methods={"DELETE"})
      * @param $productCode
      * @return Response
      */

@@ -1,134 +1,140 @@
 {% extends 'default.html.twig' %}
 {% block content %}
-<div class="container mt-4">
-    <h1>Your Cart</h1>
-    {% include '/parts/flash.html.twig' %}
-    {% if items | length > 0 %}
-    <div class="row mt-4">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-dark text-white d-flex">
-                    <h5>Items</h5>
-                    <div class="ml-auto">
+    <div class="container mt-4">
+        <h1>Your Cart</h1>
+        {% include '/parts/flash.html.twig' %}
+        {% if items | length > 0 %}
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-dark text-white d-flex">
+                        <h5>Items</h5>
+                        <div class="ml-auto">
+                        </div>
                     </div>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for item in items %}
-                        <li class="list-group-item d-flex">
-                            <div class="flex-fill mr-2">
-                                <img src="https://via.placeholder.com/200x150" width="100" alt="Product image">
-                                <h5 class="mt-0 mb-0">{{ item.product.code }}</h5>
-                            </div>
-                            <div class="flex-fill mr-2">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item d-flex justify-content-between">
-                                        <h5 class="mt-0 mb-0">{{ item.product.name }}</h5>
+                    <ul class="list-group list-group-flush">
+                        {% for item in items %}
+                            <li class="list-group-item d-flex">
+                                <div class="flex-fill mr-2">
+                                    <img src="https://via.placeholder.com/200x150" width="100" alt="Product image">
+                                    <h5 class="mt-0 mb-0">{{ item.product.code }}</h5>
+                                </div>
+                                <div class="flex-fill mr-2">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item d-flex justify-content-between">
+                                            <h5 class="mt-0 mb-0">{{ item.product.name }}</h5>
 
-                                        <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}"
-                                           class="btn btn-sm btn-danger">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                 fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                                <path fill-rule="evenodd"
-                                                      d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                                            </svg>
-                                            Delete
-                                        </a>
+                                            <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}"
+                                               class="btn btn-sm btn-danger" id="delete_cart" data-prod-code="{{ item.product.code }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                     fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                                    <path fill-rule="evenodd"
+                                                          d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                                </svg>
+                                                Delete
+                                            </a>
 
-                                    </li>
-                                </ul>
-                                <div class="form-inline mt-2">
-                                    <div class="form-group mb-0 mr-2">
-                                        <div style="display: inline-flex; gap:10px;">
-                                            <input type="number" class="amount" id="amount" name="amount" min="1" max="{{ item.product.availableAmount }}" >
-                                            <script>
-                                                {#$('.amount').val({{ item.amount }});#}
-                                                {#async function fetchCart(){#}
-                                                {#    const urlParams = new URLSearchParams(window.location.search);#}
-                                                {#    // console.log(parseInt($('#amount').val()));#}
-                                                {#    urlParams.set('amount', parseInt($('#amount').first().val()));#}
+                                        </li>
+                                    </ul>
+                                    <div class="form-inline mt-2">
+                                        <div class="form-group mb-0 mr-2">
+                                            <div style="display: inline-flex; gap:10px;">
+                                                <input type="number" class="amount" id="amount" name="amount" min="1"
+                                                       max="{{ item.product.availableAmount }}"
+                                                       value="{{ item.amount }}" data-product-code="{{ item.product.code }}">
 
-                                                {#    // window.location.search = urlParams;#}
-                                                {#   return await fetch("{{ path("cart_update", {'productCode':item.product.code})}}" + "?" + urlParams, {method: 'PATCH'});#}
-                                                {#}#}
-                                                {#$(document).on('input', 'input[type="number"]', function(e){#}
-                                                {#    e.preventDefault();#}
-                                                {#        fetchCart().then(function(res){ console.log(res.status);#}
-                                                {#        })#}
-                                                {#        .catch(function (){#}
-                                                {#            console.log("You died.")#}
-                                                {#        });#}
-                                                {#})#}
-                                                const todoIdList = [1, 2, 3, 4]
-                                                await Promise.all(
-                                                    todoIdList.map(async (id) => {
-                                                        const response = await fetch(`{{ path("cart_update", {'productCode':${id}})}}` + "?" + urlParams, {method: 'PATCH'});
-                                                        const todo = await response.json()
-                                                        console.log(todo.title)
-                                                    })
-                                                )
-                                            </script>
+                                            </div>
                                         </div>
                                     </div>
+                                    <div class="flex-fill mr-2 text-right">
+                                        <b>Price:</b><small> per unit</small>
+                                        <br><b>{{ item.product.price }}$</b>
+                                    </div>
                                 </div>
-                                <div class="flex-fill mr-2 text-right">
-                                    <b>Price:</b><small> per unit</small>
-                                    <br><b>{{ item.product.price }}$</b>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card mt-4 mt-md-0">
-                <div class="card-header bg-dark text-white">
-                    <h5>Summary</h5></div>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div><b>Total</b></div>
-                        <span><b id="total">{{ total }} $</b></span>
-                    </li>
-                </ul>
-                <div class="card-body">
-                    <a href="#" class="btn btn-warning w-100">Checkout</a>
+            <div class="col-md-4">
+                <div class="card mt-4 mt-md-0">
+                    <div class="card-header bg-dark text-white">
+                        <h5>Summary</h5></div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between">
+                            <div><b>Total</b></div>
+                            <span><b id="total">{{ total }} $</b></span>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <a href="#" class="btn btn-warning w-100">Checkout</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% else %}
-    <div class="alert alert-info">
-        Your cart is empty. But it's easy to fix! Go shopping for <a href="{{ path('product_index') }}">Product</a>.
-    </div>
+    {% else %}
+        <div class="alert alert-info">
+            Your cart is empty. But it's easy to fix! Go shopping for <a href="{{ path('product_index') }}">Product</a>.
+        </div>
     {% endif %}
 
-<section class="section-name bg-white padding-y">
-    <div class="container">
-        <header class="section-heading">
-            <h2 class="title-section">Delivery condition</h2>
-        </header>
-        <p>We collect some of your personal information (name, age, interests, e-mail, etc.) from you in
-            order to provide better service to customers.This information collected in the servers, periodical
-            campaign studies, special profiles for customer profiles and the organization of the promotion of
-            unsolicited e-mail "customer" in the work of "classification" studies only Shopping Shop. is used within.
-            <br>Shopping Shop Does not share the information collected from the membership forms with third parties
-            without the information of the member in question or otherwise, does not use it for commercial purposes
-            and does not sell it for any other reason.
-            <br>E-mail addresses and membership forms, as well as the personal information requested during the use
-            of the site, the visitor movements and preferences by analyzing and interpreting.
-            This statistical data does not contain personal information, Shopping Shop can be shared with business partners.
-        </p>
-    </div>
-</section>
+    <section class="section-name bg-white padding-y">
+        <div class="container">
+            <header class="section-heading">
+                <h2 class="title-section">Delivery condition</h2>
+            </header>
+            <p>We collect some of your personal information (name, age, interests, e-mail, etc.) from you in
+                order to provide better service to customers.This information collected in the servers, periodical
+                campaign studies, special profiles for customer profiles and the organization of the promotion of
+                unsolicited e-mail "customer" in the work of "classification" studies only Shopping Shop. is used
+                within.
+                <br>Shopping Shop Does not share the information collected from the membership forms with third parties
+                without the information of the member in question or otherwise, does not use it for commercial purposes
+                and does not sell it for any other reason.
+                <br>E-mail addresses and membership forms, as well as the personal information requested during the use
+                of the site, the visitor movements and preferences by analyzing and interpreting.
+                This statistical data does not contain personal information, Shopping Shop can be shared with business
+                partners.
+            </p>
+        </div>
+    </section>
 
-<section class="section-name bg padding-y">
-    <div class="container">
-        <h4>How do you contact us if your order does not arrive?</h4>
-        <p>We recommend contacting the supplier first. There could be a reasonable explanation for a
-            late delivery. It happens. For example, I recently bought a bathing suit online and it was
-            a couple of weeks late because of a typhoon – in my opinion, this is completely understandable.</p>
-    </div>
-</section>
+    <section class="section-name bg padding-y">
+        <div class="container">
+            <h4>How do you contact us if your order does not arrive?</h4>
+            <p>We recommend contacting the supplier first. There could be a reasonable explanation for a
+                late delivery. It happens. For example, I recently bought a bathing suit online and it was
+                a couple of weeks late because of a typhoon – in my opinion, this is completely understandable.</p>
+        </div>
+    </section>
+    <script>
+        async function fetchCart(amount, productCode) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('amount', parseInt(amount));
+
+            // @fixme change query param to body param
+            let url = "{{ path("cart_update", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
+            return await fetch(url + "?" + urlParams, {method: 'PATCH'});
+        }
+
+        $(document).on('input', 'input[type="number"].amount', function (e) {
+            e.preventDefault();
+
+            fetchCart($(e.target).val(), e.target.getAttribute('data-product-code')).then(function (res) {
+                console.log(res.status);
+            })
+                .catch(function () {
+                    console.log("You died.");
+                });
+        })
+        async function deleteItem(amount, productCode) {
+            const urlParams = new URLSearchParams(window.location.search);
+            urlParams.set('amount', parseInt(amount));
+
+            let url = "{{ path("cart_remove", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
+            return await fetch(url + "?" + urlParams, {method: 'DELETE'});
+        }
+    </script>
 {% endblock %}
