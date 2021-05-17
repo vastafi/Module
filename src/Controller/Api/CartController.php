@@ -72,7 +72,7 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/del/{productCode}", name="cart_remove")
+     * @Route("/del/{productCode}", name="cart_remove", methods={"DELETE"})
      * @param $productCode
      * @return Response
      */
@@ -126,15 +126,18 @@ class CartController extends AbstractController
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
+            $product->setAvailableAmount($product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
+                    return $item['code'];
+                }, $cart->getItems()))]['amount'] - $amount);
             $cart->setAmount($productCode, $amount);
             $cart->setUser($user);
         }
         else{
             return new Response(null, 404);
         }
+        $em->persist($product);
         $em->persist($cart);
         $em->flush();
-        var_dump($cart);
         return new Response(null, 200);
     }
 }
