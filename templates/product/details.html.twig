@@ -70,6 +70,7 @@
             </div> <!-- row.// -->
         </div><!-- container // -->
     </section>
+    {% if app.user %}
     <script>
         var click = 0;
         $(document).on('click', '#add_cart', function(e){
@@ -90,6 +91,7 @@
                 });
         })
     </script>
+    {% endif %}
 {% endblock %}
 
 {% block right_sidebar %}
