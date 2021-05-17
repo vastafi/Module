@@ -51,9 +51,15 @@
                                         <br><b>Available amount: </b><p id="avail">{{ product.availableAmount }}</p>
                                     </dl>
                                     <hr>
+                                    {% if app.user %}
                                     <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
                                         Cart
                                     </a>
+                                    {% else %}
+                                    <a href="{{ path('app_login', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
+                                        Cart
+                                    </a>
+                                    {% endif %}
                                     <!-- short-info-wrap .// -->
                                 </article> <!-- card-body.// -->
                             </aside> <!-- col.// -->

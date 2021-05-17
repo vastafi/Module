@@ -111,6 +111,12 @@ class ProductController extends AbstractController
         elseif (strlen($content['availableAmount']) == 0){
             return new ApiErrorResponse(400,'Available amount cant be blank!');
         }
+        elseif($content['availableAmount']< 0){
+            return new ApiErrorResponse(400,'Available amount cant negative!');
+        }
+        elseif ($content['price'] < 0){
+            return new ApiErrorResponse(400,'Price cant be negative');
+        }
 
         $product = new Product();
         $product->setCode($content['code']);

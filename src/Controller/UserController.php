@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\UserEditType;
 use App\Form\UserType;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
