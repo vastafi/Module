@@ -37,6 +37,7 @@ class CartController extends AbstractController
      */
     public function add(Request $request, string $productCode)
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $em = $this->getDoctrine()->getManager();
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
         $productRepository = $this->getDoctrine()->getRepository(Product::class);
