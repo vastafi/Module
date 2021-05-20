@@ -20,13 +20,22 @@ class CartController extends AbstractController
 {
     /**
      * @Route("/", name="cart_index", methods={"GET"})
-     * @param Request $request
+     * @param CartRepository $cartRepository
      * @return JsonResponse|Response
      */
     public function index(CartRepository $cartRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        return $this->json($cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems());
+        $cart = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems();
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $cartItem = [];
+        foreach ($cart as $item){
+            $cartItem [] = [
+                'product' => $productRepository->findOneBy(['code' => $item['code']]),
+                'amount' => $item['amount']
+            ];
+        }
+        return $this->json($cartItem);
     }
 
     /**
