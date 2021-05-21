@@ -42,7 +42,7 @@
             let url = "{{ path("cart_remove", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
             return await fetch(url, {method: 'DELETE'});
         }
-        $(document).on('click', '#delete_cart', function (e) {
+        $(document).on('click', '.delete_cart', function (e) {
             e.preventDefault();
             deleteItem(e.target.getAttribute('data-prod-code')).then(function (res) {
                 console.log(res.status);

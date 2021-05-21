@@ -40,7 +40,7 @@
                                     <br><b>{{ item.product.price }}$</b>
                                 </div>
                                 <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}"
-                                   class="btn btn-sm btn-danger" id="delete_cart" data-prod-code="{{ item.product.code }}"
+                                   class="delete_cart btn btn-danger" data-prod-code="{{ item.product.code }}"
                                    data-product-amount="{{ item.amount }}" data-product-price="{{ item.product.price }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
