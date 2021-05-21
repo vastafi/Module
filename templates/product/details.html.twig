@@ -72,7 +72,7 @@
     </section>
     {% if app.user %}
     <script>
-        var click = 0;
+        let click = 0;
         $(document).on('click', '#add_cart', function(e){
             click += 1;
             e.preventDefault();
@@ -84,7 +84,7 @@
                 else if(res.status === 200){
                     alert('Product added to cart');
                     $('#avail').text({{ product.availableAmount }} - click);
-                    // location.reload();
+                    $('#toggle-cart').click();
                 }
                 })
                 .catch(function (){

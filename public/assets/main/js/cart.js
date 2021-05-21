@@ -78,6 +78,5 @@ function readItemsTemplate(data) {
         </table>`;
     }
 
-
     $(".cart-content").html(read_items_html);
 }
