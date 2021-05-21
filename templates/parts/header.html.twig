@@ -101,16 +101,16 @@
                                             </div>
                                         </form>
                                         <div class="px-4 py-3">
-                                        <a class="go-to-cart-btn" href="{{ path('cart') }}">
-                                            <button class="btn btn-outline-dark center">
-                                                More details
-                                            </button>
-                                        </a>
-                                        <a href="{{ path('product_index') }}">
-                                            <button class="btn btn-outline-dark center">
-                                                Go shopping
-                                            </button>
-                                        </a>
+                                            <a class="go-to-cart-btn" href="{{ path('cart') }}">
+                                                <button class="btn btn-outline-dark float-left">
+                                                    More details
+                                                </button>
+                                            </a>
+                                            <a href="{{ path('product_index') }}">
+                                                <button class="btn btn-outline-dark  float-right">
+                                                    Go shopping
+                                                </button>
+                                            </a>
                                         </div>
                                         <hr class="dropdown-divider">
                                     </div>
@@ -146,7 +146,6 @@
                         {% endif %}
                     </ul>
                 </div>
-
             </div>
         </nav>
     </div>
