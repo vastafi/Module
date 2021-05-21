@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -154,7 +155,21 @@ class ProductController extends AbstractController
             return new Response(null, 404);
         }
         $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
+        $product->setCode($productCode);
         $form = $this->createForm(ProductType::class, $product);
+        $form->remove('code');
+        $fields = ['name', 'category', 'price', 'description', 'availableAmount'];
+        foreach ($fields as $field){
+            if(!isset($data[$field]) || strlen($data[$field]) === 0){
+                return new ApiErrorResponse('1256', $field." can not be null");
+            }
+        }
+        if($data['price'] <= 0){
+            return new ApiErrorResponse('1279', 'price can not be null or 0');
+        }
+        if($data['availableAmount'] < 0){
+            return new ApiErrorResponse('1289', 'available amount can not be negative');
+        }
         $form->submit($data);
         $em = $this->getDoctrine()->getManager();
         $em->persist($product);

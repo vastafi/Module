@@ -33,7 +33,7 @@ class ProductType extends AbstractType
             ->add('price', NumberType::class, [
                 'invalid_message' => "price must be number",
                 'scale' => 2,
-                'constraints' => [new Positive()],
+                'constraints' => [new Positive(['message'=>'Price must be positive'])],
             ])
             ->add('description',TextareaType::class,[
                 'constraints' => [
