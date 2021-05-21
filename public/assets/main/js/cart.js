@@ -26,7 +26,7 @@ function readItemsTemplate(data) {
 <!--             <th class='w-5-pct bg-dark text-white' colspan="2" style="text-align: center">Product</th>-->
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Product</th>
                 <th class='w-5-pct  bg-dark text-white' style="text-align: center">Price</th>
-                <th class='w-5-pct bg-dark text-white' style="text-align: center">Qty</th>
+                <th class='w-5-pct bg-dark text-white' style="text-align: center">Amount</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Total</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Action</th>
              </tr>`;
@@ -50,7 +50,7 @@ function readItemsTemplate(data) {
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['product']['price']) + `</td>
             <td style="vertical-align: middle;text-align: center">` + cartItem['amount'] + `</td>
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['amount'] * cartItem['product']['price']) + `</td>
-            <td style="vertical-align: middle;text-align: center"><button class="delete_cart btn btn-danger" data-code="` + cartItem['product']['code'] + `">
+            <td style="vertical-align: middle;text-align: center"><button class="delete_cart btn btn-danger"  data-prod-code="` + cartItem['product']['code'] + `">
              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                      fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
