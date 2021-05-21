@@ -84,7 +84,7 @@
                 else if(res.status === 200){
                     alert('Product added to cart');
                     $('#avail').text({{ product.availableAmount }} - click);
-                    $('#toggle-cart').click();
+                    showCart();
                 }
                 })
                 .catch(function (){
