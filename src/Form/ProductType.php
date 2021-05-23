@@ -7,16 +7,14 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Positive;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ProductType extends AbstractType
 {
@@ -25,7 +23,12 @@ class ProductType extends AbstractType
         $categories = ['id' => 'name'];
         $choises = array_flip($categories);
         $builder
-            ->add('code')
+            ->add('code', TextType::class, [
+                    'constraints' => [
+                        new Regex('/[A][B]\d+/', 'Code must begin with AB'),
+                    ],
+                ]
+            )
             ->add('name')
             ->add('category', ChoiceType::class, [
                 'choices' => ['Phones' => 'Phones', 'Notebooks' => 'Notebooks', 'Printers' => 'Printers']
