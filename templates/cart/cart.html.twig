@@ -51,7 +51,7 @@
         }
         $(document).on('click', '.delete_cart', function (e) {
             e.preventDefault();
-            deleteItem(e.target.getAttribute('data-prod-code')).then(function (res) {
+            deleteItem($(this).data('prod-code')).then(function (res) {
                 console.log(res.status);
                 location.reload();
             })
