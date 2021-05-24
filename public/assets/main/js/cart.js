@@ -80,3 +80,17 @@ function readItemsTemplate(data) {
 
     $(".cart-content").html(read_items_html);
 }
+async function deleteItem(productCode) {
+    let url = "http://localhost:8000/api/v1/cart/del/" + productCode;
+    return await fetch(url, {method: 'DELETE'});
+}
+$(document).on('click', '.delete_cart', function (e) {
+    e.preventDefault();
+    deleteItem($(this).data('prod-code')).then(function (res) {
+        console.log(res.status);
+        location.reload(true);
+    })
+        .catch(function () {
+            console.log("You died.");
+        });
+})

@@ -44,20 +44,4 @@
                 a couple of weeks late because of a typhoon – in my opinion, this is completely understandable.</p>
         </div>
     </section>
-    <script>
-        async function deleteItem(productCode) {
-            let url = "{{ path("cart_remove", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
-            return await fetch(url, {method: 'DELETE'});
-        }
-        $(document).on('click', '.delete_cart', function (e) {
-            e.preventDefault();
-            deleteItem($(this).data('prod-code')).then(function (res) {
-                console.log(res.status);
-                location.reload();
-            })
-                .catch(function () {
-                    console.log("You died.");
-                });
-        })
-    </script>
 {% endblock %}
