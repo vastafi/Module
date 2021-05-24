@@ -62,6 +62,16 @@
                         </li>
                         {% endif %}
 
+                        {% if "/admin/order/" == app.request.requestUri %}
+                            <li class="nav-item">
+                                <a class="nav-link active" href="{{ path('order_index') }}">Orders</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('order_index') }}">Orders</a>
+                            </li>
+                        {% endif %}
+
                     {% endif %}
 
 

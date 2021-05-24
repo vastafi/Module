@@ -19,7 +19,7 @@ class Order
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $code;
 
@@ -123,5 +123,17 @@ class Order
         $this->total = $total;
 
         return $this;
+    }
+
+    public function calculateTotal(Order $order){
+
+        $total = 0;
+        $itemsArray = json_decode((string)$order->getItems(),TRUE,null,JSON_OBJECT_AS_ARRAY);
+        foreach ($itemsArray as $item){
+
+            $total += $item['price'] * $item['amount'];
+        }
+        $order->setTotal($total);
+
     }
 }
