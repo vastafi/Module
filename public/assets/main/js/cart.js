@@ -48,8 +48,8 @@ function readItemsTemplate(data) {
 <!--            <td style="vertical-align: middle;text-align: center"><img src="assets/main/img/250x200.png" alt="img" width="100" height="100"></td>&ndash;&gt;-->
             <td style="vertical-align: middle;text-align: center">` + cartItem['product']['name'] + `</td>
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['product']['price']) + `</td>
-            <td style="vertical-align: middle;text-align: center">` + cartItem['amount'] + `</td>
-            <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['amount'] * cartItem['product']['price']) + `</td>
+            <td style="vertical-align: middle;text-align: center" class="amount">` + cartItem['amount'] + `</td>
+            <td style="vertical-align: middle;text-align: center" class="total">` + formatter.format(cartItem['amount'] * cartItem['product']['price']) + `</td>
             <td style="vertical-align: middle;text-align: center"><button class="delete_cart btn btn-danger"  data-prod-code="` + cartItem['product']['code'] + `">
              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                      fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -72,13 +72,14 @@ function readItemsTemplate(data) {
         read_items_html += `
             <tr>
                 <td style="vertical-align: middle;text-align: right" colspan="3"><b>Total : </b></td>
-                <td style="vertical-align: middle;text-align: center"><b>` + formatter.format(total) + ` </b></td>
+                <td style="vertical-align: middle;text-align: center" class="total"><b>` + formatter.format(total) + ` </b></td>
                 <td></td>
             </tr>
         </table>`;
     }
 
     $(".cart-content").html(read_items_html);
+    show();
 }
 async function deleteItem(productCode) {
     let url = "http://localhost:8000/api/v1/cart/del/" + productCode;
@@ -89,6 +90,32 @@ $(document).on('click', '.delete_cart', function (e) {
     deleteItem($(this).data('prod-code')).then(function (res) {
         console.log(res.status);
         location.reload(true);
+    })
+        .catch(function () {
+            console.log("You died.");
+        });
+})
+function show(){
+    if($(location).attr("href") === 'http://localhost:8000/cart/'){
+        let amount = parseInt($('.amount').first().text());
+        $('.amount').eq(1).replaceWith('<input type="number" min="1"\n' +
+            '                                                       value="' + amount + '" class="namount" style="vertical-align: middle;text-align: center">');
+
+    }
+}
+async function fetchCart(amount, productCode) {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('amount', parseInt(amount));
+    // @fixme change query param to body param
+    let url = "http://localhost:8000/api/v1/cart/update/" + productCode;
+    return await fetch(url + "?" + urlParams, {method: 'PATCH'});
+}
+$(document).on('input', 'input[type="number"].namount', function (e) {
+    e.preventDefault();
+    fetchCart($(this).val(), $(this).siblings('td').children('button').data('prod-code')).then(function (res) {
+        console.log(res.status);
+        $(location).attr('.total');
+        showCart();
     })
         .catch(function () {
             console.log("You died.");
