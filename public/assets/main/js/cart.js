@@ -81,7 +81,7 @@ function readItemsTemplate(data) {
     show();
 }
 async function deleteItem(productCode) {
-    let url = "http://localhost:8000/api/v1/cart/del/" + productCode;
+    let url = "http://localhost:8000/api/v1/cart/" + productCode;
     return await fetch(url, {method: 'DELETE'});
 }
 $(document).on('click', '.delete_cart', function (e) {
@@ -108,8 +108,9 @@ function show(){
 async function fetchCart(amount, productCode) {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('amount', parseInt(amount));
+    urlParams.set('code', productCode);
     // @fixme change query param to body param
-    let url = "http://localhost:8000/api/v1/cart/update/" + productCode;
+    let url = "http://localhost:8000/api/v1/cart/";
     return await fetch(url + "?" + urlParams, {method: 'PATCH'});
 }
 $(document).on('input', 'input[type="number"].namount', function (e) {

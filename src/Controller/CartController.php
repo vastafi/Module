@@ -24,6 +24,7 @@ class CartController extends AbstractController
      */
     public function index()
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->render('cart/cart.html.twig');
     }
 }

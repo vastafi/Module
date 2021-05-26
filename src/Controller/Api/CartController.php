@@ -39,7 +39,7 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/add/{productCode}", name="cart_add", methods={"POST"})
+     * @Route("/{productCode}", name="cart_add", methods={"POST"})
      * @param Request $request
      * @param string $productCode
      * @return Response
@@ -82,7 +82,7 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/del/{productCode}", name="cart_remove", methods={"DELETE"})
+     * @Route("/{productCode}", name="cart_remove", methods={"DELETE"})
      * @param $productCode
      * @return Response
      */
@@ -112,16 +112,16 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/update/{productCode}", name="cart_update", methods={"PATCH"})
+     * @Route("/", name="cart_update", methods={"PATCH"})
      * @param Request $request
-     * @param string $productCode
      * @return Response
      */
-    public function update(Request $request, string $productCode)
+    public function update(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
         $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $productCode = $request->query->get('code');
         $product = $productRepository->findOneBy(['code'=>$productCode]);
         if(!$product)
         {
