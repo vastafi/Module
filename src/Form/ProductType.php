@@ -46,7 +46,10 @@ class ProductType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('productImage')
+            ->add('productImage', null, [
+                'required' => false,
+                'empty_data' => '250x200.png',
+            ])
             ->add('availableAmount', IntegerType::class, [
                 'required' => false,
                 'empty_data' => 0,
