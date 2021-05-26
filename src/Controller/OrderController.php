@@ -44,7 +44,8 @@ class OrderController extends AbstractController
         }
 
         $entityManager = $this->getDoctrine()->getManager();
-        $order->calculateTotal($order);
+//        $order->calculateTotal($order);
+//        $entityManager->persist($order);
         $entityManager->flush();
 
         return $this->render('order/new.html.twig', [

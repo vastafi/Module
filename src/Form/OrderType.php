@@ -35,7 +35,7 @@ class OrderType extends AbstractType
                 'label' => 'Status'
             ])
             ->add('shippingDetails', TextareaType::class)
-            //->add('total')
+            ->add('total')
         ;
 
         $builder->get('paymentDetails')

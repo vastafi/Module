@@ -125,15 +125,15 @@ class Order
         return $this;
     }
 
-    public function calculateTotal(Order $order){
-
-        $total = 0;
-        $itemsArray = json_decode((string)$order->getItems(),TRUE,null,JSON_OBJECT_AS_ARRAY);
-        foreach ($itemsArray as $item){
-
-            $total += $item['price'] * $item['amount'];
-        }
-        $order->setTotal($total);
-
-    }
+//    public function calculateTotal(Order $order){
+//
+//        $total = 0;
+//        $itemsArray =$order->getItems();
+//        foreach ($itemsArray as $item){
+//
+//            $total += $item['price'] * $item['amount'];
+//        }
+//        $order->setTotal($total);
+//
+//    }
 }
