@@ -45,7 +45,6 @@ function readItemsTemplate(data) {
 
         read_items_html += `
         <tr class="item">
-            <td style="display: none" data-avail="` + cartItem['product']['availableAmount'] + `"></td>
             <td style="vertical-align: middle;text-align: center">` + cartItem['product']['name'] + `</td>
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['product']['price']) + `</td>
             <td style="vertical-align: middle;text-align: center" class="amount">` + cartItem['amount'] + `</td>
@@ -100,7 +99,6 @@ function show(){
         document.querySelectorAll('.amount').forEach(function (element, index) {
             if(index < $('.amount').length/2) return;
             let amount = parseInt(element.textContent);
-            let available = parseInt($('.amount').eq(index).siblings('td').data('avail'));
             $('.amount').eq(index).html('<input type="number" min="1"\n' +
                     '                                                    value="' + amount + '" class="namount" style="vertical-align: middle;text-align: center">');
         });
@@ -115,18 +113,23 @@ async function fetchCart(amount, productCode) {
     return await fetch(url + "?" + urlParams, {method: 'PATCH'});
 }
 $(document).on('input', 'input[type="number"].namount', function (e) {
-    e.preventDefault();
-    fetchCart($(this).val(), $(this).parent('td').siblings('td').children('button').data('prod-code')).then(function (res) {
-        console.log(res.status);
-        if(res.status === 200){
-            $(location).attr('.total');
-        }
-        if(res.status === 400){
-            alert('We don\'t have so many products');
-        }
-        showCart();
-    })
-        .catch(function () {
-            console.log("You died.");
-        });
+    if($(this).val() < 0 || parseInt($(this).val()) === 0){
+        alert('Amount can not be negative or zero');
+    }
+    else if($(this).val()){
+        e.preventDefault();
+        fetchCart($(this).val(), $(this).parent('td').siblings('td').children('button').data('prod-code')).then(function (res) {
+            console.log(res.status);
+            if(res.status === 200){
+                $(location).attr('.total');
+            }
+            if(res.status === 400){
+                alert('We don\'t have so many products');
+            }
+            showCart();
+        })
+            .catch(function () {
+                console.log("You died.");
+            });
+    }
 })
