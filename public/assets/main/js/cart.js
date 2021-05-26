@@ -44,8 +44,8 @@ function readItemsTemplate(data) {
         total += cartItem['product']['price'] * cartItem['amount'];
 
         read_items_html += `
-        <tr>
-<!--            <td style="vertical-align: middle;text-align: center"><img src="assets/main/img/250x200.png" alt="img" width="100" height="100"></td>&ndash;&gt;-->
+        <tr class="item">
+            <td style="display: none" data-avail="` + cartItem['product']['availableAmount'] + `"></td>
             <td style="vertical-align: middle;text-align: center">` + cartItem['product']['name'] + `</td>
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['product']['price']) + `</td>
             <td style="vertical-align: middle;text-align: center" class="amount">` + cartItem['amount'] + `</td>
@@ -97,9 +97,13 @@ $(document).on('click', '.delete_cart', function (e) {
 })
 function show(){
     if($(location).attr("href") === 'http://localhost:8000/cart/'){
-        let amount = parseInt($('.amount').first().text());
-        $('.amount').eq(1).replaceWith('<input type="number" min="1"\n' +
-            '                                                       value="' + amount + '" class="namount" style="vertical-align: middle;text-align: center">');
+        document.querySelectorAll('.amount').forEach(function (element, index) {
+            if(index < $('.amount').length/2) return;
+            let amount = parseInt(element.textContent);
+            let available = parseInt($('.amount').eq(index).siblings('td').data('avail'));
+            $('.amount').eq(index).html('<input type="number" min="1"\n' +
+                    '                                                    value="' + amount + '" class="namount" style="vertical-align: middle;text-align: center">');
+        });
 
     }
 }
@@ -112,9 +116,14 @@ async function fetchCart(amount, productCode) {
 }
 $(document).on('input', 'input[type="number"].namount', function (e) {
     e.preventDefault();
-    fetchCart($(this).val(), $(this).siblings('td').children('button').data('prod-code')).then(function (res) {
+    fetchCart($(this).val(), $(this).parent('td').siblings('td').children('button').data('prod-code')).then(function (res) {
         console.log(res.status);
-        $(location).attr('.total');
+        if(res.status === 200){
+            $(location).attr('.total');
+        }
+        if(res.status === 400){
+            alert('We don\'t have so many products');
+        }
         showCart();
     })
         .catch(function () {

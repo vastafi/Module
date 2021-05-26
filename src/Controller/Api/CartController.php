@@ -129,16 +129,17 @@ class CartController extends AbstractController
         }
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $amount = $request->query->get('amount');
-        if($product->getAvailableAmount() < $amount){
-            return new ApiErrorResponse("1204", "We don't have so many products");
-        }
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $product->setAvailableAmount($product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
+            $stock = $product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
                     return $item['code'];
-                }, $cart->getItems()))]['amount'] - $amount);
+                }, $cart->getItems()))]['amount'];
+            if($stock < $amount){
+                return new ApiErrorResponse("1204", "We don't have so many products");
+            }
+            $product->setAvailableAmount($stock - $amount);
             $cart->setAmount($productCode, $amount);
             $cart->setUser($user);
         }
