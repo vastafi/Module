@@ -6,7 +6,10 @@ use App\Entity\Order;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -24,6 +27,17 @@ class OrderType extends AbstractType
                 ],
                 'label' => 'Payment method'
             ])
+            //Credit Card Details
+//            ->add('creditCardCode',TextType::class )
+//            ->add('cvv',NumberType::class)
+//            ->add('expiresAt',DateType::class,[
+//                'widget' => 'single_text',
+//            ])
+
+            ->add('creditCardDetails',CreditCardDetailsType::class,[
+                'mapped'=> false,
+                'required' => false
+            ])
             ->add('status', ChoiceType::class,[
                 'choices' =>[
                     'New' => 'New',
@@ -34,7 +48,7 @@ class OrderType extends AbstractType
                 ],
                 'label' => 'Status'
             ])
-            ->add('shippingDetails', TextareaType::class)
+            ->add('shippingDetails', ShippingDetailsType::class)
             ->add('total')
         ;
 
@@ -58,15 +72,15 @@ class OrderType extends AbstractType
                 }
             ));
 
-        $builder->get('shippingDetails')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($shippingDetailsArray) {
-                    return json_encode($shippingDetailsArray);
-                },
-                function ($shippingDetailsJson) {
-                    return json_decode($shippingDetailsJson);
-                }
-            ));
+//        $builder->get('shippingDetails')
+//            ->addModelTransformer(new CallbackTransformer(
+//                function ($shippingDetailsArray) {
+//                    return json_encode($shippingDetailsArray);
+//                },
+//                function ($shippingDetailsJson) {
+//                    return json_decode($shippingDetailsJson);
+//                }
+//            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
