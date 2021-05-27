@@ -75,6 +75,7 @@ class AdminController extends AbstractController
     public function show(ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
+        $product->writeImgPathEgal($product->readImgPathCSV());
         return $this->render('admin/show.html.twig', [
             'product' => $product,
         ]);
@@ -135,6 +136,7 @@ class AdminController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
+        $repo = $this->getDoctrine()->getRepository(Product::class);
         if ($form->isSubmitted() && $form->isValid()) {
             $repo = $this->getDoctrine()->getRepository(Product::class);
             if ($repo->count(['code'=> $product->getCode()]) > 0){
@@ -146,6 +148,7 @@ class AdminController extends AbstractController
                 ]);
 
             }
+            $product->writeImgPathsFromArray($product->readImgPathsArray());
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();

@@ -4,25 +4,194 @@ namespace App\Controller;
 
 use App\Entity\Image;
 use App\Form\ImageType;
+use App\Repository\ImageRepository;
+use App\Repository\ProductRepository;
+use DateTime;
+use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
-    /**
-     * @Route("/image", name="image")
-     */
+
+/**
+ * @Route("/image/gallery")
+ */
 class ImageController extends AbstractController
 {
-
-    public function index(): Response
+    /**
+     * @Route("/", name="image_index", methods={"GET"})
+     * @param ImageRepository $imageRepository
+     * @return Response
+     */
+    public function index(ImageRepository $imageRepository): Response
     {
         return $this->render('image/index.html.twig', [
-            'controller_name' => 'ImageController',
+            'images' => $imageRepository->findAll(),
         ]);
     }
 
+    /**
+     * @Route("/fragment", name="gallery_fragment", methods={"GET"})
+     * @param ImageRepository $imageRepository
+     * @return Response
+     */
+    public function temp(ImageRepository $imageRepository): Response
+    {
+        return $this->render('image/fragment.html.twig', [
+            'images' => $imageRepository->findAll()
+        ]);
+    }
+
+    private function uploadImageWithSecureName($form, $slugger): string
+    {
+        $imageFile = $form->get('path')->getData();
+        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+              $safeFilename = $slugger->slug($originalFilename);
+        $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                try {
+            $gallery = $this->getParameter('gallery_path');
+            $imageFile->move(
+                $gallery,
+                $newFilename
+            );
+        } catch (FileException $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
+                return $newFilename;
+    }
+
+    private function checkTags(Image $image): array
+    {
+        $errors = [];
+        foreach ($image->getTagsArray() as $tag) {
+            if (mb_strlen($tag) > 12 || mb_strlen($tag) < 2) {
+                $errors['tagLen'] = "The length of each tag must be from 2 to 12 characters";
+            }
+            if (preg_match('/[^a-zа-я0-9]/', $tag)) {
+                $errors['tagMatch'] = "The tags must contain only characters and digits";
+            }
+        }
+        return $errors;
+    }
+
+    /**
+     * @Route("/new", name="image_new", methods={"GET","POST"})
+     * @param Request $request
+     * @return Response
+     */
+    public function new(Request $request): Response
+    {
+        $image = new Image();
+        $form = $this->createForm(ImageType::class, $image);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $errors = $this->checkTags($image);
+
+            if (!empty($errors)) {
+                return $this->render('admin/image/new.html.twig', [
+                    'errors' => $errors,
+                    'image' => $image,
+                    'form' => $form->createView(),
+                ]);
+            }
+            $image->setTagsFromArray($image->getTagsArray());
+            $image->setPath($this->uploadImageWithSecureName($form, $slugger));
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($image);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('image_index');
+        }
+
+        return $this->render('image/new.html.twig', [
+            'image' => $image,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="image_show", methods={"GET"})
+     * @param Image $image
+     * @return Response
+     */
+    public function show(Image $image): Response
+    {
+        return $this->render('image/show.html.twig', [
+            'image' => $image,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/edit", name="image_edit", methods={"GET","POST"})
+     * @param Request $request
+     * @param Image $image
+     * @return Response
+     */
+    public function edit(Request $request, Image $image): Response
+    {
+        $origPath = $image->getPath();
+        $form = $this->createForm(ImageType::class, $image);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $errors = $this->checkTags($image);
+            if (!empty($errors)) {
+                return $this->render('admin/image/edit.html.twig', [
+                    'errors' => $errors,
+                    'image' => $image,
+                    'form' => $form->createView(),
+                ]);
+            }
+
+            if ($image->getPath() === '# % & { } \\ / $ ! \' \" : @ < > * ? + ` | =') {
+                $image->setPath($origPath);
+            } else {
+                $image->setPath($this->uploadImageWithSecureName($form, $slugger));
+            }
+            $this->getDoctrine()->getManager()->flush();
+            return $this->redirectToRoute('image_index');
+        }
+        return $this->render('image/edit.html.twig', [
+            'image' => $image,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/{id}", name="image_delete", methods={"POST"})
+     * @param Request $request
+     * @param Image $image
+     * @param ProductRepository $productRepository
+     * @return Response
+     */
+    public function delete(Request $request, Image $image, ProductRepository $productRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$image->getId(), $request->request->get('_token'))) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $this->deleteImageFromProducts($image, $productRepository);
+            $filesystem = new Filesystem();
+            $gallery = $this->getParameter('gallery_path');
+            $filesystem->remove($gallery .$image->getPath());
+            $entityManager->remove($image);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('image_index');
+    }
+
+    public function deleteImageFromProducts(Image $image, ProductRepository $productRepository) {
+        $products = $productRepository->findByImage($image);
+        foreach ($products as $product) {
+            $paths = $product->readImgPathsArray();
+            array_splice($paths, array_search($image->getPath(), $paths), 1);
+            (count($paths) === 0) ? $product->writeImgPathsFromArray(["no-image.png"]) : $product->writeImgPathsFromArray($paths);
+            $date = new DateTime(null, new DateTimeZone('Europe/Athens'));
+            $product->setUpdatedAt($date);
+            $productRepository->updateImgPath($product);
+        }
+    }
 }

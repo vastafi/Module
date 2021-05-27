@@ -11,24 +11,24 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ImageType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+          public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('tags', TextType::class, [
-                'attr' => array(
-                    'placeholder' => 'Separate tags with commas'
-                )
-            ])
-            ->add('path', FileType::class, [
-                'attr' =>  ['accept' => ".png,.jpg,.jpeg,.tif,"]
-            ])
-            ->add('description');
+        ->add('tag', TextType::class, [
+        'attr' => array(
+            'placeholder' => 'Separate tags'
+        )
+    ])
+        ->add('path', FileType::class, [
+            'attr' =>  ['accept' => ".jpg,.jpeg,.png,.jfif"]
+        ]);
     }
 
-    public function configureOptions(OptionsResolver $resolver)
+        public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Image::class,
         ]);
     }
+
 }

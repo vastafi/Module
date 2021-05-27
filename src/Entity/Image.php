@@ -18,9 +18,9 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
-    private $tag = [];
+    private $tag;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -32,18 +32,35 @@ class Image
         return $this->id;
     }
 
-    public function getTag(): ?array
+    public function getTags(): ?string
     {
-        return $this->tag;
+        return str_replace(["[", "]", "\""], " ", $this->tag);
     }
 
-    public function setTag(?array $tag): self
+    public function getTagsArray(): ?array
     {
-        $this->tag = $tag;
+        return json_decode((string)$this->tag);
+    }
 
+    public function setTags(string $tag): self
+    {
+        $tag = strtolower($tag);
+        $tag = explode(',', $tag);
+        $trimmedTags = [];
+        foreach ($tag as $tags) {
+            $tags = ltrim($tags);
+            $tags = rtrim($tags);
+            array_push($trimmedTags, $tags);
+        }
+        $this->tag = json_encode($trimmedTags);
         return $this;
     }
 
+    public function setTagsFromArray(array $tag): self
+    {
+        $this->tag = json_encode($tag);
+        return $this;
+    }
     public function getPath(): ?string
     {
         return $this->path;

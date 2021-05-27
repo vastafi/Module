@@ -12,7 +12,6 @@
         </th>
         <th scope="col">
             <table style="width:90% ">
-
                 <th scope="col">
                     <h1>Products</h1>
                     <div class="container" align="center">
@@ -48,12 +47,9 @@
                                             <a style="width: 50px" class="btn btn-sm btn-warning" href="{{ path('show', {'productCode': product.code}) }}">Show</a>
                                             <a style="width: 50px" class="btn btn-sm btn-success" href="{{ path('edit', {'productCode': product.code}) }}">Edit</a>
                                             {{ include('admin/_delete_form.html.twig') }}
-
                                         </td>
                                     </tr>
-
                                 {% endfor %}
-
                             </div>
                         </div>
                     </div>
@@ -61,7 +57,8 @@
             </table>
         </th>
     </table>
-    {% include '/parts/pagination.html.twig' %}<br>
+{% include '/parts/pagination.html.twig' %}
+    <br>
 {% endblock %}
 
 

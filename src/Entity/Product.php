@@ -128,17 +128,17 @@ class Product
         return $this;
     }
 
-    public function getProductImage(): ?string
-    {
-        return $this->productImage;
-    }
-
-    public function setProductImage(?string $productImage): self
-    {
-        $this->productImage = $productImage;
-
-        return $this;
-    }
+//    public function getProductImage(): ?string
+//    {
+//        return $this->productImage;
+//    }
+//
+//    public function setProductImage(?string $productImage): self
+//    {
+//        $this->productImage = $productImage;
+//
+//        return $this;
+//    }
 
     public function getCreatedAt(): ?DateTimeInterface
     {
@@ -173,6 +173,46 @@ class Product
     {
         $this->availableAmount = $availableAmount;
 
+        return $this;
+    }
+    public function readImgPathCSV(): ?string
+    {
+        return str_replace(["[", "]", "\""], " ", $this->productImage);
+    }
+
+    public function getProductImage() {
+        return $this->productImage;
+    }
+
+    // get paths: json -> array
+    public function readImgPathsArray(): ?array
+    {
+        return json_decode($this->productImage);
+    }
+
+
+    public function setProductImage(string $paths): self
+    {
+        $paths = explode(',', $paths);
+        $trimmedPaths = [];
+        foreach ($paths as $path) {
+            $path = ltrim($path);
+            $path = rtrim($path);
+            array_push($trimmedPaths, $path);
+        }
+        $this->productImage = json_encode($trimmedPaths);
+        return $this;
+    }
+
+    public function writeImgPathEgal($paths): self
+    {
+        $this->productImage= $paths;
+        return $this;
+    }
+
+    public function writeImgPathsFromArray(array $paths): self
+    {
+        $this->productImage = json_encode($paths);
         return $this;
     }
 }

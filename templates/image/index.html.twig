@@ -2,8 +2,46 @@
 
 {% block title %}Image index{% endblock %}
 
+{% block body %}
 
-{% include 'footer.html.twig' %}
+    <table class="table">
+        <h1 class="mt-4 mb-5" align="center">Image index</h1>
+                   <a class="btn btn-sm btn-primary" href="{{ path('image_new') }}">Create</a>
+        <div class="container" align="center">
+            <div class="row">
+                <div class="col-xl-10 col-md-9 col-sm-12">
+                    <tr>
 
-
+                        <th>Id</th>
+                        <th>Tag</th>
+                        <th>Path</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for image in images %}
+                        {% set fullImagePath = 'assets/main/img/gallery/' %}
+                        {% set fullImagePath = fullImagePath ~ image.path %}
+                        <tr>
+                            <td>
+                                <img src="{{ asset(fullImagePath) }}" alt="" height="30px" width="30px">
+                            </td>
+                            <td>{{ image.id }}</td>
+                            <td>{{ image.tag ? image.tag|join(', ') : '' }}</td>
+                            <td>{{ image.path }}</td>
+                            <td>
+                                <a href="{{ path('image_show', {'id': image.id}) }}">Show</a>
+                                <a href="{{ path('image_edit', {'id': image.id}) }}">Edit</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4">No records found</td>
+                        </tr>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        </tbody>
+    </table>
 {% endblock %}
