@@ -128,18 +128,6 @@ class Product
         return $this;
     }
 
-//    public function getProductImage(): ?string
-//    {
-//        return $this->productImage;
-//    }
-//
-//    public function setProductImage(?string $productImage): self
-//    {
-//        $this->productImage = $productImage;
-//
-//        return $this;
-//    }
-
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
@@ -184,7 +172,6 @@ class Product
         return $this->productImage;
     }
 
-    // get paths: json -> array
     public function readImgPathsArray(): ?array
     {
         return json_decode($this->productImage);

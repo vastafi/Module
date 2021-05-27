@@ -32,7 +32,7 @@ class Image
         return $this->id;
     }
 
-    public function getTags(): ?string
+    public function getTag(): ?string
     {
         return str_replace(["[", "]", "\""], " ", $this->tag);
     }
@@ -42,7 +42,7 @@ class Image
         return json_decode((string)$this->tag);
     }
 
-    public function setTags(string $tag): self
+    public function setTag(string $tag): self
     {
         $tag = strtolower($tag);
         $tag = explode(',', $tag);

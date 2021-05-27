@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Image;
+use App\ImageSearchCriteria;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +18,35 @@ class ImageRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Image::class);
+    }
+
+    public function search(ImageSearchCriteria $searchCriteria)
+    {
+        $offset = ($searchCriteria->getPage() - 1) * $searchCriteria->getLimit();
+
+        $query = $this->createQueryBuilder('i');
+        if ($searchCriteria->getTag() !== null) {
+            $query = $query
+                ->where('i.tags LIKE :param')
+                ->setParameter('param', '%"' . $searchCriteria->getTag() . '"%');
+        }
+        return $query
+            ->setMaxResults($searchCriteria->getLimit())
+            ->getQuery()
+            ->getResult();
+    }
+    public function countTotal(ImageSearchCriteria $searchCriteria)
+    {
+        $query = $this->createQueryBuilder('i')
+            ->select('count(i.id)');
+        if ($searchCriteria->getTag() !== null) {
+            $query = $query
+                ->where('i.tags LIKE :param')
+                ->setParameter('param', '%"' . $searchCriteria->getTag() . '"%');
+        }
+        return $query
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     // /**

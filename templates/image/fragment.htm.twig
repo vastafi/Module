@@ -1,28 +1,27 @@
 <table class="table">
-
     <tbody>
     {% for image in images %}
-        {% set fullImagePath = 'assets/main/imag/gallery/' %}
+        {% set fullImagePath = 'assets/main/img/gallery/' %}
         {% set fullImagePath = fullImagePath ~ image.path %}
         {% if loop.index0 % 4 == 0 %}
             <tr>
             <td>
                 <div class="image">
                     <img src="{{ asset(fullImagePath) }}" id="{{ image.path }}" width="150" height="150"
-                         alt="Image 1">
+                         alt="Image">
                 </div>
             </td>
         {% else %}
             <td>
                 <div class="image">
                     <img src="{{ asset(fullImagePath) }}" id="{{ image.path }}" width="150" height="150"
-                         alt="Image 1">
+                         alt="Image">
                 </div>
             </td>
         {% endif %}
     {% else %}
         <tr>
-            <td colspan="9">no records found</td>
+            <td colspan="9">No records found</td>
         </tr>
     {% endfor %}
     </tbody>
