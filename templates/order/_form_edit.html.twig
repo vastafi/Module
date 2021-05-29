@@ -1,0 +1,28 @@
+{{ form_start(form) }}
+{#    {{ form_widget(form) }}#}
+{% if order.status != 'New' %}
+{{ form_row(form.code, { 'attr':{'disabled':'true'} }) }}
+{{ form_row(form.items, { 'attr':{'disabled':'true'} }) }}
+{{ form_row(form.paymentDetails, { 'attr':{'disabled':'true'} }) }}
+{#<option {% if form.paymentDetails is selectedchoice("Credit Card") %}#}
+{#    {{ form_row(form.creditCardDetails) }}#}
+{#        {% endif %}>#}
+
+
+{#{{ form.paymentDetails.vars.choice }}#}
+
+{{ form_row(form.status) }}
+{{ form_row(form.shippingDetails, { 'attr':{'disabled':'true'} }) }}
+{#    {{ form_row(form.shippingDetails.vars.country, { 'attr':{'disabled':'true'} }) }}#}
+{#    {{ form_row(form.shippingDetails.vars.state, { 'attr':{'disabled':'true'} }) }}#}
+{#    {{ form_row(form.shippingDetails.vars.city, { 'attr':{'disabled':'true'} }) }}#}
+{#    {{ form_row(form.shippingDetails.vars.address1, { 'attr':{'disabled':'true'} }) }}#}
+{#    {{ form_row(form.shippingDetails.vars.address2, { 'attr':{'disabled':'true'} }) }}#}
+
+{#    {{ form.shippingDetails.vars.disabled }}#}
+
+    {{ form_row(form.total, { 'attr':{'disabled':'true'} }) }}
+{% endif %}
+
+    <button class="btn">{{ button_label|default('Save') }}</button>
+{{ form_end(form) }}

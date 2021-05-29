@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class OrderType extends AbstractType
+class OrderEditType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -34,20 +34,23 @@ class OrderType extends AbstractType
 //                'widget' => 'single_text',
 //            ])
 
-            ->add('creditCardDetails',CreditCardDetailsType::class,[
-                'mapped'=> true,
-                'required' => false
-            ])
-//            ->add('status', ChoiceType::class,[
-//                'choices' =>[
-//                    'In progress' => 'In progress',
-//                    'Sent' => 'Sent',
-//                    'Closed' => 'Closed',
-//                    'Canceled' => 'Canceled'
-//                ],
-//                'required' => false,
-//                'label' => 'Status'
+//            ->add('creditCardDetails',CreditCardDetailsType::class,[
+//                'mapped'=> false,
+//                'required' => false
 //            ])
+            ->add('status', ChoiceType::class,[
+                'choices' =>[
+                    'New' => 'New',
+                    'In progress' => 'In progress',
+                    'Sent' => 'Sent',
+                    'Closed' => 'Closed',
+                    'Canceled' => 'Canceled'
+                ],
+                'required' => false,
+                'empty_data' => 'New',
+                'label' => 'Status'
+
+            ])
             ->add('shippingDetails', ShippingDetailsType::class)
             ->add('total')
         ;

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Order;
+use App\Form\OrderEditType;
 use App\Form\OrderType;
 use App\Repository\OrderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,6 +32,7 @@ class OrderController extends AbstractController
     public function new(Request $request): Response
     {
         $order = new Order();
+        $order->setStatus('New');
 
         $form = $this->createForm(OrderType::class, $order);
         $form->handleRequest($request);
@@ -69,7 +71,7 @@ class OrderController extends AbstractController
      */
     public function edit(Request $request, Order $order): Response
     {
-        $form = $this->createForm(OrderType::class, $order);
+        $form = $this->createForm(OrderEditType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
