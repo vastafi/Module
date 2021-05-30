@@ -8,9 +8,12 @@ $(document).ready(function () {
 });
 
 function showCart() {
-    $.getJSON("http://localhost:8000/api/v1/cart", function (data) {
-        readItemsTemplate(data);
+    $.getJSON("/api/v1/cart", function (data) {
 
+    }).done(function(data){
+        readItemsTemplate(data);
+    }).catch(function(){
+        $(".cart-content").html(`<p class="empty-cart">Your cart is empty. But it's easy to fix! Go shopping!</p>`);
     });
 }
 
@@ -23,7 +26,6 @@ function readItemsTemplate(data) {
         read_items_html += `
         <table class='cart-table table'>
             <tr>
-<!--             <th class='w-5-pct bg-dark text-white' colspan="2" style="text-align: center">Product</th>-->
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Product</th>
                 <th class='w-5-pct  bg-dark text-white' style="text-align: center">Price</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Amount</th>
@@ -39,17 +41,15 @@ function readItemsTemplate(data) {
 
     data.forEach(cartItem => {
 
-        // var icon = JSON.parse(cartItem['product']['imgPath']);
-
         total += cartItem['product']['price'] * cartItem['amount'];
 
         read_items_html += `
-        <tr class="item">
+        <tr class="item" data-prod-code="` + cartItem['product']['code'] + `">
             <td style="vertical-align: middle;text-align: center">` + cartItem['product']['name'] + `</td>
             <td style="vertical-align: middle;text-align: center">` + formatter.format(cartItem['product']['price']) + `</td>
             <td style="vertical-align: middle;text-align: center" class="amount">` + cartItem['amount'] + `</td>
             <td style="vertical-align: middle;text-align: center" class="total">` + formatter.format(cartItem['amount'] * cartItem['product']['price']) + `</td>
-            <td style="vertical-align: middle;text-align: center"><button class="delete_cart btn btn-danger"  data-prod-code="` + cartItem['product']['code'] + `">
+            <td style="vertical-align: middle;text-align: center"><button class="delete_cart btn btn-danger" >
              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                      fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
@@ -61,7 +61,7 @@ function readItemsTemplate(data) {
         `;
     });
 
-    if (window.location.href === 'http://localhost:8000/cart') {
+    if (window.location.pathname === '/cart') {
         $("#cart-container").css("overflow-y", "hidden").css("height", "auto");
     }
 
@@ -81,21 +81,18 @@ function readItemsTemplate(data) {
     show();
 }
 async function deleteItem(productCode) {
-    let url = "http://localhost:8000/api/v1/cart/" + productCode;
+    let url = "/api/v1/cart/" + productCode;
     return await fetch(url, {method: 'DELETE'});
 }
 $(document).on('click', '.delete_cart', function (e) {
     e.preventDefault();
-    deleteItem($(this).data('prod-code')).then(function (res) {
+    deleteItem($(this).closest('tr').data('prod-code')).then(function (res) {
         console.log(res.status);
-        location.reload(true);
+        showCart();
     })
-        .catch(function () {
-            console.log("You died.");
-        });
 })
 function show(){
-    if($(location).attr("href") === 'http://localhost:8000/cart/'){
+    if(window.location.pathname === '/cart/'){
         document.querySelectorAll('.amount').forEach(function (element, index) {
             if(index < $('.amount').length/2) return;
             let amount = parseInt(element.textContent);
@@ -109,8 +106,7 @@ async function fetchCart(amount, productCode) {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('amount', parseInt(amount));
     urlParams.set('code', productCode);
-    // @fixme change query param to body param
-    let url = "http://localhost:8000/api/v1/cart/";
+    let url = "/api/v1/cart/";
     return await fetch(url + "?" + urlParams, {method: 'PATCH'});
 }
 $(document).on('input', 'input[type="number"].namount', function (e) {
@@ -119,7 +115,7 @@ $(document).on('input', 'input[type="number"].namount', function (e) {
     }
     else if($(this).val()){
         e.preventDefault();
-        fetchCart($(this).val(), $(this).parent('td').siblings('td').children('button').data('prod-code')).then(function (res) {
+        fetchCart($(this).val(), $(this).closest('tr').data('prod-code')).then(function (res) {
             console.log(res.status);
             if(res.status === 200){
                 $(location).attr('.total');
@@ -129,8 +125,22 @@ $(document).on('input', 'input[type="number"].namount', function (e) {
             }
             showCart();
         })
-            .catch(function () {
-                console.log("You died.");
-            });
     }
+})
+
+async function checkout() {
+    let url = "/api/v1/cart/";
+    return await fetch(url, {method: 'POST'});
+}
+$(document).on('click', '#checkout', function(e){
+    e.preventDefault();
+    checkout().then(function (res) {
+        console.log(res.status);
+        if(res.status === 200){
+            showCart();
+        }
+        if(res.status !== 200){
+            alert('Something went wrong. Let\'s try one more time!');
+        }
+    })
 })

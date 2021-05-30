@@ -4,6 +4,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\Cart;
+use App\Entity\Order;
 use App\Entity\Product;
 use App\Repository\CartRepository;
 use App\Response\ApiErrorResponse;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @Route("/api/v1/cart")
@@ -26,16 +28,22 @@ class CartController extends AbstractController
     public function index(CartRepository $cartRepository)
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-        $cart = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems();
-        $productRepository = $this->getDoctrine()->getRepository(Product::class);
-        $cartItem = [];
-        foreach ($cart as $item){
-            $cartItem [] = [
-                'product' => $productRepository->findOneBy(['code' => $item['code']]),
-                'amount' => $item['amount']
-            ];
+        $cart = $cartRepository->findOneBy(["user"=>$this->getUser()->getId()]);
+        if($cart){
+            $productRepository = $this->getDoctrine()->getRepository(Product::class);
+            $products = $productRepository->findBy(['code' => array_column($cart->getItems(), 'code')]);
+            $cartItem = [];
+            foreach ($products as $product){
+                $cartItem [] = [
+                    'product' => $product,
+                    'amount' => array_column($cart->getItems(), 'amount', 'code')[$product->getCode()]
+                ];
+            }
+            return $this->json($cartItem);
         }
-        return $this->json($cartItem);
+        else{
+            return new Response(null, 404);
+        }
     }
 
     /**
@@ -60,7 +68,6 @@ class CartController extends AbstractController
         if($product->getAvailableAmount() < $amount){
             return new ApiErrorResponse("1204", "We don't have so many products");
         }
-        $product->setAvailableAmount($product->getAvailableAmount() - $amount);
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
@@ -75,7 +82,6 @@ class CartController extends AbstractController
             $cart->setUser($user);
         }
         $em->persist($cart);
-        $em->persist($product);
         $em->flush();
         return new Response(null, 200);
 
@@ -90,23 +96,17 @@ class CartController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
-        $productRepository = $this->getDoctrine()->getRepository(Product::class);
-        $product = $productRepository->findOneBy(['code'=>$productCode]);
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $product->setAvailableAmount($product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
-                    return $item['code'];
-                }, $cart->getItems()))]['amount']);
             $cart->removeItem($productCode);
         }
         else {
             return new Response(null, 404);
         }
         $em->persist($cart);
-        $em->persist($product);
         $em->flush();
         return new Response(null, 200);
     }
@@ -133,22 +133,61 @@ class CartController extends AbstractController
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $stock = $product->getAvailableAmount() + ($cart->getItems())[array_search($productCode, array_map(function($item){
-                    return $item['code'];
-                }, $cart->getItems()))]['amount'];
+            $stock = $product->getAvailableAmount() + array_column($cart->getItems(), 'amount', 'code')[$productCode];
             if($stock < $amount){
                 return new ApiErrorResponse("1204", "We don't have so many products");
             }
-            $product->setAvailableAmount($stock - $amount);
             $cart->setAmount($productCode, $amount);
             $cart->setUser($user);
         }
         else{
             return new Response(null, 404);
         }
-        $em->persist($product);
         $em->persist($cart);
         $em->flush();
         return new Response(null, 200);
     }
+
+    /**
+     * @Route("/", name="checkout", methods={"POST"})
+     * @return Response
+     */
+    public function checkout():Response{
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $em = $this->getDoctrine()->getManager();
+        $cartRepository = $this->getDoctrine()->getRepository(Cart::class);
+        $productRepository = $this->getDoctrine()->getRepository(Product::class);
+        $user = $this->getUser();
+        $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
+        $products = $productRepository->findBy(['code' => array_column($cart->getItems(), 'code')]);
+        $items = [];
+        $total = 0;
+        if($cart){
+            foreach($products as $product){
+                $amount = array_column($cart->getItems(), 'amount', 'code')[$product->getCode()];
+                $product->setAvailableAmount($product->getAvailableAmount() - $amount);
+                $em->persist($product);
+                $items[] = ['code'=>$product->getCode(),
+                    'amount'=>$amount,
+                    'price'=>$product->getPrice()];
+                $total += $amount * $product->getPrice();
+            }
+            $order = $this->createOrder($items, $total);
+            $cartRepository->removeCart($cart->getId());
+            $em->persist($order);
+            $em->flush();
+            return new Response(null, 200);
+        }
+        return new Response(null, 404);
+    }
+
+    public function createOrder(array $items, float $total):Order{
+        $order = new Order();
+        $order->setItems($items);
+        $order->setStatus('new');
+        $order->setTotal($total);
+        $order->setUser($this->getUser());
+        return $order;
+    }
 }
+
