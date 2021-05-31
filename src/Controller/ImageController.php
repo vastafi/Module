@@ -215,18 +215,4 @@ class ImageController extends AbstractController
         return $this->redirectToRoute('image_index');
     }
 
-    public function deleteImageFromProducts(Image $image, ProductRepository $productRepository) {
-        $products = $productRepository->findByImage($image);
-        foreach ($products as $product) {
-            $paths = $product->readImgPathsArray();
-            array_splice($paths, array_search($image->getPath(), $paths), 1);
-            (count($paths) === 0) ? $product->writeImgPathsFromArray(["250x200.png"]) : $product->writeImgPathsFromArray($paths);
-            try {
-                $date = new DateTime(null, new DateTimeZone('Europe/Athens'));
-            } catch (Exception $e) {
-            }
-            $product->setUpdatedAt($date);
-            $productRepository->updateImgPath($product);
-        }
-    }
-}
+  }
