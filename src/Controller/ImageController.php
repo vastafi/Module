@@ -15,6 +15,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -53,7 +54,7 @@ class ImageController extends AbstractController
             throw new BadRequestHttpException("Page limit exceed");
         }
 
-        return $this->render('admin/image/index.html.twig', [
+        return $this->render('image/index.html.twig', [
             'images' => $imageRepository->search($searchImage),
             'length' => $length,
             'limit' => $searchImage->getLimit()
@@ -76,9 +77,11 @@ class ImageController extends AbstractController
     {
         $imageFile = $form->get('path')->getData();
         $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+        // this is needed to safely include the file name as part of the URL
         $safeFilename = $slugger->slug($originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-                try {
+        // Move the file to the directory where brochures are stored
+        try {
             $gallery = $this->getParameter('gallery_path');
             $imageFile->move(
                 $gallery,
@@ -87,18 +90,20 @@ class ImageController extends AbstractController
         } catch (FileException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-                return $newFilename;
+        // updates the 'brochureFilename' property to store the PDF file name
+        // instead of its contents
+        return $newFilename;
     }
 
     private function checkTags(Image $image): array
     {
         $errors = [];
         foreach ($image->getTagsArray() as $tag) {
-            if (mb_strlen($tag) > 25 || mb_strlen($tag) < 2) {
-                $errors['tagLen'] = "The length of each tag must be from 2 to 25 characters";
+            if (mb_strlen($tag) > 12 || mb_strlen($tag) < 2) {
+                $errors['tagLen'] = "The length of each tag must be from 2 to 12 characters";
             }
             if (preg_match('/[^a-zа-я0-9]/', $tag)) {
-                $errors['tagMatch'] = "The tags must contain only characters and numbers ";
+                $errors['tagMatch'] = "The tags must contain only characters and digits";
             }
         }
         return $errors;
@@ -106,9 +111,6 @@ class ImageController extends AbstractController
 
     /**
      * @Route("/new", name="image_new", methods={"GET","POST"})
-     * @param Request $request
-     * @param SluggerInterface $slugger
-     * @return Response
      */
     public function new(Request $request, SluggerInterface $slugger): Response
     {
@@ -117,22 +119,26 @@ class ImageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            /** @var UploadedFile $imageFile */
+
+            // Check tags
             $errors = $this->checkTags($image);
 
             if (!empty($errors)) {
-                return $this->render('admin/image/new.html.twig', [
+                return $this->render('image/new.html.twig', [
                     'errors' => $errors,
                     'image' => $image,
                     'form' => $form->createView(),
                 ]);
             }
-            $image->setTagsFromArray($image->getTagsArray());
 
+            // Add tags
+            $image->setTagsFromArray($image->getTagsArray());
+            // Add image
             $image->setPath($this->uploadImageWithSecureName($form, $slugger));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($image);
             $entityManager->flush();
-
             return $this->redirectToRoute('image_index');
         }
 
