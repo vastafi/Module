@@ -176,7 +176,7 @@ class ImageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $errors = $this->checkTags($image);
             if (!empty($errors)) {
-                return $this->render('admin/image/edit.html.twig', [
+                return $this->render('image/edit.html.twig', [
                     'errors' => $errors,
                     'image' => $image,
                     'form' => $form->createView(),
