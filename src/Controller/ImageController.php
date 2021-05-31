@@ -77,10 +77,8 @@ class ImageController extends AbstractController
     {
         $imageFile = $form->get('path')->getData();
         $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-        // this is needed to safely include the file name as part of the URL
         $safeFilename = $slugger->slug($originalFilename);
         $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-        // Move the file to the directory where brochures are stored
         try {
             $gallery = $this->getParameter('gallery_path');
             $imageFile->move(
@@ -90,8 +88,6 @@ class ImageController extends AbstractController
         } catch (FileException $e) {
             throw new BadRequestHttpException($e->getMessage());
         }
-        // updates the 'brochureFilename' property to store the PDF file name
-        // instead of its contents
         return $newFilename;
     }
 
@@ -99,8 +95,8 @@ class ImageController extends AbstractController
     {
         $errors = [];
         foreach ($image->getTagsArray() as $tag) {
-            if (mb_strlen($tag) > 12 || mb_strlen($tag) < 2) {
-                $errors['tagLen'] = "The length of each tag must be from 2 to 12 characters";
+            if (mb_strlen($tag) > 22 || mb_strlen($tag) < 2) {
+                $errors['tagLen'] = "The length of each tag must be from 2 to 22 characters";
             }
             if (preg_match('/[^a-zа-я0-9]/', $tag)) {
                 $errors['tagMatch'] = "The tags must contain only characters and digits";
@@ -111,6 +107,9 @@ class ImageController extends AbstractController
 
     /**
      * @Route("/new", name="image_new", methods={"GET","POST"})
+     * @param Request $request
+     * @param SluggerInterface $slugger
+     * @return Response
      */
     public function new(Request $request, SluggerInterface $slugger): Response
     {
@@ -121,7 +120,6 @@ class ImageController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $imageFile */
 
-            // Check tags
             $errors = $this->checkTags($image);
 
             if (!empty($errors)) {
@@ -131,10 +129,7 @@ class ImageController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-
-            // Add tags
             $image->setTagsFromArray($image->getTagsArray());
-            // Add image
             $image->setPath($this->uploadImageWithSecureName($form, $slugger));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($image);

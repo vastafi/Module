@@ -5,28 +5,17 @@
     {% endif %}
     {{ form_widget(form) }}
 
-
-
-<input id="test" type="text" class="form-control">
-{#######################################################}
-
-<br>
 <button id="addImage" type="button" class="btn btn-primary">Add image</button>
-<br>
-<div class="gallery-fragment" id="gallery-fragment"></div>
-
-
-
+<input id="test" type="text" class="form-control">
+<div class="gallery-fragment" id="fragment"></div>
 <div class="mt-3">
     <button type="submit" class="btn btn-success">{{ button_label|default('Save') }}</button>
-
 </div>
 {{ form_end(form) }}
 
 <script>
     let $ = jQuery;
 
-    // $("#product_productImage").prop( "type", "hidden" );
     $("#test").prop( "disabled", true );
     $("#test").val($("#product_productImage").val());
 
@@ -34,7 +23,7 @@
         let currImgList = $("#product_productImage").val();
         let currImgArray = currImgList.split(",")
         if (currImgArray.length === 3) {
-            $('#gallery-fragment').empty();
+            $('#fragment').empty();
         }
         if (currImgArray.length < 4) {
 
@@ -49,14 +38,9 @@
             $("#product_productImage").val(path);
             $("#test").val(path);
         } else {
-            $('#gallery-fragment').empty();
+            $('#fragment').empty();
         }
     }
-
-    // $(document).on('click', '[data-delete-item]', function (e) {
-    //     let $el = $(e.target);
-    //     $el.closest('[data-item]').remove();
-    // });
 
     $(document).on('click', '.image img', function () {
         appendImagePath(this);
@@ -73,7 +57,7 @@
                 response
                     .text()
                     .then(function (result) {
-                        $('#gallery-fragment').append(result)
+                        $('#fragment').append(result)
                     });
             })
             .catch(function () {
@@ -82,9 +66,8 @@
     });
 
     $(document).on('click', function (e) {
-        if (e.target.id !== 'gallery-fragment' && $(e.target).closest('#gallery-fragment').length === 0) {
-            $('#gallery-fragment').empty();
+        if (e.target.id !== 'gallery-fragment' && $(e.target).closest('#fragment').length === 0) {
+            $('#fragment').empty();
         }
     });
-
 </script>

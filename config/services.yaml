@@ -5,7 +5,6 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     gallery_path: '%kernel.project_dir%/public/assets/main/img/gallery/'
-
 services:
     console_command.csv_import:
         class: App\Command\CsvImportCommand
