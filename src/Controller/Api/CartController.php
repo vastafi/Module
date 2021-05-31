@@ -159,12 +159,15 @@ class CartController extends AbstractController
         $productRepository = $this->getDoctrine()->getRepository(Product::class);
         $user = $this->getUser();
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
-        $products = $productRepository->findBy(['code' => array_column($cart->getItems(), 'code')]);
         $items = [];
         $total = 0;
         if($cart){
+            $products = $productRepository->findBy(['code' => array_column($cart->getItems(), 'code')]);
             foreach($products as $product){
                 $amount = array_column($cart->getItems(), 'amount', 'code')[$product->getCode()];
+                if($product->getAvailableAmount() < $amount){
+                    return new ApiErrorResponse('14068', 'We don\'t have such an amount for '.$product->getName());
+                }
                 $product->setAvailableAmount($product->getAvailableAmount() - $amount);
                 $em->persist($product);
                 $items[] = ['code'=>$product->getCode(),

@@ -132,7 +132,10 @@ $(document).on('click', '#checkout', function(e){
         if(res.status === 200){
             showCart();
         }
-        if(res.status !== 200){
+        else if(res.status === 400){
+            res.json().then(data => alert(data.message));
+        }
+        else{
             alert('Something went wrong. Let\'s try one more time!');
         }
     })
