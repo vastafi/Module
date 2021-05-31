@@ -2,16 +2,16 @@
 
 {% block title %}Cart{% endblock %}
 {% block content %}
-<div class="container mt-4">
-    <h1>Your Cart</h1>
-    <div class="content">
-        <div class="cart-content"></div>
+    <div class="container mt-4">
+        <h1>Your Cart</h1>
+        <div class="content">
+            <div class="cart-content"></div>
+        </div>
     </div>
-</div>
-<div class="card-body"><a href="{{ path('product_index') }}"
-                          class="btn btn-warning w-10 float-left">
-        Go shopping
-    </a>
+    <div class="card-body"><a href="{{ path('product_index') }}"
+                              class="btn btn-warning w-10 float-left">
+            Go shopping
+        </a>
 
         <a href="#" class="btn btn-warning w-10 float-right" id="checkout">Checkout</a>
     </div>
