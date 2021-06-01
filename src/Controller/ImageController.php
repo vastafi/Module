@@ -36,29 +36,42 @@ class ImageController extends AbstractController
      */
     public function index(ImageRepository $imageRepository,Request $request): Response
     {
-
-        $tag = $request->query->get('search');
+        $tag = $request->query->get('tag');
+        $limit = $request->query->get('limit', 8);
         $page = $request->query->get('page', 1);
-        $limit = $request->query->get('limit', 10);
-        if ($limit > 120) {
-            throw new BadRequestHttpException("400");
-        }
 
-        try {
-            $searchImage = new ImageSearchCriteria($tag, $page, $limit);
-        } catch (Exception $e) {
-            throw new BadRequestHttpException($e->getMessage());
+        $pageNum = $imageRepository->countPages( $tag,$limit);
+        if($page <= 0){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('image_index');
         }
-
-        $length = $imageRepository->countTotal($searchImage);
-        if ($page > ceil($length / $limit) && $length / $limit !== 0) {
-            throw new BadRequestHttpException("Page limit exceed");
+        if($limit <= 1){
+            $this->addFlash('warning', "Limit can not be negative or zero");
+            return $this->redirectToRoute('image_index');
+        }
+        $image = $imageRepository->filter($tag, $limit, $page);
+        if(!($image) && in_array($page, range(1, $pageNum))){
+//            throw new BadRequestHttpException("400");
+        }
+        if($page > $pageNum){
+            $this->addFlash('warning', "Invalid page number");
+            return $this->redirectToRoute('image_index');
+        }
+        if ($limit > 100) {
+            $this->addFlash('warning', "Limit exceeded");
+            return $this->redirectToRoute('image_index');
         }
 
         return $this->render('image/index.html.twig', [
-            'images' => $imageRepository->search($searchImage),
-            'length' => $length,
-            'limit' => $searchImage->getLimit()
+            'images' => $image,
+
+            'currentValues' => [
+                'limit' => $limit,
+                'page' => $page,
+                'tag' => $tag,
+            ],
+
+            'totalPages' => $pageNum
         ]);
     }
 
