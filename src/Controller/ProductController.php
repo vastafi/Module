@@ -70,6 +70,7 @@ class ProductController extends AbstractController
             'totalPages' => $pageNum
         ]);
     }
+
     /**
      * @Route("/{productCode}", name="detroduct", requirements={"productCode":"[A][B]\d+"})
      * @param string $productCode
@@ -80,6 +81,7 @@ class ProductController extends AbstractController
     public function getProductByCode(string $productCode, ProductRepository $productRepository): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
+        $product->writeImgPathEgal($product->readImgPathsArray());
         {
             if (!$product) {
                 throw new NotFoundHttpException('Product not found.');
