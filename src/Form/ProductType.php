@@ -36,9 +36,9 @@ class ProductType extends AbstractType
             ->add('price', NumberType::class, [
                 'invalid_message' => "price must be number",
                 'scale' => 2,
-                'constraints' => [new Positive(['message'=>'Price must be positive'])],
+                'constraints' => [new Positive(['message' => 'Price must be positive'])],
             ])
-            ->add('description',TextareaType::class,[
+            ->add('description', TextareaType::class, [
                 'constraints' => [
                     new Length([
                         'max' => 50,
@@ -46,14 +46,14 @@ class ProductType extends AbstractType
                     ]),
                 ],
             ])
-            ->add('productImage', null, [
-                'required' => false,
-                'empty_data' => '250x200.png',
-            ])
             ->add('availableAmount', IntegerType::class, [
                 'required' => false,
                 'empty_data' => 0,
                 'constraints' => [new PositiveOrZero()],
+            ])
+            ->add('productImage', null, [
+                'required' => false,
+                'empty_data' => '250x200.png',
             ]);
     }
 

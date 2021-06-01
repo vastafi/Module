@@ -16,7 +16,7 @@ class ImageType extends AbstractType
         $builder
             ->add('tag', TextType::class, [
                 'attr' => array(
-                    'placeholder' => 'Separate tags with commas'
+                    'placeholder' => 'Separate tags'
                 )
             ])
             ->add('path', FileType::class, [

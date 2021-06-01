@@ -39,7 +39,7 @@ class Image
 
     public function getTagsArray(): ?array
     {
-        return json_decode((string)$this->tag);
+        return json_decode($this->tag);
     }
 
     public function setTag(string $tag): self

@@ -22,9 +22,9 @@ class ImageEditType extends AbstractType
 
             ->add('path', FileType::class, [
                 'required' => false,
-                'empty_data' => '# % & { } \\ / $ ! \' \" : @ < > * ? + ` | =',
+                'empty_data' => '% & # { } \\ / ! $ \' \" : < > @  * ? + ` | =',
                 'data_class' => null,
-                'attr' =>  ['accept' => ".png,.jpg,.jpeg,.jfif "]
+                'attr' =>  ['accept' => ".png,.jpg,.jpeg"]
             ]);
     }
 

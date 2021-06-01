@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Image;
 use App\Exceptions\InvalidLimitException;
 use App\Exceptions\InvalidPageException;
+use App\Form\ImageEditType;
 use App\Form\ImageType;
 use App\ImageSearchCriteria;
 use App\Repository\ImageRepository;
@@ -165,7 +166,7 @@ class ImageController extends AbstractController
     public function edit(Request $request, Image $image, SluggerInterface $slugger): Response
     {
         $origPath = $image->getPath();
-        $form = $this->createForm(ImageType::class, $image);
+        $form = $this->createForm(ImageEditType::class, $image);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -192,6 +193,18 @@ class ImageController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    public function deleteImageFromProducts(Image $image, ProductRepository $productRepository)
+    {
+        $products = $productRepository->findByImage($image);
+        foreach ($products as $product) {
+            $paths = $product->readImgPathsArray();
+            array_splice($paths, array_search($image->getPath(), $paths), 1);
+            (count($paths) === 0) ? $product->writeImgPathsFromArray(["250x200.png"]) : $product->writeImgPathsFromArray($paths);
+            $date = new DateTime(null, new DateTimeZone('Europe/Athens'));
+            $product->setUpdatedAt($date);
+            $productRepository->updateImgPath($product);
+        }
+    }
 
     /**
      * @Route("/{id}", name="image_delete", methods={"POST"})
@@ -206,7 +219,7 @@ class ImageController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $this->deleteImageFromProducts($image, $productRepository);
             $filesystem = new Filesystem();
-            $gallery = $this->getParameter('');
+            $gallery = $this->getParameter('gallery_path');
             $filesystem->remove($gallery .$image->getPath());
             $entityManager->remove($image);
             $entityManager->flush();
