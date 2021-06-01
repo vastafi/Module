@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/api/v1/cart")
+ * @Route("/api/v1/cart", defaults={"_format":"json"})
  */
 class CartController extends AbstractController
 {
@@ -25,7 +25,6 @@ class CartController extends AbstractController
      */
     public function index(CartRepository $cartRepository)
     {
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         return $this->json($cartRepository->findOneBy(["user"=>$this->getUser()->getId()])->getItems());
     }
 
