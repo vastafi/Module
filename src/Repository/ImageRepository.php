@@ -63,8 +63,8 @@ class ImageRepository extends ServiceEntityRepository
         $query = $this->createQueryBuilder('i');
 
         if ($tag) {
-            $query->andWhere('LOWER(i.tag) LIKE :tag')
-                ->setParameter('tag',  strtolower($tag . "%"));
+            $query->andWhere('i.tag LIKE :tag')
+                ->setParameter('tag',  strtolower("%".$tag . "%"));
         }
 
         $query->orderBy('i.id', 'ASC');

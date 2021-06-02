@@ -10,15 +10,15 @@
                     <main class="card">
                         <div class="row no-gutters">
                             <aside class="col-sm-6 border-right">
+                                {% if product.productImage is not null %}
                                 <article class="gallery-wrap">
-
                                     {% for path in product.productImage %}
                                     {% set fullImagePath = 'assets/main/img/gallery/' %}
                                     {% set fullImagePath = fullImagePath ~ path %}
                                     {% if loop.index == 1 %}
                                     <div class="img-wrap">
                                         <img src="{{ asset(fullImagePath) }}" id="expandedImg"
-                                             onclick="expandImage(this);" onload="expandImage(this);">
+                                             onclick="expandImage(this);">
                                     </div>
                                     {% else %}
                                     <div class="img-small-wrap">
@@ -30,6 +30,25 @@
                                         {% endfor %}
                                     </div>
                                 </article>
+                                {% else %}
+                                <article class="gallery-wrap">
+                                    <div class="img-wrap">
+                                        <div><a href="https://via.placeholder.com/600x400" data-fancybox=""><img
+                                                        src="https://via.placeholder.com/600x400"
+                                                        class="img-fuid"></a>
+                                        </div>
+                                    </div>
+                                    <div class="img-small-wrap">
+                                        {% for i in range(1,3) %}
+                                        <div class="item-gallery"><a
+                                                    href="{{ asset('assets/main/img/600x400.png') }}"
+                                                    data-fancybox=""><img
+                                                        src="{{ asset('assets/main/img/600x400.png') }}"></a>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </article>
+                                {% endif %}
                             </aside>
                             <aside class="col-sm-6">
                                 <article class="card-body">
@@ -84,9 +103,9 @@
                         console.log("You died.")
                     });
             })
-        </script>
-        <script>
+
             function expandImage(imgs) {
+                console.log('yes');
                 var expandImg = document.getElementById("expandedImg");
                 expandImg.src = imgs.src;
                 expandImg.parentElement.style.display = "block";

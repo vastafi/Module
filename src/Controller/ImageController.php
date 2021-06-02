@@ -51,7 +51,7 @@ class ImageController extends AbstractController
         }
         $image = $imageRepository->filter($tag, $limit, $page);
         if(!($image) && in_array($page, range(1, $pageNum))){
-//            throw new BadRequestHttpException("400");
+            throw new BadRequestHttpException("400");
         }
         if($page > $pageNum){
             $this->addFlash('warning', "Invalid page number");
