@@ -49,11 +49,6 @@ class Order
      */
     private $user;
 
-    public function __construct()
-    {
-        $this->user = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
