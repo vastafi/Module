@@ -2,17 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Product;
-use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/products")
@@ -57,6 +54,13 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('product_index');
         }
 
+        foreach ($products as $product) {
+            $product->writeImgPathEgal($product->readImgPathsArray());
+        }
+
+//        var_dump($products);
+//        die;
+
         return $this->render('product/products.html.twig', [
             'products' => $products,
 
@@ -89,6 +93,7 @@ class ProductController extends AbstractController
             return $this->render('product/details.html.twig', ['product' => $product]);
         }
     }
+
     /**
      * @Route("/contacts", name="contacts")
      * @return Response
@@ -97,6 +102,7 @@ class ProductController extends AbstractController
     {
         return $this->render('contacts.html.twig');
     }
+
     /**
      * @Route("/about", name="about")
      * @return Response

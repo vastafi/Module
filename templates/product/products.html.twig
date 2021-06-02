@@ -9,14 +9,16 @@
         {% for product in products %}
             <div class="col-md-3">
                 <div class="card mb-3">
+                    {% set fullImagePath = 'assets/main/img/gallery/' %}
+                    {% set fullImagePath = fullImagePath ~ product.productImage|first %}
                     {# {% set fullImagePath = 'assets/main/img/gallery/' %} #}
                     {# {% set fullImagePath = fullImagePath ~ product.productImage %} #}
                     {# <div class="col-md-3"> #}
                     {# <div class="card mb-3"> #}
-                    {# <img src="{{ asset(fullImagePath) }}" alt="{{ product.name }}" width="250" height="200" #}
-                    {# class="card-img-top"> #}
-                    <img src="{{ asset('assets/main/img/250x200.png') }}" alt="{{ product.name }}"
-                         class="card-img-top">
+                     <img src="{{ asset(fullImagePath) }}" alt="{{ product.name }}" width="250" height="200"
+                     class="card-img-top">
+{#                    <img src="{{ asset('assets/main/img/250x200.png') }}" alt="{{ product.name }}"#}
+{#                         class="card-img-top">#}
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">{{ product.description }}</p>

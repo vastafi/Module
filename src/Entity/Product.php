@@ -177,7 +177,6 @@ class Product
         return json_decode($this->productImage);
     }
 
-
     public function setProductImage(string $paths): self
     {
         $paths = explode(',', $paths);

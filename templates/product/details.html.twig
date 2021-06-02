@@ -11,41 +11,24 @@
                         <div class="row no-gutters">
                             <aside class="col-sm-6 border-right">
                                 <article class="gallery-wrap">
+
+                                    {% for path in product.productImage %}
+                                    {% set fullImagePath = 'assets/main/img/gallery/' %}
+                                    {% set fullImagePath = fullImagePath ~ path %}
+                                    {% if loop.index == 1 %}
                                     <div class="img-wrap">
-                                        <div><a href="https://via.placeholder.com/600x400" data-fancybox=""><img
-                                                        src="https://via.placeholder.com/600x400"
-                                                        class="img-fuid"></a>
-                                        </div>
+                                        <img src="{{ asset(fullImagePath) }}" id="expandedImg"
+                                             onclick="expandImage(this);" onload="expandImage(this);">
                                     </div>
+                                    {% else %}
                                     <div class="img-small-wrap">
-                                        <div class="item-gallery"><a
-                                                    href="{{ asset('assets/main/img/600x400.png') }}"
-                                                    data-fancybox=""><img
-                                                        src="{{ asset('assets/main/img/600x400.png') }}"></a>
+                                        <div class="item-gallery">
+                                            <img src="{{ asset(fullImagePath) }}" alt="{{ loop.index }}"
+                                                 onclick="expandImage(this);">
                                         </div>
-                                        <div class="item-gallery"><a
-                                                    href="{{ asset('assets/main/img/600x400.png') }}"
-                                                    data-fancybox=""><img
-                                                        src="{{ asset('assets/main/img/600x400.png') }}"></a>
-                                        </div>
-                                        <div class="item-gallery"><a
-                                                    href="{{ asset('assets/main/img/600x400.png') }}"
-                                                    data-fancybox=""><img
-                                                        src="{{ asset('assets/main/img/600x400.png') }}"></a>
-                                        </div>
+                                        {% endif %}
+                                        {% endfor %}
                                     </div>
-                                    {# <div class="img-wrap"> #}
-                                    {# {% for path in product.productImage %} #}
-                                    {# {% set fullImagePath = 'assets/main/img/gallery/' %} #}
-                                    {# {% set fullImagePath = fullImagePath ~ path %} #}
-                                    {# <img src="{{ asset(fullImagePath) }}" alt="Image 1"> #}
-                                    {# </div> #}
-                                    {# <div class="img-small-wrap"> #}
-                                    {# <div class="item-gallery"><img src="{{ asset(fullImagePath) }}" alt="Image 2"></div> #}
-                                    {# <div class="item-gallery"><img src="{{ asset(fullImagePath) }}" alt="Image 3"></div> #}
-                                    {# <div class="item-gallery"><img src="{{ asset(fullImagePath) }}" alt="Image 4"></div> #}
-                                    {# {% endfor %} #}
-                                    {# </div> #}
                                 </article>
                             </aside>
                             <aside class="col-sm-6">
@@ -101,6 +84,13 @@
                         console.log("You died.")
                     });
             })
+        </script>
+        <script>
+            function expandImage(imgs) {
+                var expandImg = document.getElementById("expandedImg");
+                expandImg.src = imgs.src;
+                expandImg.parentElement.style.display = "block";
+            }
         </script>
     {% endif %}
 {% endblock %}
