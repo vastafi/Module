@@ -3,7 +3,7 @@
 {% block title %} Products details {% endblock %}
 
 {% block content %}
-      <section class="section-content bg padding-y-sm">
+    <section class="section-content bg padding-y-sm">
         <div class="container">
             <div class="row">
                 <div class="col-xl-10 col-md-9 col-sm-12">
@@ -56,9 +56,10 @@
                                             Cart
                                         </a>
                                     {% else %}
-                                        <a href="{{ path('app_login', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart">Add to
-                                        Cart
-                                    </a>
+                                        <a href="{{ path('app_login', {'productCode':product.code}) }}"
+                                           class="btn  btn-warning" id="add_cart">Add to
+                                            Cart
+                                        </a>
                                     {% endif %}
 
                                 </article>
@@ -66,32 +67,31 @@
                         </div>
                     </main>
                 </div>
-
             </div>
         </div>
     </section>
     {% if app.user %}
-    <script>
-        let click = 0;
-        $(document).on('click', '#add_cart', function(e){
-            click += 1;
-            e.preventDefault();
-            fetch("{{ path("cart_add", {'productCode':product.code})}}", {method: 'POST'})
-                .then(function(res){ console.log(res.status);
-                if(res.status === 400){
-                    alert('We dont have so many products');
-                }
-                else if(res.status === 200){
-                    alert('Product added to cart');
-                    $('#avail').text({{ product.availableAmount }} - click);
-                    showCart();
-                }
-                })
-                .catch(function (){
-                    console.log("You died.")
-                });
-        })
-    </script>
+        <script>
+            let click = 0;
+            $(document).on('click', '#add_cart', function (e) {
+                click += 1;
+                e.preventDefault();
+                fetch("{{ path("cart_add", {'productCode':product.code}) }}", {method: 'POST'})
+                    .then(function (res) {
+                        console.log(res.status);
+                        if (res.status === 400) {
+                            alert('We dont have so many products');
+                        } else if (res.status === 200) {
+                            alert('Product added to cart');
+                            $('#avail').text({{ product.availableAmount }} -click);
+                            showCart();
+                        }
+                    })
+                    .catch(function () {
+                        console.log("You died.")
+                    });
+            })
+        </script>
     {% endif %}
 {% endblock %}
 
