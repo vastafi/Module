@@ -3,77 +3,18 @@
 {% block title %}Cart{% endblock %}
 {% block content %}
     <div class="container mt-4">
-    <h1>Your Cart</h1>
-    {% include '/parts/flash.html.twig' %}
-    {% if items | length > 0 %}
-        <div class="row mt-4">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-dark text-white d-flex">
-                        <h5>Items</h5>
-                        <div class="ml-auto">
-                        </div>
-                    </div>
-                    <ul class="list-group list-group-flush">
-                        {% for item in items %}
-                            <li class="list-group-item d-flex">
-                                <div class="flex-fill mr-2">
-                                    <img src="https://via.placeholder.com/200x150" width="100" alt="Product image">
-                                    <h5 class="mt-0 mb-0">{{ item.product.code }}</h5>
-                                </div>
-                                <div class="flex-fill mr-2">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item d-flex justify-content-between">
-                                            <h5 class="mt-0 mb-0">{{ item.product.name }}</h5>
-
-                                            <a href="{{ path('cart_remove', {'productCode': item.product.code}) }}"
-                                               class="btn btn-sm btn-danger" id="delete_cart" data-prod-code="{{ item.product.code }}"
-                                            data-product-amount="{{ item.amount }}" data-product-price="{{ item.product.price }}">
-                                                <i class="bi bi-trash"></i>
-                                                Delete
-                                            </a>
-
-
-                                        </li>
-                                    </ul>
-                                    <div class="form-inline mt-2">
-                                        <div class="form-group mb-0 mr-2">
-                                            <div style="display: inline-flex; gap:10px;">
-                                                <label>Amount</label>
-                                                {{ item.amount }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="flex-fill mr-2 text-right">
-                                        <b>Price:</b><small> per unit</small>
-                                        <br><b>{{ item.product.price }}$</b>
-                                    </div>
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card mt-4 mt-md-0">
-                    <div class="card-header bg-dark text-white">
-                        <h5>Summary</h5></div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between">
-                            <div><b>Total</b></div>
-                            <span><b id="total">{{ total }} $</b></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+        <h1>Your Cart</h1>
+        <div class="content">
+            <div class="cart-content"></div>
         </div>
-        </div>
-    {% else %}
-        <div class="alert alert-info">
-            Your cart is empty. But it's easy to fix! Go shopping for <a href="{{ path('product_index') }}">Product</a>.
-        </div>
-    {% endif %}
+    </div>
+    <div class="card-body"><a href="{{ path('product_index') }}"
+                              class="btn btn-warning w-10 float-left">
+            Go shopping
+        </a>
 
+        <a href="#" class="btn btn-warning w-10 float-right" id="checkout">Checkout</a>
+    </div>
     <section class="section-name bg-white padding-y">
         <div class="container">
             <header class="section-heading">
@@ -103,20 +44,4 @@
                 a couple of weeks late because of a typhoon – in my opinion, this is completely understandable.</p>
         </div>
     </section>
-    <script>
-        async function deleteItem(productCode) {
-            let url = "{{ path("cart_remove", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
-            return await fetch(url, {method: 'DELETE'});
-        }
-        $(document).on('click', '#delete_cart', function (e) {
-            e.preventDefault();
-            deleteItem(e.target.getAttribute('data-prod-code')).then(function (res) {
-                console.log(res.status);
-                location.reload();
-            })
-                .catch(function () {
-                    console.log("You died.");
-                });
-        })
-    </script>
 {% endblock %}

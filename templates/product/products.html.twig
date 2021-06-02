@@ -14,9 +14,29 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="card-text">{{ product.description }}</p>
-                        <div class="d-flex justify-content-between align-item-center">
+                        <div >
                             <a href="{{ path('detroduct', {productCode:product.code}) }}"
                                class="bt-red bt-5">View details</a>
+                        </div>
+                        <br>
+                        <div class="d-flex justify-content-between align-item-center">
+                            {% if app.user %}
+                            <div class="left">
+                                <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="bt-red bt-5"
+                                   id="add_cart" data-product-code="{{ product.code }}">
+                                    <i class="bi bi-cart-fill"></i>
+                                    Add
+                                </a>
+                            </div>
+                            {% else %}
+                            <div class="right">
+                                <a href="{{ path('app_login', {'productCode':product.code}) }}" class="bt-red bt-5"
+                                   id="add_cart">
+                                    <i class="bi bi-cart-fill"></i>
+                                    Add
+                                </a>
+                            </div>
+                        {% endif %}
                             <span class="h5 mt-auto">{{ product.price }} $</span>
                         </div>
                     </div>
@@ -27,5 +47,29 @@
 
     </div>
     {% include '/parts/pagination.html.twig' %}
+    {% if app.user %}
+    <script>
+        async function addCart(productCode) {
+            let url = "{{ path("cart_add", {'productCode': 'PRODUCT_CODE'}) }}".replace('PRODUCT_CODE', productCode);
+            return await fetch(url, {method: 'POST'});
+        }
+        $(document).on('click', '#add_cart', function(e){
+            e.preventDefault();
+            addCart($(this).data('product-code'))
+                .then(function(res){ console.log(res.status);
+                    if(res.status === 400){
+                        alert('We dont have so many products');
+                    }
+                    else if(res.status === 200){
+                        alert('Product added to cart');
+                        showCart();
+                    }
+                })
+                .catch(function (){
+                    console.log("You died.")
+                });
+        })
+    </script>
+    {% endif %}
 
 {% endblock %}

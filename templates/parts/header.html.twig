@@ -1,3 +1,11 @@
+<style>
+    .dropdown-scrollbar {
+        height: 200px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+</style>
+
 <header class="section-header py-5">
     <div class="container">
         <nav class="navbar navbar-expand-md navbar-dark bg-secondary fixed-top">
@@ -21,7 +29,6 @@
                             <h2 class="logo-text">Simple Store</h2>
                         </a>
                     {% endif %}
-
                     <li class="nav-item">
                         <a class="nav-link" href="{{ path('contacts') }}">Contact <span class="sr-only">(current)</span></a>
                     </li>
@@ -33,43 +40,89 @@
                 <div class="navbar-nav ">
                     <ul class="navbar-nav mr-auto">
 
-                        {% if "/admin/" in app.request.requestUri %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ path('product_index') }}">HOME</a>
-                            </li>
-                            {% if "/admin/user/" == app.request.requestUri %}
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{{ path('user_index') }}">Users</a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('user_index') }}">Users</a>
-                                </li>
-                            {% endif %}
-
-                            {% if "/admin/products" == app.request.requestUri %}
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="{{ path('adminpr') }}">Products</a>
-                                </li>
-                            {% else %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('adminpr') }}">Products</a>
-                                </li>
-                            {% endif %}
+                    {% if "/admin/" in app.request.requestUri %}
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ path('product_index') }}">HOME</a>
+                        </li>
+                        {% if "/admin/user/" == app.request.requestUri %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ path('user_index') }}">Users</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('user_index') }}">Users</a>
+                        </li>
                         {% endif %}
+
+                        {% if "/admin/products" == app.request.requestUri %}
+                        <li class="nav-item">
+                            <a class="nav-link active" href="{{ path('adminpr') }}">Products</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('adminpr') }}">Products</a>
+                        </li>
+                        {% endif %}
+
+                    {% endif %}
+
 
                         {% if is_granted('ROLE_ADMIN') and not ("/admin/" in app.request.requestUri) %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ path('adminpr') }}">ADMIN PAGE</a>
                             </li>
                         {% endif %}
+                        {% if app.user %}
+                        <div class="col-auto">
+                            <div class="widget-header dropdown">
+                                <div data-toggle="dropdown" data-offset="20,10">
 
-                        <li class="nav-item">
-                            <a href="{{ path('cart') }}" class="btn btn-lg btn-secondary" type="button">
-                                <i class="bi bi-cart"></i>
+                                    <button id="toggle-cart" type="button" class="btn btn-lg btn-secondary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor"
+                                             class="bi bi-cart" viewBox="0 0 16 16">
+                                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                        </svg>
+                                        Cart
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu">
+                                    <div class="dropdown-scrollbar">
+                                        <form class="px-4 py-3">
+                                            <h4 align="center">Shopping cart</h4>
+                                            <div class="content">
+                                                <div class="cart-content"></div>
+                                            </div>
+                                        </form>
+                                        <div class="px-4 py-3">
+                                            <a class="go-to-cart-btn" href="{{ path('cart') }}">
+                                                <button class="btn btn-outline-dark float-left">
+                                                    More details
+                                                </button>
+                                            </a>
+                                            <a href="{{ path('product_index') }}">
+                                                <button class="btn btn-outline-dark  float-right">
+                                                    Go shopping
+                                                </button>
+                                            </a>
+                                        </div>
+                                        <hr class="dropdown-divider">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <a href="{{ path('app_login') }}">
+                            <button id="toggle-cart" type="button" class="btn btn-lg btn-secondary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                     fill="currentColor"
+                                     class="bi bi-cart" viewBox="0 0 16 16">
+                                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                </svg>
                                 Cart
-                            </a>
-                        </li>
+                            </button>
+                        </a>
+                        {% endif %}
 
                         {% if "user" not in app.request.requestUri %}
                             <li class="nav-item">

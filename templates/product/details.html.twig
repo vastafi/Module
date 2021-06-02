@@ -3,8 +3,7 @@
 {% block title %} Products details {% endblock %}
 
 {% block content %}
-    {# section with categories should be generated and included in the template using `include` #}
-    <section class="section-content bg padding-y-sm">
+      <section class="section-content bg padding-y-sm">
         <div class="container">
             <div class="row">
                 <div class="col-xl-10 col-md-9 col-sm-12">
@@ -17,7 +16,7 @@
                                                         src="https://via.placeholder.com/600x400"
                                                         class="img-fuid"></a>
                                         </div>
-                                    </div> <!-- slider-product.// -->
+                                    </div>
                                     <div class="img-small-wrap">
                                         <div class="item-gallery"><a
                                                     href="{{ asset('assets/main/img/600x400.png') }}"
@@ -34,12 +33,11 @@
                                                     data-fancybox=""><img
                                                         src="{{ asset('assets/main/img/600x400.png') }}"></a>
                                         </div>
-                                    </div> <!-- slider-nav.// -->
-                                </article> <!-- gallery-wrap .end// -->
+                                    </div>
+                                </article>
                             </aside>
                             <aside class="col-sm-6">
                                 <article class="card-body">
-                                    <!-- short-info-wrap -->
                                     <h3 class="title mb-3">{{ product.name }}</h3>
                                     <h2>{{ product.price }} €</h2>
                                     <span>one unity</span>
@@ -48,27 +46,29 @@
                                         <dt>Description:</dt>
                                         <dd><p>{{ product.description }} </p></dd>
                                         <br><b>Category: </b>{{ product.category }}
-                                        <br><b>Available amount: </b><p id="avail">{{ product.availableAmount }}</p>
+                                        <br><b>Available amount: </b>
+                                        <p id="avail">{{ product.availableAmount }}</p>
                                     </dl>
                                     <hr>
                                     {% if app.user %}
-                                    <a href="{{ path('cart_add', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
-                                        Cart
-                                    </a>
+                                        <a href="{{ path('cart_add', {'productCode':product.code}) }}"
+                                           class="btn  btn-warning" id="add_cart">Add to
+                                            Cart
+                                        </a>
                                     {% else %}
-                                    <a href="{{ path('app_login') }}" class="btn  btn-warning" id="add_cart"> <i class="fa fa-envelope"></i> Add to
+                                        <a href="{{ path('app_login', {'productCode':product.code}) }}" class="btn  btn-warning" id="add_cart">Add to
                                         Cart
                                     </a>
                                     {% endif %}
-                                    <!-- short-info-wrap .// -->
-                                </article> <!-- card-body.// -->
-                            </aside> <!-- col.// -->
-                        </div> <!-- row.// -->
-                    </main> <!-- card.// -->
-                </div> <!-- col // -->
 
-            </div> <!-- row.// -->
-        </div><!-- container // -->
+                                </article>
+                            </aside>
+                        </div>
+                    </main>
+                </div>
+
+            </div>
+        </div>
     </section>
     {% if app.user %}
     <script>
@@ -84,6 +84,7 @@
                 else if(res.status === 200){
                     alert('Product added to cart');
                     $('#avail').text({{ product.availableAmount }} - click);
+                    showCart();
                 }
                 })
                 .catch(function (){
@@ -109,6 +110,6 @@
             Response Rate: 94% <br>
             <hr>
             <a href="">Visit pofile</a>
-        </div> <!-- card-body.// -->
-    </div> <!-- card.// -->
+        </div>
+    </div>
 {% endblock %}

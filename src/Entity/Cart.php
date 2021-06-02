@@ -63,7 +63,6 @@ class Cart
         $position = array_search($code, array_map(function($item){
             return $item['code'];
         }, $items));
-        var_dump($position);
         if($position !== false)
         {
             $items[$position]['amount'] += $amount;
