@@ -5,9 +5,9 @@
     {% endif %}
     {{ form_widget(form) }}
 
-<button id="addImage" type="button" class="btn btn-primary">Add image</button>
 <input id="test" type="text" class="form-control">
 <div class="gallery-fragment" id="fragment"></div>
+<button id="addImage" type="button" class="btn btn-primary">Add image</button>
 <div class="mt-3">
     <button type="submit" class="btn btn-success">{{ button_label|default('Save') }}</button>
 </div>
@@ -15,7 +15,7 @@
 
 <script>
     let $ = jQuery;
-    $("#product_img_path").prop( "type", "hidden" );
+    $("#product_productImage").prop( "type", "hidden" );
     $("#test").prop( "disabled", true );
     $("#test").val($("#product_productImage").val());
 
