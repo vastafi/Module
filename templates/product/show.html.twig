@@ -5,7 +5,6 @@
 {% block body %}
     {% include '/parts/search-ribbon.html.twig' %}
     <h1>Product</h1>
-
     <table class="table">
         <tbody>
         <tr>
@@ -50,10 +49,7 @@
         </tr>
         </tbody>
     </table>
-
     <a href="{{ path('product_index') }}">back to list</a>
-
     <a href="{{ path('product_edit', {'id': product.id}) }}">edit</a>
-
     {{ include('product/_delete_form.html.twig') }}
 {% endblock %}

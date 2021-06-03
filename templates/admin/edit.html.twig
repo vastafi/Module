@@ -11,12 +11,11 @@
                     <header class="card-header">
                         <h1 class="card-title mt-2">Product</h1>
                     </header>
-                        {{ include('admin/_form.html.twig', {'button_label': 'Update'}) }}
-                        {{ include('admin/_delete_form.html.twig') }}
-                        <a href="{{ path('adminpr') }}">Back to list</a>
-
-                </div> <!-- container-->
-            </div> <!-- cart -->
-        </div> <!-- container-->
+                    {{ include('admin/_form.html.twig', {'button_label': 'Update'}) }}
+                    {{ include('admin/_delete_form.html.twig') }}
+                    <a href="{{ path('adminpr') }}">Back to list</a>
+                </div>
+            </div>
+        </div>
     </section>
 {% endblock %}

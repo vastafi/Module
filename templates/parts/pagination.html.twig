@@ -21,6 +21,7 @@
                 {% endif %}
             </li>
         {% endif %}
+
         {% for page in 1..totalPages %}
             <li class="page-item {{ (page == currentValues.page) ? 'active' : '' }}">
                 {% if "/admin/" in app.request.requestUri  %}

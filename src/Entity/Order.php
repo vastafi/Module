@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -17,12 +19,6 @@ class Order
      * @ORM\Column(type="integer")
      */
     private $id;
-
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $code;
-
     /**
      * @ORM\Column(type="json")
      */
@@ -48,6 +44,11 @@ class Order
      */
     private $total;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="orders")
+     */
+    private $user;
+
     private $creditCardDetails = [];
 
     /**
@@ -70,18 +71,6 @@ class Order
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    public function setCode(string $code): self
-    {
-        $this->code = $code;
-
-        return $this;
     }
 
     public function getItems(): ?array
@@ -144,15 +133,15 @@ class Order
         return $this;
     }
 
-//    public function calculateTotal(Order $order){
-//
-//        $total = 0;
-//        $itemsArray =$order->getItems();
-//        foreach ($itemsArray as $item){
-//
-//            $total += $item['price'] * $item['amount'];
-//        }
-//        $order->setTotal($total);
-//
-//    }
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }

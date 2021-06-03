@@ -18,4 +18,13 @@ class CartRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Cart::class);
     }
+
+    public function removeCart(int $id){
+        $this->createQueryBuilder('c')
+            ->delete('App\Entity\Cart', 'c')
+            ->where('c.id = :id')
+            ->setParameter('id', $id)
+            ->getQuery()
+            ->execute();
+    }
 }
