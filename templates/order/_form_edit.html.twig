@@ -1,7 +1,6 @@
 {{ form_start(form) }}
 {#    {{ form_widget(form) }}#}
 {% if order.status != 'New' %}
-{{ form_row(form.code, { 'attr':{'disabled':'true'} }) }}
 {{ form_row(form.items, { 'attr':{'disabled':'true'} }) }}
 {{ form_row(form.paymentDetails, { 'attr':{'disabled':'true'} }) }}
 {#<option {% if form.paymentDetails is selectedchoice("Credit Card") %}#}

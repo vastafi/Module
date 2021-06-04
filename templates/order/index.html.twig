@@ -9,7 +9,6 @@
         <thead>
             <tr>
                 <th>Id</th>
-                <th>Code</th>
                 <th>Items</th>
                 <th>PaymentDetails</th>
                 <th>Status</th>
@@ -22,7 +21,6 @@
         {% for order in orders %}
             <tr>
                 <td>{{ order.id }}</td>
-                <td>{{ order.code }}</td>
                 <td>{{ order.items ? order.items|json_encode : '' }}</td>
                 <td>{{ order.paymentDetails ? order.paymentDetails|json_encode : '' }}</td>
                 <td>{{ order.status }}</td>

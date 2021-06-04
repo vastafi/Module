@@ -18,7 +18,6 @@ class OrderEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('code')
             ->add('items', TextareaType::class)
             ->add('paymentDetails', ChoiceType::class,[
                 'choices' => [
