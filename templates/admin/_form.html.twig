@@ -17,10 +17,10 @@
     let $ = jQuery;
     $("#product_img_path").prop( "type", "hidden" );
     $("#test").prop( "disabled", true );
-    $("#test").val($("#product_productImage").val());
+    $("#test").val($("#product_productImages").val());
 
     function appendImagePath(e) {
-        let currImgList = $("#product_productImage").val();
+        let currImgList = $("#product_productImages").val();
         let currImgArray = currImgList.split(",")
         if (currImgArray.length === 3) {
             $('#fragment').empty();
@@ -35,7 +35,7 @@
             } else {
                 path = currImgList + ", " + newImg;
             }
-            $("#product_productImage").val(path);
+            $("#product_productImages").val(path);
             $("#test").val(path);
         } else {
             $('#fragment').empty();
@@ -47,7 +47,7 @@
     });
 
     $(document).on('click', "#removeAll", function () {
-        $("#product_productImage").val("");
+        $("#product_productImages").val("");
         $("#test").val("");
     });
 

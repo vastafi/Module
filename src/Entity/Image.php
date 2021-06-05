@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ImageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,7 +19,7 @@ class Image
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="array", nullable=true)
      */
     private $tag;
 
@@ -27,40 +28,28 @@ class Image
      */
     private $path;
 
+//    public function __construct()
+//    {
+//        $this->tag = new ArrayCollection();
+//    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTag(): ?string
+    public function getTag(): ?array
     {
-        return str_replace(["[", "]", "\""], " ", $this->tag);
+        return $this->tag;
     }
 
-    public function getTagsArray(): ?array
+    public function setTag(?array $tag): self
     {
-        return json_decode($this->tag);
-    }
+        $this->tag = $tag;
 
-    public function setTag(string $tag): self
-    {
-        $tag = strtolower($tag);
-        $tag = explode(',', $tag);
-        $trimmedTags = [];
-        foreach ($tag as $tags) {
-            $tags = ltrim($tags);
-            $tags = rtrim($tags);
-            array_push($trimmedTags, $tags);
-        }
-        $this->tag = json_encode($trimmedTags);
         return $this;
     }
 
-    public function setTagsFromArray(array $tag): self
-    {
-        $this->tag = json_encode($tag);
-        return $this;
-    }
     public function getPath(): ?string
     {
         return $this->path;

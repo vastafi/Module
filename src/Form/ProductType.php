@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Product;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
@@ -51,10 +52,29 @@ class ProductType extends AbstractType
                 'empty_data' => 0,
                 'constraints' => [new PositiveOrZero()],
             ])
-            ->add('productImage', null, [
+            ->add('productImages', TextType::class, [
                 'required' => false,
                 'empty_data' => '250x200.png',
             ]);
+        $builder->get('productImages')
+            ->addViewTransformer(new CallbackTransformer(
+                function ($original) {
+                    if($original){
+                        return implode(',', $original);
+                    }
+                    else{
+                        return '';
+                    }
+                },
+                function ($submitted) {
+                    if($submitted){
+                        return explode(',', $submitted);
+                    }
+                    else{
+                        return [];
+                    }
+                }
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

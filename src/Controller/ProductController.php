@@ -54,12 +54,9 @@ class ProductController extends AbstractController
             return $this->redirectToRoute('product_index');
         }
 
-        foreach ($products as $product) {
-            $product->writeImgPathEgal($product->readImgPathsArray());
-        }
-
-//        var_dump($products);
-//        die;
+//        foreach ($products as $product) {
+//            $product->getProductImages();
+//        }
 
         return $this->render('product/products.html.twig', [
             'products' => $products,

@@ -44,11 +44,6 @@ class Product
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $productImage;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -62,6 +57,11 @@ class Product
      * @ORM\Column(type="integer")
      */
     private $availableAmount;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $productImages = [];
 
     public function getId(): ?int
     {
@@ -163,42 +163,16 @@ class Product
 
         return $this;
     }
-    public function readImgPathCSV(): ?string
+
+    public function getProductImages(): ?array
     {
-        return str_replace(["[", "]", "\""], " ", $this->productImage);
+        return $this->productImages;
     }
 
-    public function getProductImage() {
-        return $this->productImage;
-    }
-
-    public function readImgPathsArray(): ?array
+    public function setProductImages(?array $productImages): self
     {
-        return json_decode($this->productImage);
-    }
+        $this->productImages = $productImages;
 
-    public function setProductImage(string $paths): self
-    {
-        $paths = explode(',', $paths);
-        $trimmedPaths = [];
-        foreach ($paths as $path) {
-            $path = ltrim($path);
-            $path = rtrim($path);
-            array_push($trimmedPaths, $path);
-        }
-        $this->productImage = json_encode($trimmedPaths);
-        return $this;
-    }
-
-    public function writeImgPathEgal($paths): self
-    {
-        $this->productImage= $paths;
-        return $this;
-    }
-
-    public function writeImgPathsFromArray(array $paths): self
-    {
-        $this->productImage = json_encode($paths);
         return $this;
     }
 }
