@@ -10,11 +10,11 @@
                     <main class="card">
                         <div class="row no-gutters">
                             <aside class="col-sm-6 border-right">
-                                {% if product.productImage is not null %}
+                                {% if product.productImages is not null %}
                                 <article class="gallery-wrap">
-                                    {% for path in product.productImage %}
+                                    {% for path in product.productImages %}
                                     {% set fullImagePath = 'assets/main/img/gallery/' %}
-                                    {% set fullImagePath = fullImagePath ~ path %}
+                                    {% set fullImagePath = fullImagePath ~ path|trim(' ') %}
                                     {% if loop.index == 1 %}
                                     <div class="img-wrap">
                                         <img src="{{ asset(fullImagePath) }}" id="expandedImg"

@@ -82,13 +82,13 @@ class ProductController extends AbstractController
     public function getProductByCode(string $productCode, ProductRepository $productRepository): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
-        $product->writeImgPathEgal($product->readImgPathsArray());
-        {
+//        $product->writeImgPathEgal($product->readImgPathsArray());
+//        {
             if (!$product) {
                 throw new NotFoundHttpException('Product not found.');
             }
             return $this->render('product/details.html.twig', ['product' => $product]);
-        }
+//        }
     }
 
     /**

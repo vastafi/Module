@@ -40,7 +40,11 @@
                                         <td>{{ product.price }}</td>
                                         <td>{{ product.description }}</td>
                                        <td>{{ product.availableAmount }}</td>
-                                        <td>{{ product.productImage }}</td>
+                                        <td>
+                                        {% for image in product.productImages %}
+                                        {{ image }},
+                                        {% endfor %}
+                                        </td>
                                         <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>
