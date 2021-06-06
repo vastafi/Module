@@ -150,7 +150,7 @@ class CartController extends AbstractController
     }
 
     /**
-     * @Route("/", name="checkout", methods={"POST"})
+     * @Route("/checkout", name="checkout", methods={"GET"})
      * @return Response
      */
     public function checkout():Response{
@@ -180,7 +180,7 @@ class CartController extends AbstractController
             $cartRepository->removeCart($cart->getId());
             $em->persist($order);
             $em->flush();
-            return new Response(null, 200);
+            return $this->redirectToRoute('order_edit',['id' => $order->getId()]);
         }
         return new Response(null, 404);
     }
@@ -209,7 +209,7 @@ class CartController extends AbstractController
 //                $total += $amount * $product->getPrice();
 //            }
 //            $order = $this->createOrder($items, $total);
-//            $form = $this->createForm(OrderType::class, $order);
+//            $form = $this->createForm(CheckoutType::class, $order);
 //            $form->handleRequest($request);
 //            $cartRepository->removeCart($cart->getId());
 //

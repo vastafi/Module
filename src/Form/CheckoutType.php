@@ -15,7 +15,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class OrderEditType extends AbstractType
+class CheckoutType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,48 +28,29 @@ class OrderEditType extends AbstractType
                 ],
                 'label' => 'Payment method'
             ])
-            //Credit Card Details
-//            ->add('creditCardCode',TextType::class )
-//            ->add('cvv',NumberType::class)
-//            ->add('expiresAt',DateType::class,[
-//                'widget' => 'single_text',
-//            ])
+
 
 //            ->add('creditCardDetails',CreditCardDetailsType::class,[
-//                'mapped'=> false,
+//                'mapped'=> true,
 //                'required' => false
 //            ])
-            ->add('status', ChoiceType::class,[
-                'choices' =>[
-                    'New' => 'New',
-                    'In progress' => 'In progress',
-                    'Sent' => 'Sent',
-                    'Closed' => 'Closed',
-                    'Canceled' => 'Canceled'
-                ],
-                'required' => false,
-                'empty_data' => 'New',
-                'label' => 'Status'
-
-            ])
             ->add('shippingDetails', ShippingDetailsType::class)
             ->add('total')
         ;
 
         $builder->get('paymentDetails')->addEventListener(
-            FormEvents::POST_SUBMIT,
+            FormEvents::POST_SET_DATA,
             function (FormEvent $event)
             {
                 $form = $event->getForm();
                 $data = $event->getData();
 
-                if($form->getData()=='Credit Card') {
+                if($form->getData()=='CreditCard') {
                     $form->getParent()->add('creditCardDetails', CreditCardDetailsType::class, [
                         'required' => 'false',
                         'placeholder' => 'Credit Card Details'
                     ]);
                 }
-                dump($form->getData());
             }
         );
 

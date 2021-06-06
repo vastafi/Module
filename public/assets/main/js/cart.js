@@ -125,18 +125,22 @@ async function checkout() {
     let url = "/api/v1/cart/";
     return await fetch(url, {method: 'POST'});
 }
-$(document).on('click', '#checkout', function(e){
-    e.preventDefault();
-    checkout().then(function (res) {
-        console.log(res.status);
-        if(res.status === 200){
-            showCart();
-        }
-        else if(res.status === 400){
-            res.json().then(data => alert(data.message));
-        }
-        else{
-            alert('Something went wrong. Let\'s try one more time!');
-        }
-    })
-})
+// $(document).on('click', '#checkout', function(e){
+//     e.preventDefault();
+//     checkout().then(function (res) {
+//         console.log(res);
+//         if(res.status === 200){
+//            // window.location.href = res.url;
+//         }
+//         if(res.status === 400){
+//             res.json().then(data => alert(data.message));
+//         }
+//         else{
+//             alert('Something went wrong. Let\'s try one more time!');
+//         }
+//     })
+// })
+async function checkout_redirect(id) {
+    let url = "/admin/order/"+id+"/edit";
+    return await fetch(url, {method: 'POST'});
+}
