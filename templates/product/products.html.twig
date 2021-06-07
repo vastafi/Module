@@ -11,7 +11,7 @@
                 <div class="card mb-3">
                     {% if product.productImages is not null %}
                     {% set fullImagePath = 'assets/main/img/gallery/' %}
-                    {% set fullImagePath = fullImagePath ~ product.productImages|first %}
+                    {% set fullImagePath = fullImagePath ~ product.productImages|first|trim(' ') %}
                      <img src="{{ asset(fullImagePath) }}" alt="{{ product.name }}"
                      class="card-img-top">
                     {% else %}

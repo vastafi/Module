@@ -209,12 +209,11 @@ class ImageController extends AbstractController
     {
         $products = $productRepository->findByImage($image);
         foreach ($products as $product) {
-            $paths = $product->readImgPathsArray();
+            $paths = $product->getProductImages();
             array_splice($paths, array_search($image->getPath(), $paths), 1);
-            (count($paths) === 0) ? $product->writeImgPathsFromArray(["250x200.png"]) : $product->writeImgPathsFromArray($paths);
+            (count($paths) === 0) ? $product->setProductImages(["250x200.png"]) : $product->setProductImages($paths);
             $date = new DateTime(null, new DateTimeZone('Europe/Athens'));
             $product->setUpdatedAt($date);
-            $productRepository->updateImgPath($product);
         }
     }
 

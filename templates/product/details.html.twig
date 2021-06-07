@@ -104,12 +104,6 @@
                     });
             })
 
-            function expandImage(imgs) {
-                console.log('yes');
-                var expandImg = document.getElementById("expandedImg");
-                expandImg.src = imgs.src;
-                expandImg.parentElement.style.display = "block";
-            }
         </script>
     {% endif %}
 {% endblock %}
@@ -131,4 +125,13 @@
             <a href="">Visit pofile</a>
         </div>
     </div>
+    <script>
+        function expandImage(imgs) {
+            const expandImg = document.getElementById("expandedImg");
+            const temp = expandImg.src;
+            expandImg.src = imgs.src;
+            imgs.src = temp;
+            expandImg.parentElement.style.display = "block";
+        }
+    </script>
 {% endblock %}

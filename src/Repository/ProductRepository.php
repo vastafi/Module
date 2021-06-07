@@ -87,20 +87,9 @@ class ProductRepository extends ServiceEntityRepository
     {
         return $this
             ->createQueryBuilder('p')
-            ->where('p.productImage LIKE :productImage')
+            ->where('p.productImages LIKE :productImage')
             ->setParameter('productImage', '%"' .$image->getPath() .'"%')
             ->getQuery()
             ->getResult();
-    }
-
-    public function updateImgPath(Product $product) {
-        $this
-            ->createQueryBuilder('p')
-            ->update()
-            ->set('p.productImage', json_encode($product->getProductImage()))
-            ->set('p.updated_at', $product->getUpdatedAt()->format('Y-m-d H:i:s'))
-            ->where('p.id = :id')
-            ->setParameter('id', $product->getId())
-            ->getQuery();
     }
 }
