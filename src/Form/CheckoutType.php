@@ -8,6 +8,7 @@ use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,29 +31,36 @@ class CheckoutType extends AbstractType
             ])
 
 
-//            ->add('creditCardDetails',CreditCardDetailsType::class,[
-//                'mapped'=> true,
-//                'required' => false
-//            ])
+            ->add('creditCardDetails',CreditCardDetailsType::class,[
+                'mapped'=> true,
+                'required' => false
+            ])
             ->add('shippingDetails', ShippingDetailsType::class)
-            ->add('total')
+            ->add('total',NumberType::class,[
+                'required' => false,
+                'disabled' => true
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => 'Place Order',
+                'attr' => ['class' => 'btn-success']
+            ]);
         ;
 
-        $builder->get('paymentDetails')->addEventListener(
-            FormEvents::POST_SET_DATA,
-            function (FormEvent $event)
-            {
-                $form = $event->getForm();
-                $data = $event->getData();
-
-                if($form->getData()=='CreditCard') {
-                    $form->getParent()->add('creditCardDetails', CreditCardDetailsType::class, [
-                        'required' => 'false',
-                        'placeholder' => 'Credit Card Details'
-                    ]);
-                }
-            }
-        );
+//        $builder->get('paymentDetails')->addEventListener(
+//            FormEvents::POST_SET_DATA,
+//            function (FormEvent $event)
+//            {
+//                $form = $event->getForm();
+//                $data = $event->getData();
+//
+//                if($form->getData()=='CreditCard') {
+//                    $form->getParent()->add('creditCardDetails', CreditCardDetailsType::class, [
+//                        'required' => 'false',
+//                        'placeholder' => 'Credit Card Details'
+//                    ]);
+//                }
+//            }
+//        );
 
         $builder->get('paymentDetails')
             ->addModelTransformer(new CallbackTransformer(

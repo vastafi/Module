@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="container col-xl-8 col-sm-12">
+                <h1>Checkout</h1>
+
+                {{ include('order/_form_checkout.html.twig', {'button_label': 'Place Order'}) }}
+
+                <a href="{{ path('cart') }}">Go back</a>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

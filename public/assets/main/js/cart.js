@@ -121,10 +121,10 @@ $(document).on('input', 'input[type="number"].namount', function (e) {
     }
 })
 
-async function checkout() {
-    let url = "/api/v1/cart/";
-    return await fetch(url, {method: 'POST'});
-}
+// async function checkout() {
+//     let url = "/api/v1/cart/";
+//     return await fetch(url, {method: 'POST'});
+// }
 // $(document).on('click', '#checkout', function(e){
 //     e.preventDefault();
 //     checkout().then(function (res) {
@@ -140,7 +140,3 @@ async function checkout() {
 //         }
 //     })
 // })
-async function checkout_redirect(id) {
-    let url = "/admin/order/"+id+"/edit";
-    return await fetch(url, {method: 'POST'});
-}
