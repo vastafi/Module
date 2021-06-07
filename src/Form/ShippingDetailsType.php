@@ -22,7 +22,8 @@ class ShippingDetailsType extends AbstractType
                 'required' => true
             ])
             ->add('address2',TextType::class,[
-                'required' => false
+                'required' => false,
+                'help' => 'This field is optional'
             ])
         ;
     }
