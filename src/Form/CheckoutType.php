@@ -21,7 +21,7 @@ class CheckoutType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('items', TextareaType::class)
+            //->add('items', TextareaType::class)
             ->add('paymentDetails', ChoiceType::class,[
                 'choices' => [
                     'Cash' => 'Cash',
@@ -72,15 +72,15 @@ class CheckoutType extends AbstractType
                 }
             ));
 
-        $builder->get('items')
-            ->addModelTransformer(new CallbackTransformer(
-                function ($itemsArray) {
-                    return json_encode($itemsArray);
-                },
-                function ($itemsJson) {
-                    return json_decode($itemsJson);
-                }
-            ));
+//        $builder->get('items')
+//            ->addModelTransformer(new CallbackTransformer(
+//                function ($itemsArray) {
+//                    return json_encode($itemsArray);
+//                },
+//                function ($itemsJson) {
+//                    return json_decode($itemsJson);
+//                }
+//            ));
 
 //        $builder->get('shippingDetails')
 //            ->addModelTransformer(new CallbackTransformer(

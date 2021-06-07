@@ -27,7 +27,7 @@ function readItemsTemplate(data) {
         <table class='cart-table table'>
             <tr>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Product</th>
-                <th class='w-5-pct  bg-dark text-white' style="text-align: center">Price</th>
+                <th class='w-5-pct bg-dark text-white' style="text-align: center">Price</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Amount</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Total</th>
                 <th class='w-5-pct bg-dark text-white' style="text-align: center">Action</th>

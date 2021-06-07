@@ -1,7 +1,12 @@
 {{ form_start(form) }}
 {#    {{ form_widget(form) }}#}
 
-{{ form_row(form.items) }}
+{#{{ form_row(form.items) }}#}
+
+<div class="container">
+  Items {{ order.items ? order.items|json_encode : '' }}
+</div>
+
 {{ form_row(form.paymentDetails) }}
 <div class="col" id="ccd">
  {{ form_row(form.creditCardDetails) }}
@@ -10,5 +15,4 @@
 {{ form_row(form.total) }}
 
 
-{#    <button class="btn">{{ button_label|default('Save') }}</button>#}
 {{ form_end(form) }}
