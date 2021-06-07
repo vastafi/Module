@@ -180,7 +180,7 @@ class CartController extends AbstractController
             $form = $this->createForm(CheckoutType::class, $order);
             $form->handleRequest($request);
 
-            if ($form->isSubmitted()) {
+            if ($form->isSubmitted() && $form->isValid()) {
                 $product->setAvailableAmount($product->getAvailableAmount() - $amount);
                 $em->persist($product);
                 $cartRepository->removeCart($cart->getId());
