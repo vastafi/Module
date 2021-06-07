@@ -51,6 +51,12 @@
     </div>
 {% endfor %}
 
+{% for message in app.flashes('order_placed') %}
+    <div class="alert alert-success">
+        {{ message }}
+    </div>
+{% endfor %}
+
 <div class="container-fluid mb-5">
     {% block body %}
 
