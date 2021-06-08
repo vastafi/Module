@@ -45,29 +45,30 @@ class ProductController extends AbstractController
         }
         $pageNum = $productRepository->countPages($category, $name, $limit);
         $products = $productRepository->filter($category, $name, $limit, $page);
-        if(!($products) && in_array($page, range(1, $pageNum))){
-            throw new BadRequestHttpException("400");
+
+        /* @note - удалёный участок не нужен. Если продуктов нет, тогда просто выведите страницу с сообщением об этом.*/
+
+        if ($pageNum > 1){
+            $query = $request->query->all();
+            if($page > $pageNum){
+                $this->addFlash('warning', "Invalid page number");
+                return $this->redirectToRoute('product_index', ['page' => 1] + $query);
+            }
+            if ($limit > 100) {
+                $this->addFlash('warning', "Limit exceeded");
+                return $this->redirectToRoute('product_index', ['limit' => 10] + $query);
+            }
         }
-        if($page > $pageNum){
-            $this->addFlash('warning', "Invalid page number");
-            return $this->redirectToRoute('product_index');
-        }
-        if ($limit > 100) {
-            $this->addFlash('warning', "Limit exceeded");
-            return $this->redirectToRoute('product_index');
-        }
+
 
         return $this->render('product/products.html.twig', [
             'products' => $products,
-
-
             'currentValues' => [
                 'category' => $category,
                 'limit' => $limit,
                 'page' => $page,
                 'name' => $name,
             ],
-
             'totalPages' => $pageNum
         ]);
     }
