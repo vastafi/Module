@@ -1,15 +1,16 @@
 {{ form_start(form) }}
-{#    {{ form_widget(form) }}#}
-{% if order.status != 'New' %}
-{{ form_row(form.items, { 'attr':{'disabled':'true'} }) }}
-{{ form_row(form.paymentDetails, { 'attr':{'disabled':'true'} }) }}
+    {{ form_widget(form) }}
+{#{% if order.status != 'New' %}#}
+{#{{ form_row(form.items, { 'attr':{'disabled':'true','required':'false'} }) }}#}
+{#    {{ form_row(form.items) }}#}
+{#{{ form_row(form.paymentDetails, { 'attr':{'disabled':'true'} }) }}#}
 
-{{ form_row(form.status) }}
-{{ form_row(form.shippingDetails, { 'attr':{'disabled':'true'} }) }}
+{#{{ form_row(form.status) }}#}
+{#{{ form_row(form.shippingDetails, { 'attr':{'disabled':'true'} }) }}#}
 
 
-    {{ form_row(form.total, { 'attr':{'disabled':'true'} }) }}
-{% endif %}
+{#    {{ form_row(form.total, { 'attr':{'disabled':'true'} }) }}#}
+{#{% endif %}#}
 
     <button class="btn">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

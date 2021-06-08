@@ -20,7 +20,10 @@ class OrderEditType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('items', TextareaType::class)
+            ->add('items', TextareaType::class,[
+                'empty_data' => '',
+                'required' => false
+            ])
             ->add('paymentDetails', ChoiceType::class,[
                 'choices' => [
                     'Cash' => 'Cash',
@@ -28,17 +31,7 @@ class OrderEditType extends AbstractType
                 ],
                 'label' => 'Payment method'
             ])
-            //Credit Card Details
-//            ->add('creditCardCode',TextType::class )
-//            ->add('cvv',NumberType::class)
-//            ->add('expiresAt',DateType::class,[
-//                'widget' => 'single_text',
-//            ])
 
-//            ->add('creditCardDetails',CreditCardDetailsType::class,[
-//                'mapped'=> false,
-//                'required' => false
-//            ])
             ->add('status', ChoiceType::class,[
                 'choices' =>[
                     'New' => 'New',
@@ -56,22 +49,22 @@ class OrderEditType extends AbstractType
             ->add('total')
         ;
 
-        $builder->get('paymentDetails')->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event)
-            {
-                $form = $event->getForm();
-                $data = $event->getData();
-
-                if($form->getData()=='Credit Card') {
-                    $form->getParent()->add('creditCardDetails', CreditCardDetailsType::class, [
-                        'required' => 'false',
-                        'placeholder' => 'Credit Card Details'
-                    ]);
-                }
-                dump($form->getData());
-            }
-        );
+//        $builder->get('paymentDetails')->addEventListener(
+//            FormEvents::PRE_SUBMIT,
+//            function (FormEvent $event)
+//            {
+//                $form = $event->getForm();
+//                $data = $event->getData();
+//
+//                if($form->getData()=='Credit Card') {
+//                    $form->getParent()->add('creditCardDetails', CreditCardDetailsType::class, [
+//                        'required' => 'false',
+//                        'placeholder' => 'Credit Card Details'
+//                    ]);
+//                }
+//                dump($form->getData());
+//            }
+//        );
 
         $builder->get('paymentDetails')
             ->addModelTransformer(new CallbackTransformer(

@@ -21,10 +21,10 @@
         {% for order in orders %}
             <tr>
                 <td>{{ order.id }}</td>
-                <td>{{ order.items ? order.items|json_encode : '' }}</td>
-                <td>{{ order.paymentDetails ? order.paymentDetails|json_encode : '' }}</td>
+                <td>{{ order.items ? order.items|json_encode|replace({'[{"':'', '"}]':'', '":"':':','","':';'}) }}</td>
+                <td>{{ order.paymentDetails ? order.paymentDetails|json_encode|replace({'["':'','"]':''}) }}</td>
                 <td>{{ order.status }}</td>
-                <td>{{ order.shippingDetails ? order.shippingDetails|json_encode : '' }}</td>
+                <td>{{ order.shippingDetails ? order.shippingDetails|json_encode|replace({'\/':'/'})}}</td>
                 <td>{{ order.total }}</td>
                 <td>
                     <a href="{{ path('order_show', {'id': order.id}) }}">show</a>
