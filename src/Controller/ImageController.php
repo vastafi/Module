@@ -3,15 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Image;
-use App\Exceptions\InvalidLimitException;
-use App\Exceptions\InvalidPageException;
 use App\Form\ImageEditType;
 use App\Form\ImageType;
 use App\Repository\ImageRepository;
 use App\Repository\ProductRepository;
 use DateTime;
 use DateTimeZone;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -50,7 +47,7 @@ class ImageController extends AbstractController
         }
         $image = $imageRepository->filter($tag, $limit, $page);
         if(!($image) && in_array($page, range(1, $pageNum))){
-//            throw new BadRequestHttpException("400");
+            return $this->render('image/index.html.twig');
         }
         if($page > $pageNum){
             $this->addFlash('warning', "Invalid page number");
@@ -111,7 +108,7 @@ class ImageController extends AbstractController
             if (mb_strlen($tag) > 22 || mb_strlen($tag) < 2) {
                 $errors['tagLen'] = "The length of each tag must be from 2 to 22 characters";
             }
-            if (preg_match('/[^a-zа-я0-9]/', $tag)) {
+            if (preg_match('/[^a-zа-я0-9 ]/', $tag)) {
                 $errors['tagMatch'] = "The tags must contain only characters and digits";
             }
         }
@@ -135,13 +132,13 @@ class ImageController extends AbstractController
 
             $errors = $this->checkTags($image);
 
-//            if (!empty($errors)) {
-//                return $this->render('image/new.html.twig', [
-//                    'errors' => $errors,
-//                    'image' => $image,
-//                    'form' => $form->createView(),
-//                ]);
-//            }
+            if (!empty($errors)) {
+                return $this->render('image/new.html.twig', [
+                    'errors' => $errors,
+                    'image' => $image,
+                    'form' => $form->createView(),
+                ]);
+            }
             $image->setTag($image->getTag());
             $image->setPath($this->uploadImageWithSecureName($form, $slugger));
             $entityManager = $this->getDoctrine()->getManager();
@@ -183,13 +180,13 @@ class ImageController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $errors = $this->checkTags($image);
-//            if (!empty($errors)) {
-//                return $this->render('image/edit.html.twig', [
-//                    'errors' => $errors,
-//                    'image' => $image,
-//                    'form' => $form->createView(),
-//                ]);
-//            }
+            if (!empty($errors)) {
+                return $this->render('image/edit.html.twig', [
+                    'errors' => $errors,
+                    'image' => $image,
+                    'form' => $form->createView(),
+                ]);
+            }
 
             if ($image->getPath() === '% & # { } \\ / ! $ \' \" : < > @  * ? + ` | =') {
                 $image->setPath($origPath);

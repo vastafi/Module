@@ -22,29 +22,6 @@ class ImageType extends AbstractType
             ->add('path', FileType::class, [
                 'attr' => ['accept' => ".png,.jpg,.jpeg"]
             ]);
-//        $builder->get('tag')
-//            ->addViewTransformer(new CallbackTransformer(
-//            function ($original) {
-////                dd($original);
-//                if(!$original){
-//                    return '';
-//                }
-//                else{
-//                    return $original = implode(', ', $original);
-//                }
-//            },
-//            function ($submitted) {
-//                if (!$submitted) {
-//                    return [];
-//                }
-//
-//                $submitted = array_map(function($tag) {
-//                    return trim($tag);
-//                }, explode(',', $submitted));
-//
-//                return $submitted;
-//            }
-//        ));
         $builder->get('tag')
             ->addViewTransformer(new CallbackTransformer(
                 function ($original) {
