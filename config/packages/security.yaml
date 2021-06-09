@@ -14,10 +14,15 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        combined_db_provider:
+            chain:
+                providers:
+                    - api_db_provider
+                    - app_user_provider
     firewalls:
         api:
             pattern: ^/api/
-            provider: api_db_provider
+            provider: combined_db_provider
             guard:
                  authenticators:
                     - App\Security\TokenAuthenticator
