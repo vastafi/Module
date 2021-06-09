@@ -75,7 +75,6 @@ class AdminController extends AbstractController
     public function show(ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
-        $product->writeImgPathEgal($product->readImgPathCSV());
         return $this->render('admin/show.html.twig', [
             'product' => $product,
         ]);
@@ -92,13 +91,13 @@ class AdminController extends AbstractController
     public function edit(Request $request, ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
+//        dd($productCode);
         $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('adminpr');
         }
 
@@ -148,7 +147,7 @@ class AdminController extends AbstractController
                 ]);
 
             }
-            $product->writeImgPathsFromArray($product->readImgPathsArray());
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
@@ -161,5 +160,4 @@ class AdminController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }
