@@ -4,30 +4,26 @@ namespace App\Controller\Api;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\ProductRepository;
 use DateTime;
 use DateTimeZone;
-use Exception;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use App\Response\ApiErrorResponse;
 
-    /**
-     * @Route("/api/v1/products")
-     */
+/**
+ * @Route("/api/v1/products")
+ */
 
 class ProductController extends AbstractController
 {
     /**
      * @Route("/", name="search", methods={"GET"})
-     * @param Request $request
-     * @return JsonResponse|Response
      */
-    public function index(Request $request)
+    public function index(Request $request, ProductRepository $repo): Response
     {
         $category = $request->query->get('category', null);
         $name = $request->query->get('name', null);
@@ -42,7 +38,6 @@ class ProductController extends AbstractController
         if($page <= 0){
             return new ApiErrorResponse('1625', 'Page cannot be negative or zero.');
         }
-        $repo = $this->getDoctrine()->getRepository(Product::class);
         $totalPages = $repo->countPages($category, $name, $limit);
         if($page > $totalPages){
             return new ApiErrorResponse('1630', 'This page number does not exist.');
@@ -55,10 +50,8 @@ class ProductController extends AbstractController
 
     /**
      * @Route("/{productCode}", name="api.product.details",requirements={"productCode":"[A][B]\d+"}, methods={"GET"})
-     * @param string $productCode
-     * @return JsonResponse|Response
      */
-    public function getProductByCode(string $productCode)
+    public function getProductByCode(string $productCode, ProductRepository $repo): Response
     {
         $repo=$this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code'=>$productCode]);
@@ -70,17 +63,10 @@ class ProductController extends AbstractController
 
     /**
      * @Route ("/", name="create_prod_api",methods={"POST"})
-     * @param Request $request
-     * @return JsonResponse|Response
-     * @throws Exception
      */
-    public function createProduct(Request $request): Response
+    public function createProduct(Request $request, EntityManagerInterface $em, ProductRepository $repo): Response
     {
-        $em = $this->getDoctrine()->getManager();
-
         $content = $request->toArray();
-
-        $repo = $this->getDoctrine()->getRepository(Product::class);
 
         if(isset($content['code']) !== true ){
             return new ApiErrorResponse(400,'Code cant be null!');
@@ -141,15 +127,10 @@ class ProductController extends AbstractController
 
     /**
      * @Route ("/{productCode}", name="update", requirements={"productCode":"[A][B]\d+"}, methods={"PUT"})
-     * @param string $productCode
-     * @param Request $request
-     * @return Response
-     * @throws Exception
      */
-    public function updateProduct(string $productCode, Request $request): Response
+    public function updateProduct(string $productCode, Request $request, ProductRepository $repo): Response
     {
         $data = json_decode($request->getContent(), true);
-        $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
         if(!$product){
             return new Response(null, 404);
@@ -178,13 +159,9 @@ class ProductController extends AbstractController
     }
     /**
      * @Route("/{productCode}", name="delete_product_api",requirements={"productCode":"[A][B]\d+"}, methods={"DELETE"})
-     * @param string $productCode
-     * @return Response
      */
-    public function deleteProductByCode(string $productCode):Response
+    public function deleteProductByCode(string $productCode, EntityManagerInterface $entityManager, ProductRepository $repo):Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
-        $repo = $this->getDoctrine()->getRepository(Product::class);
         $product = $repo->findOneBy(['code' => $productCode]);
         if(!$product){
             return new Response(null, 404);
