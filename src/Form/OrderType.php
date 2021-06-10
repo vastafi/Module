@@ -6,11 +6,12 @@ use App\Entity\Order;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class OrderType extends AbstractType
@@ -19,42 +20,38 @@ class OrderType extends AbstractType
     {
         $builder
             ->add('items', TextareaType::class)
-            ->add('paymentDetails', ChoiceType::class,[
+            ->add('paymentDetails', ChoiceType::class, [
                 'choices' => [
                     'Cash' => 'Cash',
                     'Credit Card' => 'Credit Card'
                 ],
                 'label' => 'Payment method'
             ])
-            //Credit Card Details
-//            ->add('creditCardCode',TextType::class )
-//            ->add('cvv',NumberType::class)
-//            ->add('expiresAt',DateType::class,[
-//                'widget' => 'single_text',
-//            ])
-
-            ->add('creditCardDetails',CreditCardDetailsType::class,[
-                'mapped'=> true,
-                'required' => false
-            ])
-//            ->add('status', ChoiceType::class,[
-//                'choices' =>[
-//                    'In progress' => 'In progress',
-//                    'Sent' => 'Sent',
-//                    'Closed' => 'Closed',
-//                    'Canceled' => 'Canceled'
-//                ],
-//                'required' => false,
-//                'label' => 'Status'
-//            ])
             ->add('shippingDetails', ShippingDetailsType::class)
-            ->add('total')
-        ;
+            ->add('total', NumberType::class);
+
+//        $builder->get('items')->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+//            $items = $event->getData();
+//            $form = $event->getForm();
+//            $itemsArr = json_decode($items, true);
+//
+//            $total = 0;
+//            if (is_array($itemsArr)) {
+//                foreach ($itemsArr as $item) {
+//                    $total += $item['amount'] * $item['price'];
+//
+//                }
+//            }
+//
+////            $form->getParent()->add('total', NumberType::class);
+//            $form->getParent()->get('total')->setData($total);
+//
+//        });
 
         $builder->get('paymentDetails')
             ->addModelTransformer(new CallbackTransformer(
                 function ($paymentArray) {
-                    return count($paymentArray) ? $paymentArray[0] :null;
+                    return count($paymentArray) ? $paymentArray[0] : null;
                 },
                 function ($paymentArray) {
                     return [$paymentArray];
@@ -70,16 +67,6 @@ class OrderType extends AbstractType
                     return json_decode($itemsJson);
                 }
             ));
-
-//        $builder->get('shippingDetails')
-//            ->addModelTransformer(new CallbackTransformer(
-//                function ($shippingDetailsArray) {
-//                    return json_encode($shippingDetailsArray);
-//                },
-//                function ($shippingDetailsJson) {
-//                    return json_decode($shippingDetailsJson);
-//                }
-//            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

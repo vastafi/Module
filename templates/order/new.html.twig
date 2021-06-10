@@ -3,7 +3,6 @@
 {% block title %}New Order{% endblock %}
 
 {% block body %}
-    <script src="{{ asset('assets/main/js/cart.js') }}"></script>
     <div class="container">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="container col-xl-8 col-sm-12">
@@ -11,7 +10,7 @@
 
                 {{ include('order/_form.html.twig') }}
 
-                <a href="{{ path('order_index') }}">back to list</a>
+                <a class="btn btn-info" href="{{ path('order_index') }}">back to list</a>
             </div>
         </div>
     </div>

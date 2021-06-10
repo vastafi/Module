@@ -47,6 +47,7 @@ class CartController extends AbstractController
         $total = 0;
         if($cart) {
             $products = $productRepository->findBy(['code' => array_column($cart->getItems(), 'code')]);
+
             foreach ($products as $product) {
                 $amount = array_column($cart->getItems(), 'amount', 'code')[$product->getCode()];
                 if ($product->getAvailableAmount() < $amount) {
@@ -57,12 +58,14 @@ class CartController extends AbstractController
                     'amount' => $amount,
                     'price' => $product->getPrice()];
                 $total += $amount * $product->getPrice();
+                $productsName[] = ['name' => $product->getName()];
             }
+
         }
         $order = $this->createOrder($items, $total);
         $form = $this->createForm(CheckoutType::class, $order);
         $form->handleRequest($request);
-        dump($order);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $product->setAvailableAmount($product->getAvailableAmount() - $amount);
@@ -71,17 +74,18 @@ class CartController extends AbstractController
             $em->persist($order);
             $em->flush();
 
-            $this->addFlash('order_placed', 'Your order has been submitted! You can view it in your cabinet.');
+            $this->addFlash('order_placed', 'Your order has been placed!');
             return $this->redirectToRoute('product_index');
         }
+
         $em->flush();
 
-//            return $this->redirectToRoute('checkout_form',['id' => $order->getId()]);
         return $this->render('order/checkout.html.twig', [
             'order' => $order,
+            'productsName' => $productsName,
             'form' => $form->createView(),
         ]);
-        //return new Response(null, 404);
+
     }
 
     public function createOrder(array $items, float $total):Order{
@@ -92,23 +96,5 @@ class CartController extends AbstractController
         $order->setUser($this->getUser());
         return $order;
     }
-//    /**
-//     * @Route("checkout/{id}", name="checkout_form", methods={"GET","POST"})
-//     */
-//    public function checkout(Request $request, Order $order): Response
-//    {
-//        $form = $this->createForm(CheckoutType::class, $order);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $this->getDoctrine()->getManager()->flush();
-//
-//            return $this->redirectToRoute('product_index');
-//        }
-//
-//        return $this->render('order/checkout.html.twig', [
-//            'order' => $order,
-//            'form' => $form->createView(),
-//        ]);
-//    }
+
 }
