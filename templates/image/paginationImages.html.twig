@@ -1,4 +1,5 @@
 <nav>
+    {% if currentValues is defined %}
     <ul class="pagination" style="float:right">
         {% if (currentValues.page != 1) %}
             <li class="page-item">
@@ -35,4 +36,5 @@
             </li>
         {% endif %}
     </ul>
+    {% endif %}
 </nav>

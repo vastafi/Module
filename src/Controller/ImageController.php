@@ -57,7 +57,6 @@ class ImageController extends AbstractController
             $this->addFlash('warning', "Limit exceeded");
             return $this->redirectToRoute('image_index');
         }
-
         return $this->render('image/index.html.twig', [
             'images' => $image,
 
@@ -76,7 +75,7 @@ class ImageController extends AbstractController
      * @param ImageRepository $imageRepository
      * @return Response
      */
-    public function temp(ImageRepository $imageRepository): Response
+    public function fragment(ImageRepository $imageRepository): Response
     {
         return $this->render('image/fragment.html.twig', [
             'images' => $imageRepository->findAll()
@@ -139,7 +138,6 @@ class ImageController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-            $image->setTag($image->getTag());
             $image->setPath($this->uploadImageWithSecureName($form, $slugger));
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($image);
@@ -187,7 +185,6 @@ class ImageController extends AbstractController
                     'form' => $form->createView(),
                 ]);
             }
-
             if ($image->getPath() === '% & # { } \\ / ! $ \' \" : < > @  * ? + ` | =') {
                 $image->setPath($origPath);
             } else {
@@ -208,7 +205,7 @@ class ImageController extends AbstractController
         foreach ($products as $product) {
             $paths = $product->getProductImages();
             array_splice($paths, array_search($image->getPath(), $paths), 1);
-            (count($paths) === 0) ? $product->setProductImages(["250x200.png"]) : $product->setProductImages($paths);
+            (count($paths) === 0) ? $product->setProductImages(null) : $product->setProductImages($paths);
             $date = new DateTime(null, new DateTimeZone('Europe/Athens'));
             $product->setUpdatedAt($date);
         }

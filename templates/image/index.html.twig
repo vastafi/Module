@@ -9,6 +9,7 @@
             {% include '/image/searchRibbonImage.html.twig' %}
         </div>
         <a class="btn btn-sm btn-primary" href="{{ path('image_new') }}">Create</a>
+        {% if images is defined %}
         <div class="container" align="center">
             <div class="row">
                 <div class="col-xl-10 col-md-9 col-sm-12">
@@ -41,15 +42,14 @@
                                 </div>
                             </td>
                         </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="4">No records found</td>
-                        </tr>
                     {% endfor %}
+                    </tbody>
                 </div>
             </div>
         </div>
-        </tbody>
+        {% else %}
+            <p>No records found</p>
+        {% endif %}
     </table>
     {% include '/image/paginationImages.html.twig' %}
     <br>

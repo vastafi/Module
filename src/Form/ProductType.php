@@ -68,7 +68,12 @@ class ProductType extends AbstractType
                 },
                 function ($submitted) {
                     if($submitted){
-                        return explode(',', $submitted);
+                        $submitted = explode(',', $submitted);
+                        $trimmed = [];
+                        foreach ($submitted as $image){
+                            $trimmed[] = trim($image, ' ');
+                        }
+                        return $trimmed;
                     }
                     else{
                         return [];
