@@ -69,6 +69,7 @@
                                     <a class="nav-link" href="{{ path('image_index') }}">Gallery</a>
                                 </li>
                             {% endif %}
+                        {% endif %}
 
                         {% if is_granted('ROLE_ADMIN') and not ("/admin/" in app.request.requestUri) %}
                             <li class="nav-item">
@@ -116,8 +117,7 @@
                                     Cart
                                 </button>
                             </a>
-                        </li>
-
+                        {% endif %}
                         {% if "user" not in app.request.requestUri %}
                         {% if "image/gallery" not in app.request.requestUri %}
                             <li class="nav-item">

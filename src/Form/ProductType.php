@@ -54,7 +54,6 @@ class ProductType extends AbstractType
             ])
             ->add('productImages', TextType::class, [
                 'required' => false,
-                'empty_data' => '250x200.png',
             ]);
         $builder->get('productImages')
             ->addViewTransformer(new CallbackTransformer(

@@ -91,7 +91,6 @@ class AdminController extends AbstractController
     public function edit(Request $request, ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
-//        dd($productCode);
         $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
