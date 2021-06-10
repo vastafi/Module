@@ -12,10 +12,10 @@
                     {% if product.productImages is not null %}
                     {% set fullImagePath = 'assets/main/img/gallery/' %}
                     {% set fullImagePath = fullImagePath ~ product.productImages|first|trim(' ') %}
-                     <img src="{{ asset(fullImagePath) }}" alt="{{ product.name }}"
+                     <img width="250" height="200" src="{{ asset(fullImagePath) }}" alt="{{ product.name }}"
                      class="card-img-top">
                     {% else %}
-                    <img src="{{ asset('assets/main/img/250x200.png') }}" alt="{{ product.name }}"
+                    <img width="250" height="200"  src="{{ asset('assets/main/img/250x200.png') }}" alt="{{ product.name }}"
                          class="card-img-top">
                     {% endif %}
                     <div class="card-body">
