@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Image;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -80,5 +81,15 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
 
         return array_column($categories, 'category');
+    }
+
+    public function findByImage(Image $image): array
+    {
+        return $this
+            ->createQueryBuilder('p')
+            ->where('p.productImages LIKE :productImage')
+            ->setParameter('productImage', '%"' .$image->getPath() .'"%')
+            ->getQuery()
+            ->getResult();
     }
 }

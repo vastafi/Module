@@ -44,11 +44,6 @@ class Product
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $productImage;
-
-    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -62,6 +57,11 @@ class Product
      * @ORM\Column(type="integer")
      */
     private $availableAmount;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $productImages = [];
 
     public function getId(): ?int
     {
@@ -128,18 +128,6 @@ class Product
         return $this;
     }
 
-    public function getProductImage(): ?string
-    {
-        return $this->productImage;
-    }
-
-    public function setProductImage(?string $productImage): self
-    {
-        $this->productImage = $productImage;
-
-        return $this;
-    }
-
     public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
@@ -172,6 +160,18 @@ class Product
     public function setAvailableAmount(int $availableAmount): self
     {
         $this->availableAmount = $availableAmount;
+
+        return $this;
+    }
+
+    public function getProductImages(): ?array
+    {
+        return $this->productImages;
+    }
+
+    public function setProductImages(?array $productImages): self
+    {
+        $this->productImages = $productImages;
 
         return $this;
     }

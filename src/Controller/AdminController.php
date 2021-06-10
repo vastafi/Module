@@ -91,13 +91,13 @@ class AdminController extends AbstractController
     public function edit(Request $request, ProductRepository $productRepository, string $productCode): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
+//        dd($productCode);
         $product->setUpdatedAt(new DateTime(null, new DateTimeZone('Europe/Athens')));
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
-
             return $this->redirectToRoute('adminpr');
         }
 
@@ -135,6 +135,7 @@ class AdminController extends AbstractController
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
+        $repo = $this->getDoctrine()->getRepository(Product::class);
         if ($form->isSubmitted() && $form->isValid()) {
             $repo = $this->getDoctrine()->getRepository(Product::class);
             if ($repo->count(['code'=> $product->getCode()]) > 0){
@@ -146,6 +147,7 @@ class AdminController extends AbstractController
                 ]);
 
             }
+
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($product);
             $entityManager->flush();
@@ -158,5 +160,4 @@ class AdminController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
 }

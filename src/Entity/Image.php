@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ImageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -20,12 +21,17 @@ class Image
     /**
      * @ORM\Column(type="array", nullable=true)
      */
-    private $tag = [];
+    private $tag;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
     private $path;
+
+//    public function __construct()
+//    {
+//        $this->tag = new ArrayCollection();
+//    }
 
     public function getId(): ?int
     {

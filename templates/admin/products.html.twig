@@ -25,8 +25,8 @@
                                     <th>Category</th>
                                     <th>Price</th>
                                     <th>Description</th>
-                                    <th>ProductImage</th>
                                     <th>Available amount</th>
+                                    <th>Product Image</th>
                                     <th>CreatedAt</th>
                                     <th>UpdatedAt</th>
                                     <th>Actions</th>
@@ -39,8 +39,12 @@
                                         <td>{{ product.category }}</td>
                                         <td>{{ product.price }}</td>
                                         <td>{{ product.description }}</td>
-                                        <td>{{ product.productImage }}</td>
-                                        <td>{{ product.availableAmount }}</td>
+                                       <td>{{ product.availableAmount }}</td>
+                                        <td>
+                                        {% for image in product.productImages %}
+                                        {{ image }},
+                                        {% endfor %}
+                                        </td>
                                         <td>{{ product.createdAt ? product.createdAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>{{ product.updatedAt ? product.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
                                         <td>
@@ -59,7 +63,8 @@
             </table>
         </th>
     </table>
-    {% include '/parts/pagination.html.twig' %}<br>
+{% include '/parts/pagination.html.twig' %}
+    <br>
 {% endblock %}
 
 
