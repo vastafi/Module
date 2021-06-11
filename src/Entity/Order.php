@@ -49,6 +49,25 @@ class Order
      */
     private $user;
 
+    private $creditCardDetails = [];
+
+    /**
+     * @return array
+     */
+    public function getCreditCardDetails(): array
+    {
+        return $this->creditCardDetails;
+    }
+
+    /**
+     * @param array $creditCardDetails
+     */
+    public function setCreditCardDetails(array $creditCardDetails): void
+    {
+        $this->creditCardDetails = $creditCardDetails;
+    }
+
+
     public function getId(): ?int
     {
         return $this->id;
