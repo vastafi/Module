@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -62,6 +63,10 @@ class CartController extends AbstractController
             }
 
         }
+        if (empty($items)){
+            throw new BadRequestHttpException('Your cart is empty');
+        }
+
         $order = $this->createOrder($items, $total);
         $form = $this->createForm(CheckoutType::class, $order);
         $form->handleRequest($request);

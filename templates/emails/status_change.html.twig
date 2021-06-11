@@ -1,0 +1,16 @@
+
+<h1>Hello!</h1>
+<h5>The status of your order with id: {{ order.id }} has been changed to {{ order.status }}</h5>
+
+{% if order.status == 'New' or order.status == 'In Progress' %}
+<p>
+    If you want to cancel the order click<br>
+    <a class="btn btn-danger" href="{{ path('cancel_order', {'id': order.id})}}">here</a>.
+</p>
+{% else if order.status == 'Sent' %}
+<p>
+    If you received the order please confirm it by clicking<br>
+    <a class="btn btn-success" href="{{ path('next_status', {'id': order.id})}}">here</a>.
+</p>
+
+{% endif %}
