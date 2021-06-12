@@ -42,7 +42,11 @@
                         </tr>
                         <tr>
                             <th>ProductImage</th>
-                            <td>{{ product.productImages }}</td>
+                            <td>
+                            {% for image in product.productImages %}
+                            {{ image }},
+                            {% endfor %}
+                            </td>
                         </tr>
                         <tr>
                             <th>CreatedAt</th>

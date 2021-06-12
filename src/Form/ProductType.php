@@ -27,10 +27,21 @@ class ProductType extends AbstractType
             ->add('code', TextType::class, [
                     'constraints' => [
                         new Regex('/[A][B]\d+/', 'Code must begin with AB'),
+                        new Length([
+                            'max' => 50,
+                            'maxMessage' => 'Code can have maximum 50 characters',
+                        ]),
                     ],
                 ]
             )
-            ->add('name')
+            ->add('name', TextType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'Name can have maximum 30 characters',
+                    ]),
+                ],
+            ])
             ->add('category', ChoiceType::class, [
                 'choices' => ['Phones' => 'Phones', 'Notebooks' => 'Notebooks', 'Printers' => 'Printers']
             ])
@@ -54,6 +65,7 @@ class ProductType extends AbstractType
             ])
             ->add('productImages', TextType::class, [
                 'required' => false,
+                'attr'=>array('style'=>'display:none;')
             ]);
         $builder->get('productImages')
             ->addViewTransformer(new CallbackTransformer(
