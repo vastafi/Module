@@ -39,12 +39,16 @@
                             <td>{{ product.description }}</td>
                         </tr>
                         <tr>
-                            <th>ProductImage</th>
-                            <td>{{ product.productImage }}</td>
-                        </tr>
-                        <tr>
                             <th>Available amount</th>
                             <td>{{ product.availableAmount }}</td>
+                        </tr>
+                        <tr>
+                            <th>ProductImage</th>
+                            <td>
+                            {% for image in product.productImages %}
+                            {{ image }},
+                            {% endfor %}
+                            </td>
                         </tr>
                         <tr>
                             <th>CreatedAt</th>

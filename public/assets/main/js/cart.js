@@ -102,11 +102,8 @@ async function fetchCart(amount, productCode) {
     let url = "/api/v1/cart/";
     return await fetch(url + "?" + urlParams, {method: 'PATCH'});
 }
-$(document).on('input', 'input[type="number"].namount', function (e) {
-    if($(this).val() < 0 || parseInt($(this).val()) === 0){
-        alert('Amount can not be negative or zero');
-    }
-    else if($(this).val()){
+$(document).on('focusout', 'input[type="number"].namount', function (e) {
+    if($(this).val()){
         e.preventDefault();
         fetchCart($(this).val(), $(this).closest('tr').data('prod-code')).then(function (res) {
             console.log(res.status);
@@ -114,10 +111,9 @@ $(document).on('input', 'input[type="number"].namount', function (e) {
                 $(location).attr('.total');
             }
             if(res.status === 400){
-                alert('We don\'t have so many products');
+                res.json().then(data => alert(data.message));
             }
             showCart();
         })
     }
 })
-
