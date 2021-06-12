@@ -65,7 +65,6 @@ class CartController extends AbstractController
         {
             return new Response(null, 404);
         }
-        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $amount = $request->query->get('amount', 1);
         if($product->getAvailableAmount() < $amount){
             return new ApiErrorResponse("1204", "We don't have so many products");
