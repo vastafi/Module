@@ -20,7 +20,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/image/gallery")
+ * @Route("/admin/image/gallery")
  */
 class ImageController extends AbstractController
 {

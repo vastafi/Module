@@ -6,11 +6,26 @@ security:
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
         # used to reload user from session & other features (e.g. switch_user)
+        api_db_provider:
+            entity:
+                class: App\Entity\User
+                property: apiToken
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
+        combined_db_provider:
+            chain:
+                providers:
+                    - api_db_provider
+                    - app_user_provider
     firewalls:
+        api:
+            pattern: ^/api/
+            provider: combined_db_provider
+            guard:
+                 authenticators:
+                    - App\Security\TokenAuthenticator
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -36,5 +51,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_ADMIN }
+         - { roles: ROLE_ADMIN, path: ^/admin }
+         - { roles: ROLE_USER,  path: ^/api/v1/cart }
+         - { roles: ROLE_ADMIN, path: ^/api/v1/order }
+         - { roles: ROLE_USER,  path: ^/api/v1, methods: [GET] }
+         - { roles: ROLE_ADMIN, path: ^/api/v1 }
         # - { path: ^/profile, roles: ROLE_USER }

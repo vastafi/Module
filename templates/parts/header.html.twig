@@ -73,7 +73,7 @@
                                 </li>
                             {% endif %}
 
-                            {% if "/admin/image/" == app.request.requestUri %}
+                            {% if "/admin/image/" in app.request.requestUri %}
                                 <li class="nav-item">
                                     <a class="nav-link active" href="{{ path('image_index') }}">Gallery</a>
                                 </li>

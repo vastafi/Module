@@ -2,14 +2,17 @@
 
 namespace App\Controller;
 
+use App\Entity\Product;
+use App\Form\ProductType;
 use App\Repository\ProductRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/products")
@@ -42,16 +45,19 @@ class ProductController extends AbstractController
         }
         $pageNum = $productRepository->countPages($category, $name, $limit);
         $products = $productRepository->filter($category, $name, $limit, $page);
-        if(!($products) && in_array($page, range(1, $pageNum))){
-            throw new BadRequestHttpException("400");
-        }
-        if($page > $pageNum){
-            $this->addFlash('warning', "Invalid page number");
-            return $this->redirectToRoute('product_index');
-        }
-        if ($limit > 100) {
-            $this->addFlash('warning', "Limit exceeded");
-            return $this->redirectToRoute('product_index');
+
+        /* @note - удалёный участок не нужен. Если продуктов нет, тогда просто выведите страницу с сообщением об этом.*/
+
+        if ($pageNum > 1){
+            $query = $request->query->all();
+            if($page > $pageNum){
+                $this->addFlash('warning', "Invalid page number");
+                return $this->redirectToRoute('product_index', ['page' => 1] + $query);
+            }
+            if ($limit > 100) {
+                $this->addFlash('warning', "Limit exceeded");
+                return $this->redirectToRoute('product_index', ['limit' => 10] + $query);
+            }
         }
 
         return $this->render('product/products.html.twig', [
@@ -78,27 +84,33 @@ class ProductController extends AbstractController
     public function getProductByCode(string $productCode, ProductRepository $productRepository): Response
     {
         $product = $productRepository->findOneBy(['code' => $productCode]);
+        {
             if (!$product) {
                 throw new NotFoundHttpException('Product not found.');
             }
             return $this->render('product/details.html.twig', ['product' => $product]);
+        }
     }
-
     /**
+
      * @Route("/contacts", name="contacts")
      * @return Response
      */
     public function contacts(): Response
     {
-        return $this->render('contacts.html.twig');
-    }
 
-    /**
+        return $this->render('contacts.html.twig');
+
+    }
+ /**
      * @Route("/about", name="about")
      * @return Response
      */
     public function about(): Response
     {
+
         return $this->render('about.html.twig');
+
+
     }
 }

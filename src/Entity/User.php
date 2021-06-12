@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Uid\Uuid;
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity(fields={"email"}, message="There is already an account with this email")
@@ -25,6 +26,11 @@ class User implements UserInterface
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true, nullable=true)
+     */
+    private $apiToken;
 
     /**
      * @ORM\Column(type="json")
@@ -102,6 +108,21 @@ class User implements UserInterface
         $this->roles = $roles;
 
         return $this;
+    }
+    /**
+     * @return mixed
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * @param mixed $apiToken
+     */
+    public function setApiToken($apiToken): void
+    {
+        $this->apiToken = $apiToken;
     }
 
     /**
