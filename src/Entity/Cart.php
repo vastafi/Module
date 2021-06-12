@@ -56,7 +56,7 @@ class Cart
         return $this;
     }
 
-    public function addItem(string $code, int $amount)
+    public function addItem(string $code, int $amount, int $available)
     {
         $item = ["code"=>$code, "amount"=>$amount];
         $items = $this->getItems();
@@ -65,12 +65,16 @@ class Cart
         }, $items));
         if($position !== false)
         {
+            if(($items[$position]['amount'] + $amount) > $available){
+                return false;
+            }
             $items[$position]['amount'] += $amount;
         }
         else{
             array_push($items, $item);
         }
         $this->setItems($items);
+        return true;
     }
 
     public function removeItem(string $code)

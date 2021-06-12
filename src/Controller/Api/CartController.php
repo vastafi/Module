@@ -74,8 +74,12 @@ class CartController extends AbstractController
         $cart = $cartRepository->findOneBy(["user"=>$user->getId()]);
         if($cart)
         {
-            $cart->addItem($productCode, $amount);
-            $cart->setUser($user);
+            if($cart->addItem($productCode, $amount, $product->getAvailableAmount())){
+                $cart->setUser($user);
+            }
+            else{
+                return new ApiErrorResponse("1204", "We don't have so many products");
+            }
         }
         else
         {
