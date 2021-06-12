@@ -64,7 +64,8 @@ class CartController extends AbstractController
 
         }
         if (empty($items)){
-            throw new BadRequestHttpException('Your cart is empty');
+            $this->addFlash('warning','Your cart is empty!');
+            return $this->redirectToRoute('cart');
         }
 
         $order = $this->createOrder($items, $total);
@@ -79,11 +80,12 @@ class CartController extends AbstractController
             $em->persist($order);
             $em->flush();
 
-            $this->addFlash('order_placed', 'Your order has been placed! Check your email to see more details.');
+//            $this->addFlash('order_placed', 'Your order has been placed! Check your email to see more details.');
 
             $this->forward('App\Controller\MailerController::sendEmail', [
                 'order' => $order
             ]);
+            $this->addFlash('success', 'Your order has been placed! Check your email to see more details.');
 
             return $this->redirectToRoute('product_index');
         }
@@ -112,6 +114,10 @@ class CartController extends AbstractController
      */
     public function cancelOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
     {
+        if ($order->getStatus() == 'Closed'){
+            $this->addFlash('warning',"You can't cancel your order, because it's already closed.");
+            return $this->redirectToRoute('product_index');
+        }
 
         $order->setStatus('Canceled');
 
@@ -123,7 +129,7 @@ class CartController extends AbstractController
             'order' => $order
         ]);
 
-        $this->addFlash('warning','Your order has been canceled');
+        $this->addFlash('warning','Your order has been canceled.');
         return $this->redirectToRoute('product_index');
 
     }
@@ -134,6 +140,14 @@ class CartController extends AbstractController
     public function closeOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
     {
 
+        if ($order->getStatus() == 'Closed'){
+            $this->addFlash('warning',"Your order is already closed.");
+            return $this->redirectToRoute('product_index');
+        }
+        if ($order->getStatus() == 'Canceled'){
+            $this->addFlash('warning',"You can't close this order because it's canceled.");
+            return $this->redirectToRoute('product_index');
+        }
         $order->setStatus('Closed');
 
         $em = $this->getDoctrine()->getManager();
@@ -144,7 +158,7 @@ class CartController extends AbstractController
             'order' => $order
         ]);
 
-        $this->addFlash('success','Your order has been closed');
+        $this->addFlash('success','Your order has been closed.');
         return $this->redirectToRoute('product_index');
 
     }

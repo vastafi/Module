@@ -28,11 +28,11 @@ class OrderController extends AbstractController
         $page = $request->query->get('page', 1);
 
         if ($page <= 0) {
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('order_index');
         }
         if ($limit <= 1) {
-            $this->addFlash('warning', "Limit should be more than 1");
+            $this->addFlash('danger', "Limit should be more than 1");
             return $this->redirectToRoute('order_index');
         }
 
@@ -44,11 +44,11 @@ class OrderController extends AbstractController
             throw new BadRequestHttpException('Error 400');
         }
         if ($page > $pageNum) {
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('order_index');
         }
         if ($limit > 100) {
-            $this->addFlash('warning', "Limit exceeded");
+            $this->addFlash('danger', "Limit exceeded");
             return $this->redirectToRoute('order_index');
         }
 

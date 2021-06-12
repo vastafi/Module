@@ -33,11 +33,11 @@ class UserController extends AbstractController
 
         $pageNum = $userRepository->countPages( $email,$limit);
         if($page <= 0){
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('user_index');
         }
         if($limit <= 1){
-            $this->addFlash('warning', "Limit can not be negative or zero");
+            $this->addFlash('danger', "Limit can not be negative or zero");
             return $this->redirectToRoute('user_index');
         }
         $users = $userRepository->filter( $email, $limit, $page);
@@ -45,11 +45,11 @@ class UserController extends AbstractController
             throw new BadRequestHttpException("400");
         }
         if($page > $pageNum){
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('user_index');
         }
         if ($limit > 100) {
-            $this->addFlash('warning', "Limit exceeded");
+            $this->addFlash('danger', "Limit exceeded");
             return $this->redirectToRoute('user_index');
         }
 

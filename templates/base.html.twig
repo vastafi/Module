@@ -36,26 +36,8 @@
 <body>
 <script src="{{ asset('assets/main/js/cart.js') }}"></script>
 {% include 'parts/header.html.twig' %}
+{% include 'parts/flash.html.twig' %}
 
-{# flash for verification successful #}
-{% for message in app.flashes('verified') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
-
-{# flash for the sending of the verification link #}
-{% for message in app.flashes('sent') %}
-    <div class="alert alert-warning">
-        {{ message }}
-    </div>
-{% endfor %}
-
-{% for message in app.flashes('order_placed') %}
-    <div class="alert alert-success">
-        {{ message }}
-    </div>
-{% endfor %}
 
 <div class="container-fluid mb-5">
     {% block body %}

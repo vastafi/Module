@@ -27,7 +27,7 @@ class MailerController extends AbstractController
             $email = (new TemplatedEmail())
                 ->from(new Address('simple.store@gmail.com', 'Simple Store'))
                 ->to( new Address($order->getUser()->getEmail()))
-                ->subject("Confirmation")
+                ->subject("Order confirmation")
                 ->htmlTemplate('emails/new_order_email.html.twig')
                 ->context([
                     'order' => $order

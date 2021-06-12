@@ -36,11 +36,11 @@ class ProductController extends AbstractController
 
 
         if($page <= 0){
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('product_index');
         }
         if($limit <= 1){
-            $this->addFlash('warning', "Limit can not be negative, zero or one");
+            $this->addFlash('danger', "Limit can not be negative, zero or one");
             return $this->redirectToRoute('product_index');
         }
         $pageNum = $productRepository->countPages($category, $name, $limit);
@@ -49,11 +49,11 @@ class ProductController extends AbstractController
             throw new BadRequestHttpException("400");
         }
         if($page > $pageNum){
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('product_index');
         }
         if ($limit > 100) {
-            $this->addFlash('warning', "Limit exceeded");
+            $this->addFlash('danger', "Limit exceeded");
             return $this->redirectToRoute('product_index');
         }
 
