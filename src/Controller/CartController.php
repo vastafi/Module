@@ -79,7 +79,12 @@ class CartController extends AbstractController
             $em->persist($order);
             $em->flush();
 
-            $this->addFlash('order_placed', 'Your order has been placed!');
+            $this->addFlash('order_placed', 'Your order has been placed! Check your email to see more details.');
+
+            $this->forward('App\Controller\MailerController::sendEmail', [
+                'order' => $order
+            ]);
+
             return $this->redirectToRoute('product_index');
         }
 
@@ -100,6 +105,48 @@ class CartController extends AbstractController
         $order->setTotal($total);
         $order->setUser($this->getUser());
         return $order;
+    }
+
+    /**
+     * @Route("/{id}/cancel", name="cancel_order", methods={"GET","POST"})
+     */
+    public function cancelOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+
+        $order->setStatus('Canceled');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($order);
+        $em->flush();
+
+        $this->forward('App\Controller\MailerController::sendEmail', [
+            'order' => $order
+        ]);
+
+        $this->addFlash('warning','Your order has been canceled');
+        return $this->redirectToRoute('product_index');
+
+    }
+
+    /**
+     * @Route("/{id}/close", name="close_order", methods={"GET","POST"})
+     */
+    public function closeOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+
+        $order->setStatus('Closed');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($order);
+        $em->flush();
+
+        $this->forward('App\Controller\MailerController::sendEmail', [
+            'order' => $order
+        ]);
+
+        $this->addFlash('success','Your order has been closed');
+        return $this->redirectToRoute('product_index');
+
     }
 
 }

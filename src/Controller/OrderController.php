@@ -152,12 +152,8 @@ class OrderController extends AbstractController
         switch ($status){
             case "New":
                 $order->setStatus('In Progress');
-//                dd($order->getUser()->getEmail());
-//                $mailerController->sendEmail($order->getStatus(),$order->getUser()->getEmail());
                  $this->forward('App\Controller\MailerController::sendEmail', [
                      'order' => $order
-//                    'status'  => 'In Progress',
-//                    'userEmail' => $order->getUser()->getEmail()
                 ]);
                 break;
 
@@ -185,23 +181,6 @@ class OrderController extends AbstractController
             'limit' => $limit,
             'searchId' => $searchId]);
     }
-    /**
-     * @Route("/{id}/cancel", name="cancel_order", methods={"GET","POST"})
-     */
-    public function cancelOrder(Order $order)
-    {
 
-        $order->setStatus('Canceled');
-
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($order);
-        $em->flush();
-
-        $this->forward('App\Controller\MailerController::sendEmail', [
-            'order' => $order
-        ]);
-
-
-    }
 
 }

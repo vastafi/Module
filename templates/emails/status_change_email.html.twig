@@ -1,0 +1,23 @@
+
+{% block body %}
+<div class="container">
+    <h1>Hello friend!</h1>
+    <h3>The status of your order with id: {{ order.id }} has been changed to {{ order.status }}</h3>
+</div>
+
+{% if order.status =='In Progress' %}
+    <p>
+    If you want to cancel the order click
+    <a href="{{ url('cancel_order', {'id': order.id}) }}" style="color:red;"><strong>Here</strong></a>.
+    </p>
+{% endif %}
+
+    {% if order.status == 'Sent' %}
+        <p>
+            If you received the order please confirm it by clicking
+            <a href="{{ url('close_order', {'id': order.id}) }}" style="color: lawngreen"><strong>Here</strong></a>.<br>
+            If you don't confirm it in 60 days, it will be closed automatically.
+        </p>
+
+    {% endif %}
+{% endblock %}

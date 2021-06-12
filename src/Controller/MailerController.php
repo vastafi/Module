@@ -19,35 +19,34 @@ use Twig\Loader\FilesystemLoader;
 class MailerController extends AbstractController
 {
     /**
-     * @Route("/emailStatus")
+     * @Route("/email_status", name="send_email_status")
      */
-    public function sendEmail(MailerInterface $mailer, Order $order)
+    public function sendEmail(MailerInterface $mailer, Order $order):void
     {
-//        ->to($user->getEmail())
-//        ->subject('Please Confirm your Email')
-//
+        if ($order->getStatus() == 'New'){
+            $email = (new TemplatedEmail())
+                ->from(new Address('simple.store@gmail.com', 'Simple Store'))
+                ->to( new Address($order->getUser()->getEmail()))
+                ->subject("Confirmation")
+                ->htmlTemplate('emails/new_order_email.html.twig')
+                ->context([
+                    'order' => $order
+                ]);
+
+            $mailer->send($email);
+        }
+        else{
         $email = (new TemplatedEmail())
-            ->from('simple.store@gmail.com')
+            ->from(new Address('simple.store@gmail.com', 'Simple Store'))
             ->to( new Address($order->getUser()->getEmail()))
             ->subject("Order details")
-//            ->text('Order status changed to '. $order->getStatus());
-            ->htmlTemplate('emails/status_change.html.twig')
+            ->htmlTemplate('emails/status_change_email.html.twig')
             ->context([
                 'order' => $order
             ]);
-        $loader = new FilesystemLoader('templates');
-
-        $twigEnv = new Environment($loader);
-
-        $twigBodyRenderer = new BodyRenderer($twigEnv);
-
-        $twigBodyRenderer->render($email);
 
         $mailer->send($email);
-//            ->htmlTemplate('registration/confirmation_email.html.twig');
-//            ->html('<p>See Twig integration for better HTML integration!</p>');
-
-        //$mailer->send($email);
+        }
     }
 
 
