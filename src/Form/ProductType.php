@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +20,11 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class ProductType extends AbstractType
 {
+    private $product;
+
+    public function __construct(ProductRepository $product){
+        $this->product = $product;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $categories = ['id' => 'name'];
@@ -43,7 +49,7 @@ class ProductType extends AbstractType
                 ],
             ])
             ->add('category', ChoiceType::class, [
-                'choices' => ['Phones' => 'Phones', 'Notebooks' => 'Notebooks', 'Printers' => 'Printers']
+                'choices' => $this->getCategories()
             ])
             ->add('price', NumberType::class, [
                 'invalid_message' => "price must be number",
@@ -91,6 +97,13 @@ class ProductType extends AbstractType
                     }
                 }
             ));
+    }
+
+    public function getCategories(){
+        foreach($this->product->getCategories() as $key => $val) {
+            $choices[$val]=$val;
+        }
+        return $choices;
     }
 
     public function configureOptions(OptionsResolver $resolver)
