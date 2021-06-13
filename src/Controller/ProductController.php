@@ -51,11 +51,11 @@ class ProductController extends AbstractController
         if ($pageNum > 1){
             $query = $request->query->all();
             if($page > $pageNum){
-                $this->addFlash('warning', "Invalid page number");
+                $this->addFlash('danger', "Invalid page number");
                 return $this->redirectToRoute('product_index', ['page' => 1] + $query);
             }
             if ($limit > 100) {
-                $this->addFlash('warning', "Limit exceeded");
+                $this->addFlash('danger', "Limit exceeded");
                 return $this->redirectToRoute('product_index', ['limit' => 10] + $query);
             }
         }
