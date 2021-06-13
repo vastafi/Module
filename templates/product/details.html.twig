@@ -82,9 +82,7 @@
     </section>
     {% if app.user %}
         <script>
-            let click = 0;
             $(document).on('click', '#add_cart', function (e) {
-                click += 1;
                 e.preventDefault();
                 fetch("{{ path("cart_add", {'productCode':product.code}) }}", {method: 'POST'})
                     .then(function (res) {
@@ -93,7 +91,6 @@
                             alert('We dont have so many products');
                         } else if (res.status === 200) {
                             alert('Product added to cart');
-                            $('#avail').text({{ product.availableAmount }} -click);
                             showCart();
                         }
                     })

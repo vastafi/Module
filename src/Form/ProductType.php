@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -19,6 +20,11 @@ use Symfony\Component\Validator\Constraints\Regex;
 
 class ProductType extends AbstractType
 {
+    private $product;
+
+    public function __construct(ProductRepository $product){
+        $this->product = $product;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $categories = ['id' => 'name'];
@@ -27,12 +33,23 @@ class ProductType extends AbstractType
             ->add('code', TextType::class, [
                     'constraints' => [
                         new Regex('/[A][B]\d+/', 'Code must begin with AB'),
+                        new Length([
+                            'max' => 50,
+                            'maxMessage' => 'Code can have maximum 50 characters',
+                        ]),
                     ],
                 ]
             )
-            ->add('name')
+            ->add('name', TextType::class, [
+                'constraints' => [
+                    new Length([
+                        'max' => 30,
+                        'maxMessage' => 'Name can have maximum 30 characters',
+                    ]),
+                ],
+            ])
             ->add('category', ChoiceType::class, [
-                'choices' => ['Phones' => 'Phones', 'Notebooks' => 'Notebooks', 'Printers' => 'Printers']
+                'choices' => $this->getCategories()
             ])
             ->add('price', NumberType::class, [
                 'invalid_message' => "price must be number",
@@ -54,6 +71,7 @@ class ProductType extends AbstractType
             ])
             ->add('productImages', TextType::class, [
                 'required' => false,
+                'attr'=>array('style'=>'display:none;')
             ]);
         $builder->get('productImages')
             ->addViewTransformer(new CallbackTransformer(
@@ -79,6 +97,13 @@ class ProductType extends AbstractType
                     }
                 }
             ));
+    }
+
+    public function getCategories(){
+        foreach($this->product->getCategories() as $key => $val) {
+            $choices[$val]=$val;
+        }
+        return $choices;
     }
 
     public function configureOptions(OptionsResolver $resolver)
