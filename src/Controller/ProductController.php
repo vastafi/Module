@@ -36,11 +36,11 @@ class ProductController extends AbstractController
 
 
         if($page <= 0){
-            $this->addFlash('warning', "Invalid page number");
+            $this->addFlash('danger', "Invalid page number");
             return $this->redirectToRoute('product_index');
         }
         if($limit <= 1){
-            $this->addFlash('warning', "Limit can not be negative, zero or one");
+            $this->addFlash('danger', "Limit can not be negative, zero or one");
             return $this->redirectToRoute('product_index');
         }
         $pageNum = $productRepository->countPages($category, $name, $limit);

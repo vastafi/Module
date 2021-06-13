@@ -54,7 +54,7 @@ class RegistrationController extends AbstractController
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
 
-            $this->addFlash('sent', 'An confirmation link has been sent to your email.');
+            $this->addFlash('warning', 'An confirmation link has been sent to your email.');
 
             return $guardHandler->authenticateUserAndHandleSuccess(
                 $user,
@@ -85,7 +85,7 @@ class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_register');
         }
 
-        $this->addFlash('verified', 'Your email address has been verified.');
+        $this->addFlash('success', 'Your email address has been verified.');
 
         return $this->redirectToRoute('product_index');
     }

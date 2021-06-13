@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -62,6 +63,11 @@ class CartController extends AbstractController
             }
 
         }
+        if (empty($items)){
+            $this->addFlash('warning','Your cart is empty!');
+            return $this->redirectToRoute('cart');
+        }
+
         $order = $this->createOrder($items, $total);
         $form = $this->createForm(CheckoutType::class, $order);
         $form->handleRequest($request);
@@ -74,7 +80,13 @@ class CartController extends AbstractController
             $em->persist($order);
             $em->flush();
 
-            $this->addFlash('order_placed', 'Your order has been placed!');
+//            $this->addFlash('order_placed', 'Your order has been placed! Check your email to see more details.');
+
+            $this->forward('App\Controller\MailerController::sendEmail', [
+                'order' => $order
+            ]);
+            $this->addFlash('success', 'Your order has been placed! Check your email to see more details.');
+
             return $this->redirectToRoute('product_index');
         }
 
@@ -95,6 +107,60 @@ class CartController extends AbstractController
         $order->setTotal($total);
         $order->setUser($this->getUser());
         return $order;
+    }
+
+    /**
+     * @Route("/{id}/cancel", name="cancel_order", methods={"GET","POST"})
+     */
+    public function cancelOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+        if ($order->getStatus() == 'Closed'){
+            $this->addFlash('warning',"You can't cancel your order, because it's already closed.");
+            return $this->redirectToRoute('product_index');
+        }
+
+        $order->setStatus('Canceled');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($order);
+        $em->flush();
+
+        $this->forward('App\Controller\MailerController::sendEmail', [
+            'order' => $order
+        ]);
+
+        $this->addFlash('warning','Your order has been canceled.');
+        return $this->redirectToRoute('product_index');
+
+    }
+
+    /**
+     * @Route("/{id}/close", name="close_order", methods={"GET","POST"})
+     */
+    public function closeOrder(Order $order): \Symfony\Component\HttpFoundation\RedirectResponse
+    {
+
+        if ($order->getStatus() == 'Closed'){
+            $this->addFlash('warning',"Your order is already closed.");
+            return $this->redirectToRoute('product_index');
+        }
+        if ($order->getStatus() == 'Canceled'){
+            $this->addFlash('warning',"You can't close this order because it's canceled.");
+            return $this->redirectToRoute('product_index');
+        }
+        $order->setStatus('Closed');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($order);
+        $em->flush();
+
+        $this->forward('App\Controller\MailerController::sendEmail', [
+            'order' => $order
+        ]);
+
+        $this->addFlash('success','Your order has been closed.');
+        return $this->redirectToRoute('product_index');
+
     }
 
 }
