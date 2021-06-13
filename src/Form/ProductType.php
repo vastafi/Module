@@ -32,7 +32,7 @@ class ProductType extends AbstractType
         $builder
             ->add('code', TextType::class, [
                     'constraints' => [
-                        new Regex('/[A][B]\d+/', 'Code must begin with AB'),
+                        new Regex('/[A][B]\d+/', 'Code must begin with AB and some numbers'),
                         new Length([
                             'max' => 50,
                             'maxMessage' => 'Code can have maximum 50 characters',
