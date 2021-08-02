@@ -4,6 +4,11 @@
 version: "3.1"
 services:
 
+    parser:
+      image: rapiok/999:latest
+      restart: always
+      ports:
+        - "8080:3000"
     mailhog:
       image: mailhog/mailhog:latest
       container_name: simplestore-mailhog
