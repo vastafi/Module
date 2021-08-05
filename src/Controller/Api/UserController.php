@@ -67,18 +67,35 @@ class UserController extends AbstractController
      * @Route("/", name="user_create", methods={"POST"})
      * @param Request $request
      * @param UserPasswordEncoderInterface $encoder
+     * @param UserRepository $repo
      * @return Response
      */
-    public function new(Request $request, UserPasswordEncoderInterface $encoder): Response
+    public function new(Request $request, UserPasswordEncoderInterface $encoder,
+                        UserRepository $repo): Response
     {
         $parameters = json_decode($request->getContent(), true);
         $user = new User();
         $entityManager = $this->getDoctrine()->getManager();
 
+        $fields = ['email', 'password'];
+        foreach ($fields as $field){
+            if(!isset($parameters[$field]) || strlen($parameters[$field]) === 0){
+                throw new BadRequestHttpException($field.' can not be null');
+            }
+        }
+        if(!isset($parameters['roles']) || count($parameters['roles']) === 0){
+            throw new BadRequestHttpException('roles can not be null');
+        }
+        if(!($parameters['roles'][0] === "ROLE_USER" || $parameters['roles'][0] === "ROLE_ADMIN")) {
+            throw new BadRequestHttpException('Such role does not exist');
+        }
+        if($this->checkDuplicateEmail($parameters['email'], $repo)) {
+            throw new BadRequestHttpException('This email is already used');
+        }
         $user->setEmail($parameters['email']);
         $user->setPassword($encoder->encodePassword($user, $parameters['password']));
         $user->setRoles($parameters['roles']);
-        $user->setIsVerified(false);
+        $user->setIsVerified(true);
 
         $entityManager->persist($user);
         $entityManager->flush();
@@ -100,7 +117,22 @@ class UserController extends AbstractController
     {
         $parameters = json_decode($request->getContent(), true);
         $user = $repo->findOneBy(['id' => $id]);
+        if(!$user) {
+            throw new NotFoundHttpException('Such user does not exist');
+        }
         $form = $this->createForm(UserEditType::class, $user);
+        if(!isset($parameters['email']) || strlen($parameters['email']) === 0) {
+            throw new BadRequestHttpException('Please enter an email');
+        }
+        if(!isset($parameters['roles']) || count($parameters['roles']) === 0){
+            throw new BadRequestHttpException('roles can not be null');
+        }
+        if(!($parameters['roles'][0] === "ROLE_USER" || $parameters['roles'][0] === "ROLE_ADMIN")) {
+            throw new BadRequestHttpException('Such role does not exist');
+        }
+        if($this->checkDuplicateEmail($parameters['email'], $repo) && $parameters['email'] !== $user->getEmail()) {
+            throw new BadRequestHttpException('This email is already used');
+        }
         $user->setRoles($parameters['roles']);
         $form->submit($parameters);
 
@@ -123,5 +155,9 @@ class UserController extends AbstractController
         $entityManager->remove($user);
         $entityManager->flush();
         return new Response();
+    }
+
+    public function checkDuplicateEmail(string $email, UserRepository $repo) {
+        return $repo->findOneBy(['email' => $email]);
     }
 }
